@@ -199,32 +199,3 @@
     color: #fff !important; /* 强制白色 */
     padding: 20px 0 !important;
 }
-
-/* =======================================================
-   8. 侧边栏作者名强制换行 (CSS 替换法)
-   ======================================================= */
-   .author-info__name {
-    /* 1. 先把原来的单行文字隐藏掉 (将字号设为0) */
-    font-size: 0 !important; 
-    line-height: 1.2 !important;
-}
-
-/* 2. 第一行：TakamiyaMioo */
-.author-info__name::before {
-    content: "TakamiyaMioo";  /* 这里写你的网名 */
-    font-size: 24px;          /* 恢复显示的大小 */
-    display: block;           /* 强制独占一行 */
-    font-weight: bold;
-    margin-bottom: 5px;       /* 两行之间的间距 */
-    color: var(--font-color); /* 自动适配日夜模式文字颜色 */
-}
-
-/* 3. 第二行：(Zhao Haoyu) */
-.author-info__name::after {
-    content: "(Zhao Haoyu)";  /* 这里写你的真名 */
-    font-size: 14px;          /* 字号改小 */
-    display: block;           /* 强制换行 */
-    font-weight: normal;
-    opacity: 0.6;             /* 颜色淡一点 */
-    color: var(--font-color);
-}

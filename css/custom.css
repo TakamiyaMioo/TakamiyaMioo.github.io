@@ -136,3 +136,95 @@
        color: #ffc0cb !important; 
        text-decoration: underline;
    }
+
+   /* source/css/custom.css */
+
+/* =======================================================
+   7. 自定义页脚布局 (左中右)
+   ======================================================= */
+/* 容器设为 Flex 布局 */
+.footer-container {
+    display: flex;
+    justify-content: space-between; /* 左右贴边，中间居中 */
+    align-items: center; /* 垂直居中 */
+    width: 100%;
+    max-width: 1200px; /* 限制最大宽度，防止太宽 */
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 每一个区块 */
+.footer-group {
+    flex: 1; /* 三栏等宽，保证中间绝对居中 */
+    display: flex;
+    gap: 10px; /* 图标文字间距 */
+}
+
+/* 左侧：左对齐 */
+.footer-left {
+    justify-content: flex-start;
+    font-family: 'LXGW WenKai Screen', sans-serif; /* 保持你的字体风格 */
+    opacity: 0.8;
+}
+
+/* 中间：居中对齐，并且可以垂直排列 */
+.footer-center {
+    justify-content: center;
+    flex-direction: column; /* 上下排列 Copyright 和 运行时间 */
+    align-items: center;
+    text-align: center;
+}
+
+/* 右侧：右对齐 */
+.footer-right {
+    justify-content: flex-end;
+    opacity: 0.8;
+}
+
+/* 手机端适配：屏幕变窄时变成上下堆叠，不然会挤爆 */
+@media screen and (max-width: 768px) {
+    .footer-container {
+        flex-direction: column; /* 改为垂直排列 */
+        gap: 15px; /* 增加行间距 */
+    }
+    
+    .footer-group {
+        justify-content: center !important; /* 手机上全部居中 */
+        flex: auto;
+    }
+}
+
+/* 修正页脚背景颜色（你之前配置了透明磨砂，这里微调文字颜色以防看不清） */
+#footer-wrap {
+    color: #fff !important; /* 强制白色 */
+    padding: 20px 0 !important;
+}
+
+/* =======================================================
+   8. 侧边栏作者名强制换行 (CSS 替换法)
+   ======================================================= */
+   .author-info__name {
+    /* 1. 先把原来的单行文字隐藏掉 (将字号设为0) */
+    font-size: 0 !important; 
+    line-height: 1.2 !important;
+}
+
+/* 2. 第一行：TakamiyaMioo */
+.author-info__name::before {
+    content: "TakamiyaMioo";  /* 这里写你的网名 */
+    font-size: 24px;          /* 恢复显示的大小 */
+    display: block;           /* 强制独占一行 */
+    font-weight: bold;
+    margin-bottom: 5px;       /* 两行之间的间距 */
+    color: var(--font-color); /* 自动适配日夜模式文字颜色 */
+}
+
+/* 3. 第二行：(Zhao Haoyu) */
+.author-info__name::after {
+    content: "(Zhao Haoyu)";  /* 这里写你的真名 */
+    font-size: 14px;          /* 字号改小 */
+    display: block;           /* 强制换行 */
+    font-weight: normal;
+    opacity: 0.6;             /* 颜色淡一点 */
+    color: var(--font-color);
+}

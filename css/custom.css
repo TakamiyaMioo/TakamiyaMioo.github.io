@@ -1,0 +1,138 @@
+/* =======================================================
+   1. 字体配置 (霞鹜文楷)
+   ======================================================= */
+   @import url('https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css');
+
+   /* 全局应用字体 */
+   body, h1, h2, h3, h4, h5, h6, p, span, a, .card-info, .navbar-title {
+       font-family: 'LXGW WenKai Screen', sans-serif !important;
+   }
+   
+   /* =======================================================
+      2. 全屏固定背景 (Mika 背景)
+      ======================================================= */
+   body {
+       background-image: url('/img/banner.jpg') !important;
+       background-attachment: fixed !important;
+       background-position: center center !important;
+       background-repeat: no-repeat !important;
+       background-size: cover !important;
+   }
+   
+    /* =======================================================
+            3. 导航栏全局强制固定 (修复非首页不生效问题)
+    ======================================================= */
+    /* 1. 无论在哪个页面，#nav 必须固定在窗口顶部 */
+    #nav {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 9999 !important; /* 确保在最顶层 */
+    
+    /* 默认状态：透明 (为了显示背景图) */
+    background-color: transparent !important;
+    box-shadow: none !important;
+    
+    /* 动画过渡 */
+    transition: background-color 0.3s ease-in-out !important;
+}
+/* 2. 下滑后的变色逻辑 */
+/* Butterfly 的机制：下滑时会给 #page-header 加 .nav-fixed，或给 #nav 加 .fixed */
+/* 我们把所有可能触发变色的情况都写上 */
+
+/* 情况A: 页面下滑时 */
+#page-header.nav-fixed #nav, 
+#nav.fixed,
+/* 情况B: 在某些没有头图的页面，强制给个底色 */
+.not-top-img #nav {
+    background-color: rgba(0, 0, 0, 0.6) !important; /* 变成深色毛玻璃 */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1) !important;
+}
+
+/* 3. 修复菜单文字颜色 */
+/* 确保无论背景怎么变，字始终是白色带阴影，看得清 */
+#nav .site-page, #nav .site-name {
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+}
+   
+   /* =======================================================
+      4. 文章卡片与侧边栏 (毛玻璃特效)
+      ======================================================= */
+   #aside-content .card-widget, 
+   .layout > .recent-posts .recent-post-item,
+   .layout > #post,
+   .layout > #page,
+   .layout > #archive {
+       /* 白天模式：半透明白 + 磨砂 */
+       background-color: rgba(255, 255, 255, 0.6) !important;
+       backdrop-filter: blur(15px);
+       -webkit-backdrop-filter: blur(15px);
+       border-radius: 15px !important;
+       animation: none !important;
+   }
+   
+   /* 暗黑模式适配 */
+   [data-theme="dark"] #aside-content .card-widget,
+   [data-theme="dark"] .layout > .recent-posts .recent-post-item,
+   [data-theme="dark"] .layout > #post,
+   [data-theme="dark"] .layout > #page {
+       /* 夜间模式：半透明黑 */
+       background-color: rgba(0, 0, 0, 0.6) !important;
+       color: #eee !important;
+   }
+   
+   [data-theme="dark"] body {
+       background-color: transparent !important;
+   }
+   
+   /* =======================================================
+      5. 修复页面头部 (归档、关于页的蓝色块)
+      ======================================================= */
+   /* 这里的逻辑是：只针对非首页的顶部区域进行美化 */
+   #page-header:not(.full_page) {
+       /* 强制去掉默认背景图/蓝色块 */
+       background-image: none !important;
+       
+       /* 极淡的黑色磨砂 (0.15) */
+       background-color: rgba(0, 0, 0, 0.15) !important;
+       
+       backdrop-filter: blur(8px) !important;
+       -webkit-backdrop-filter: blur(8px) !important;
+       box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+   }
+   
+   /* 加强头部文字阴影，防止背景太透看不清 */
+   #page-header h1, 
+   #page-header #site-title,
+   #page-header #site-subtitle {
+       color: #ffffff !important;
+       text-shadow: 0 0 5px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5) !important;
+   }
+   
+   /* =======================================================
+      6. 页脚美化 (Footer)
+      ======================================================= */
+   #footer {
+       background: transparent !important;
+       background-image: none !important;
+       
+       /* 跟顶部保持一致的淡磨砂 */
+       background-color: rgba(0, 0, 0, 0.15) !important;
+       backdrop-filter: blur(8px) !important;
+       -webkit-backdrop-filter: blur(8px) !important;
+       box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+   }
+   
+   #footer-wrap, #footer-wrap a {
+       color: #ffffff !important;
+       text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+   }
+   
+   #footer-wrap a:hover {
+       color: #ffc0cb !important; 
+       text-decoration: underline;
+   }

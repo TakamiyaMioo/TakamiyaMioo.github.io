@@ -31,4 +31,67 @@
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
   </entry>
+  <entry>
+    <title>让 AI Agent 自动发博客？记一次曲折的 Debug 实录</title>
+    <url>/2026/03/17/%E8%AE%A9-AI-Agent-%E8%87%AA%E5%8A%A8%E5%8F%91%E5%8D%9A%E5%AE%A2%EF%BC%9F%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%9B%B2%E6%8A%98%E7%9A%84-Debug-%E5%AE%9E%E5%BD%95/</url>
+    <content><![CDATA[<p>最近在本地终端折腾 OpenAI Codex。既然它能直接操作本地文件，我就在尝试：<strong>能不能直接用一句话命令它，帮我在本地生成一篇 Hexo 博客的 Markdown 文件，然后自动执行部署命令推送到我的 GitHub Pages 上？</strong></p>
+<p>预期中的剧本很简单：创建文件 -&gt; 补充 Front-matter -&gt; 执行 <code>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code> -&gt; 完美收工。</p>
+<p>但这终究只是预期。当这个自动化链路真正在 Windows 纯命令行环境下跑起来时，现实并不顺利。短短几分钟里，我精准踩中了从网络协议、进程交互到环境变量的各种底层大坑。</p>
+<p>以下是这次“翻车”与填坑的完整记录。如果你也在尝试把 AI Agent 接入本地工作流，这篇避坑指南应该能帮你省下大半天的 Debug 时间。</p>
+<h2 id="坑一：刚出门就撞墙，WebSocket-报错-10061"><a href="#坑一：刚出门就撞墙，WebSocket-报错-10061" class="headerlink" title="坑一：刚出门就撞墙，WebSocket 报错 10061"></a>坑一：刚出门就撞墙，WebSocket 报错 10061</h2><p>当指示 Agent 在本地执行脚手架命令 <code>hexo new post &quot;codex测试&quot;</code> 时，终端直接甩给我一行红字：<br><code>Falling back from WebSockets to HTTPS transport... (os error 10061)</code></p>
+<p><strong>排查与解决：</strong><br>这其实是个经典的网络代理问题。现在的终端 Agent 为了响应快，默认优先尝试建立 WebSocket 长连接。但在咱们的网络环境下，如果终端代理没配好，这个长连接请求就会被系统直接拒绝（10061 就是典型的 <code>WSAECONNREFUSED</code> 报错）。</p>
+<p>好在 Agent 比较聪明，握手失败后会自动降级到普通的 HTTPS 去拉取数据，不影响它继续干活。但为了避免每次都浪费时间重试，最根本的解决办法还是老老实实在终端里把环境变量挂上：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 确保当前终端走本地的代理端口</span></span><br><span class="line"><span class="variable">$env:HTTPS_PROXY</span>=<span class="string">&quot;[http://127.0.0.1](http://127.0.0.1):YOUR_PORT&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="坑二：静默执行遇上密码弹窗，进程直接卡死"><a href="#坑二：静默执行遇上密码弹窗，进程直接卡死" class="headerlink" title="坑二：静默执行遇上密码弹窗，进程直接卡死"></a>坑二：静默执行遇上密码弹窗，进程直接卡死</h2><p>Agent 成功写好了 Markdown 原稿，接着进入最后一步，准备调用 <code>hexo d</code> 把生成的静态页面推送到 GitHub。结果进程直接崩溃了：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Error: Spawn failed... (无法读取用户名/密码，/dev/tty 不可用)</span><br></pre></td></tr></table></figure>
+
+<p><strong>排查与解决：</strong></p>
+<p>这纯属是“无头环境”（Headless）引发的问题。</p>
+<p>我之前推送代码走的是 HTTPS 协议，平时手动敲 <code>hexo d</code> 时，Git 会弹出一个凭据窗口让我授权或者输入密码。但现在是 Agent 在后台子进程里敲命令，它是一个没有显示器也没有键盘的“幽灵”，根本接不住这个弹窗，找不到可用的 <code>/dev/tty</code>（终端输入设备），于是进程当场假死。</p>
+<p>加上 GitHub 早就禁用了密码推送，所以这里的唯一解法，就是<strong>彻底放弃 HTTPS，给本地配置 SSH 密钥免密登录。</strong></p>
+<h2 id="坑三：配好-SSH-却-Timeout，校园网-内网的常规操作"><a href="#坑三：配好-SSH-却-Timeout，校园网-内网的常规操作" class="headerlink" title="坑三：配好 SSH 却 Timeout，校园网&#x2F;内网的常规操作"></a>坑三：配好 SSH 却 Timeout，校园网&#x2F;内网的常规操作</h2><p>为了解决上一个问题，我老老实实生成了 Ed25519 密钥对，把公钥贴到了 GitHub 上。结果在终端一测连通性（<code>ssh -T git@github.com</code>），直接给我来个：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh: connect to host github.com port 22: Connection timed out</span><br></pre></td></tr></table></figure>
+
+<p><strong>排查与解决：</strong></p>
+<p>如果是平时在学校或者公司的网络环境，看到 <code>port 22</code> 和 <code>Timeout</code> 连在一起，基本就可以破案了：网关防火墙把 SSH 默认的出站 22 端口给封了。</p>
+<p>GitHub 官方留了个后门，允许我们通过 443（HTTPS端口）来走 SSH 流量。对于 Hexo 部署来说，去改本地的 <code>~/.ssh/config</code> 有时候还会被忽略，最简单暴力的做法是直接改 Hexo 根目录的 <code>_config.yml</code>，把地址换成绝对 SSH URI，强行让 Git 走 443：</p>
+<p>YAML</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  # 换掉原来的 HTTPS 地址，强行指定 ssh.github.com 和 443 端口</span><br><span class="line">  repo: ssh://git@ssh.github.com:443/TakamiyaMioo/TakamiyaMioo.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
+
+<h2 id="坑四：权限依然拒绝？Windows-与-Git-的“精神分裂”"><a href="#坑四：权限依然拒绝？Windows-与-Git-的“精神分裂”" class="headerlink" title="坑四：权限依然拒绝？Windows 与 Git 的“精神分裂”"></a>坑四：权限依然拒绝？Windows 与 Git 的“精神分裂”</h2><p>这是最搞心态的一个坑。</p>
+<p>我在 PowerShell 里手动执行 <code>ssh -T -p 443 git@ssh.github.com</code>，明明已经看到了成功的欢迎语（<code>Hi TakamiyaMioo! You&#39;ve successfully authenticated</code>）。</p>
+<p>满心欢喜地回头让终端去执行 <code>hexo d</code>，迎来的却是冷冰冰的：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git@ssh.github.com: Permission denied (publickey).</span><br></pre></td></tr></table></figure>
+
+<p><strong>排查与解决：</strong></p>
+<p>排查了半天才反应过来，Windows 环境下通常有两个互不干涉的 SSH 客户端！</p>
+<p>刚才测试成功的，是 Windows System32 目录自带的原生 OpenSSH（它正确读取了我的私钥）；而 <code>hexo d</code> 唤起的 Git，用的是 Git 安装目录里捆绑的那个精简版 SSH。这两个客户端完全隔离，Git 拿着一把“空钥匙”去开门，当然被拒绝。</p>
+<p>解决方法很简单，给 Git 加上一行全局配置，强行统一使用 Windows 系统的 SSH 客户端：</p>
+<p>Bash</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global core.sshCommand &quot;C:/Windows/System32/OpenSSH/ssh.exe&quot;</span><br></pre></td></tr></table></figure>
+
+<p>执行完这句后，再次部署，全程 0 弹窗、0 报错，文章终于被 AI 顺滑地推到了云端。</p>
+<hr>
+<h2 id="💡-总结与启发：别让你的-Agent-乱烧-Token"><a href="#💡-总结与启发：别让你的-Agent-乱烧-Token" class="headerlink" title="💡 总结与启发：别让你的 Agent 乱烧 Token"></a>💡 总结与启发：别让你的 Agent 乱烧 Token</h2><p>扫清了上面的基础设施障碍，AI Agent 才算真正接入了本地工作流。但经过这次折腾，我也发现了终端 AI 的一个极其费钱的陷阱：<strong>如果不加约束，它每次都会去扫全盘文件，疯狂消耗 Token。</strong></p>
+<p>想要高效、便宜地使唤这些智能体，得记住两点：</p>
+<ol>
+<li><strong>给项目加上 Git 灵魂</strong>：就算只是个纯文本的博客目录，也一定要 <code>git init</code>！现代的终端 Agent 极其依赖 Git，有了 Git 记录，它每次启动只需读取 <code>git status</code>，只把有改动的文件塞进上下文，能省下 90% 以上的无意义开销。</li>
+<li><strong>拒绝模糊指令，使用绝对路径</strong>：别跟 Agent 说“帮我改下昨天写的那篇测试文章”，直接下达精确指令：“分析 <code>source/_posts/codex测试.md</code>，在文末加一行署名”。精准投喂，效率最高。</li>
+</ol>
+<p>想要让 AI 顺畅接管工作，底层环境（特别是网络与 Git 权限）的稳定是第一步。基础打好了，上层玩起 AIGC 自动化才能真正起飞。</p>
+]]></content>
+      <categories>
+        <category>技术折腾</category>
+      </categories>
+      <tags>
+        <tag>AIGC</tag>
+        <tag>AI Agent</tag>
+        <tag>Hexo</tag>
+        <tag>Git</tag>
+        <tag>SSH</tag>
+        <tag>Windows</tag>
+        <tag>Codex</tag>
+      </tags>
+  </entry>
 </search>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>让 AI Agent 自动发博客？记一次曲折的 Debug 实录 | TakamiyaMioo's Blog</title><meta name="author" content="TakamiyaMioo     (Zhao Haoyu)"><meta name="copyright" content="TakamiyaMioo     (Zhao Haoyu)"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="最近在本地终端折腾 OpenAI Codex。既然它能直接操作本地文件，我就在尝试：能不能直接用一句话命令它，帮我在本地生成一篇 Hexo 博客的 Markdown 文件，然后自动执行部署命令推送到我的 GitHub Pages 上？ 预期中的剧本很简单：创建文件 -&gt; 补充 Front-matter -&gt; 执行 hexo clean &amp;&amp; hexo g &amp;&amp;a">
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>让 AI Agent 自动发博客？记一次曲折的 Debug 实录 | TakamiyaMioo's Blog</title><meta name="author" content="TakamiyaMioo     (Zhao Haoyu)"><meta name="copyright" content="TakamiyaMioo     (Zhao Haoyu)"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="最近在本地终端折腾 OpenAI Codex。既然它能直接操作本地文件，我就在尝试：能不能直接用一句话命令它，帮我在本地生成一篇 Hexo 博客的 Markdown 文件，然后自动执行部署命令推送到我的 GitHub Pages 上？ 预期中的剧本很简单：创建文件 -&gt; 补充 Front-matter -&gt; 执行 hexo clean &amp;&amp; hexo g &amp;&amp;a">
 <meta property="og:type" content="article">
 <meta property="og:title" content="让 AI Agent 自动发博客？记一次曲折的 Debug 实录">
 <meta property="og:url" content="http://example.com/2026/03/17/%E8%AE%A9-AI-Agent-%E8%87%AA%E5%8A%A8%E5%8F%91%E5%8D%9A%E5%AE%A2%EF%BC%9F%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%9B%B2%E6%8A%98%E7%9A%84-Debug-%E5%AE%9E%E5%BD%95/index.html">
@@ -127,7 +127,7 @@
   algolia: undefined,
   localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
   translate: undefined,
-  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
   copy: {
     success: '复制成功',
     error: '复制失败',

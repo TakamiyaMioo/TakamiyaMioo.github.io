@@ -1,12 +1,21 @@
-/* =======================================================
-   1. 字体配置 (霞鹜文楷)
+   /* =======================================================
+   1. 字体与布局排版优化
    ======================================================= */
    @import url('https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css');
+    /* 1. 只给大标题、侧边栏卡片、导航栏保留霞鹜文楷，保持文艺感 */
+    h1, h2, h3, h4, h5, h6, .card-info, .navbar-title, .author-info__name {
+        font-family: 'LXGW WenKai Screen', sans-serif !important;
+    }
 
-   /* 全局应用字体 */
-   body, h1, h2, h3, h4, h5, h6, p, span, a, .card-info, .navbar-title {
-       font-family: 'LXGW WenKai Screen', sans-serif !important;
-   }
+    /* 2. 正文恢复为系统默认的高清无衬线字体，大幅提升长文阅读体验 */
+    body, p, span, a, article {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Lato, Roboto, "PingFang SC", "Microsoft YaHei", sans-serif !important;
+    }
+
+    /* 3. 扩大全局排版宽度 (默认通常是 1200px，拉宽到 1400px 会宽敞很多) */
+    :root {
+        --layout-width: 1400px; 
+    }
    
    /* =======================================================
       2. 全屏固定背景 (Mika 背景)

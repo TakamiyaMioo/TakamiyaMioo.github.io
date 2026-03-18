@@ -1,35 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>codex测试</title>
-    <url>/2026/03/14/codex%E6%B5%8B%E8%AF%95/</url>
-    <content><![CDATA[<p>这是一篇由 AI 助手全自动生成的测试文章，包含分类与标签，并已自动推送到 GitHub。</p>
+    <title>科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流</title>
+    <url>/2026/03/18/%E7%A7%91%E7%A0%94%E5%88%A9%E5%99%A8%EF%BC%9A%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7-Zotero-%E8%BF%9B%E9%98%B6%E6%8A%98%E8%85%BE%E6%8C%87%E5%8D%97%E4%B8%8E-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/</url>
+    <content><![CDATA[<p>市面上文献管理工具不少，EndNote 老牌但 UI 极其复古且收费，Mendeley 经常同步抽风。折腾了一圈，最终让我安心把所有身家性命（几十篇文献和笔记）托付出去的，只有 <strong>Zotero</strong>。</p>
+<p>特别是在 Zotero 7 更新后，底层的重构让它的顺滑度有了质的飞跃。今天不讲废话，直接聊聊怎么把这个开源工具打造成武装到牙齿的科研外脑。</p>
+<h2 id="一、-为什么是-Zotero？"><a href="#一、-为什么是-Zotero？" class="headerlink" title="一、 为什么是 Zotero？"></a>一、 为什么是 Zotero？</h2><p>Zotero 最戳中技术极客的点在于：<strong>完全开源、数据掌握在自己手里、生态无敌。</strong></p>
+<p>它的基础工作流极其优雅：</p>
+<ol>
+<li><strong>一键抓取</strong>：装上浏览器插件 <code>Zotero Connector</code>。逛 IEEE 或 arXiv 看到好文章，点一下浏览器右上角，PDF 原文、作者、年份、期刊 Metadata 直接进库。</li>
+<li><strong>多端同步</strong>：别用它自带的那点可怜的免费空间。直接在设置里通过 WebDAV 挂载坚果云或者你自己的服务器，实现文献库的无缝同步。</li>
+<li><strong>沉浸阅读</strong>：Zotero 7 内置的阅读器已经完全够用了，高亮、截图、划线，还能自动把标注提取成 Markdown 笔记。</li>
+</ol>
+<blockquote>
+<p><strong>吐槽一下</strong>：很多新手连 Metadata（元数据）都不抓，直接把 PDF 拖进软件里，文件名全是一串乱码。拜托，文献管理的本质是构建数据库，没有干净的元数据，后期检索和引用就是一场灾难。</p>
+</blockquote>
+<h2 id="二、-核心插件：把生产力拉满"><a href="#二、-核心插件：把生产力拉满" class="headerlink" title="二、 核心插件：把生产力拉满"></a>二、 核心插件：把生产力拉满</h2><p>Zotero 就是一个毛坯房，真正的精装修全靠社区那群用爱发电的开发者。</p>
+<p><em>【图片位置 2：放一张 Zotero 附加组件（Add-ons）管理界面的截图，展示你安装的几个核心插件列表。】</em></p>
+<h3 id="1-翻译与阅读辅助：Zotero-PDF-Translate"><a href="#1-翻译与阅读辅助：Zotero-PDF-Translate" class="headerlink" title="1. 翻译与阅读辅助：Zotero PDF Translate"></a>1. 翻译与阅读辅助：Zotero PDF Translate</h3><p>啃外文文献，尤其是那种通篇长难句的硬核论文，翻译插件是刚需。它可以实现 PDF 划词翻译，并且在文献列表里直接把标题和摘要翻译成中文。支持 DeepL 和 Google 引擎，翻译质量非常能打。</p>
+<h3 id="2-个性化与进度管理：Zotero-Style"><a href="#2-个性化与进度管理：Zotero-Style" class="headerlink" title="2. 个性化与进度管理：Zotero Style"></a>2. 个性化与进度管理：Zotero Style</h3><p>默认的列表太素了。装上它，你可以给不同的标签设置显眼的颜色。最戳我痛点的是它的<strong>阅读进度条</strong>功能。哪篇看了一半，哪篇完全没动，列表里一目了然，专治各种“屯论文不看”的拖延症。</p>
+<h3 id="3-学术写作的终极浪漫：Better-BibTeX-BBT"><a href="#3-学术写作的终极浪漫：Better-BibTeX-BBT" class="headerlink" title="3. 学术写作的终极浪漫：Better BibTeX (BBT)"></a>3. 学术写作的终极浪漫：Better BibTeX (BBT)</h3><p>这玩意儿是我强推 Zotero 的核心原因。平时写 Report 或者跑论文，如果不用 LaTeX + VS Code，那排版简直是反人类。<br>BBT 可以自动为你的每一篇文献生成独一无二的 Citation Key（引用键），并且能<strong>实时静默同步</strong> <code>.bib</code> 文件到你的本地项目里。你在 Zotero 里刚抓了一篇新论文，切到 VS Code 里马上就能 <code>\cite{}</code> 出来，丝滑得让人感动。</p>
+<h2 id="三、-重头戏：接入大语言模型-AIdea-插件配置"><a href="#三、-重头戏：接入大语言模型-AIdea-插件配置" class="headerlink" title="三、 重头戏：接入大语言模型 (AIdea 插件配置)"></a>三、 重头戏：接入大语言模型 (AIdea 插件配置)</h2><p>AIGC 时代，看论文不带个 AI 助手，就像蒙着眼睛走路。我试过很多所谓的“AI 读论文”插件，很多都要自己配 API Key，稍微问多点，几十万 Token 跑没，钱包就在滴血。</p>
+<p>目前我最推荐、也是我主力在用的是 <strong>AIdea</strong>。</p>
+<p><em>【图片位置 3：放一张你正在阅读某篇论文（例如之前看的那篇 Group-wise Correlation 相关的视觉论文），右侧开着 AIdea 侧边栏，正在让大模型总结文章核心贡献的截图。】</em></p>
+<h3 id="1-为什么选-AIdea？（白嫖的快乐）"><a href="#1-为什么选-AIdea？（白嫖的快乐）" class="headerlink" title="1. 为什么选 AIdea？（白嫖的快乐）"></a>1. 为什么选 AIdea？（白嫖的快乐）</h3><p>它最大的亮点是支持 <strong>OAuth 授权登录</strong>，直接绕开了繁琐的 API 密钥配置。<br>如果你有通过了学生认证的 GitHub 账号，强烈建议直接在插件里走 GitHub Copilot 授权。这就相当于你可以接近无限量、免费地在侧边栏调用 GPT-4 级别的模型。一边看复杂的网络架构图，一边让 AI 帮你拆解算法逻辑，效率翻倍。</p>
+<h3 id="2-避坑指南：模型别乱选"><a href="#2-避坑指南：模型别乱选" class="headerlink" title="2. 避坑指南：模型别乱选"></a>2. 避坑指南：模型别乱选</h3><p>这里分享一个刚踩过的坑。很多同学在插件里配好了环境，一发问就报错：<code>System message must be at the beginning</code>。</p>
+<p>这通常是因为<strong>选错了模型接口</strong>。比如你想让 AI 总结全文，却在底下的下拉菜单里手滑选了 <code>vision-model</code>（专门用来识别图像的视觉模型），或者选了代码补全的 <code>coder-model</code>。接口数据格式对不上，服务器直接无情拒绝。</p>
+<p><strong>正确的姿势</strong>：<br>日常做全文总结、解释数学公式、提炼创新点，老老实实在模型列表里选择纯文本的巨头——比如 <code>claude-opus</code> 系列，或者你本地配好 CLI 的 <code>gemini-pro</code>，再或者是 Copilot 里的常规模型。把专业的活儿交给对的模型。</p>
+<h2 id="四、-总结"><a href="#四、-总结" class="headerlink" title="四、 总结"></a>四、 总结</h2><p>工具永远只是手段，真正的科研还是得靠自己掉头发。但一套配置调优的 Zotero + BBT 自动化引用 + AIdea 侧边栏，至少能让你在跟各种前沿论文死磕时，手里的兵器稍微锋利一点。</p>
+<p>别折腾了，赶紧去看论文吧。</p>
 ]]></content>
       <categories>
-        <category>日常记录</category>
+        <category>折腾笔记</category>
       </categories>
       <tags>
+        <tag>科研工具</tag>
+        <tag>Zotero</tag>
         <tag>AIGC</tag>
-        <tag>测试</tag>
+        <tag>效率</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2026/03/02/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
   </entry>
   <entry>
     <title>让 AI Agent 自动发博客？记一次曲折的 Debug 实录</title>
@@ -93,5 +102,23 @@
         <tag>Windows</tag>
         <tag>Codex</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2026/03/02/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
   </entry>
 </search>

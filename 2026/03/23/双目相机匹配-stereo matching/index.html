@@ -1,0 +1,254 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>双目相机立体匹配-stereo matching | TakamiyaMioo's Blog</title><meta name="author" content="TakamiyaMioo     (Zhao Haoyu)"><meta name="copyright" content="TakamiyaMioo     (Zhao Haoyu)"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="最近在学习CV相关的双目相机立体匹配Stereo Matching，本文是关于GwcNet的一些学习和思考。开始之前，先需要理解几个概念：视差、双目相机匹配、代价体。 视差定义有一个理想的双目相机系统，两个相机的成像平面是共面和行对齐的，左图中某个点，与对应右图中的匹配点在同一个水平线上。 如果空间中有一个三维点 $P$，它在左图的像素坐标是 $(u_L, v)$，在右图的对应坐标是 $(u_R,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="双目相机立体匹配-stereo matching">
+<meta property="og:url" content="http://example.com/2026/03/23/%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/index.html">
+<meta property="og:site_name" content="TakamiyaMioo&#39;s Blog">
+<meta property="og:description" content="最近在学习CV相关的双目相机立体匹配Stereo Matching，本文是关于GwcNet的一些学习和思考。开始之前，先需要理解几个概念：视差、双目相机匹配、代价体。 视差定义有一个理想的双目相机系统，两个相机的成像平面是共面和行对齐的，左图中某个点，与对应右图中的匹配点在同一个水平线上。 如果空间中有一个三维点 $P$，它在左图的像素坐标是 $(u_L, v)$，在右图的对应坐标是 $(u_R,">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/avatar.png">
+<meta property="article:published_time" content="2026-03-23T08:08:35.000Z">
+<meta property="article:modified_time" content="2026-03-23T16:09:27.671Z">
+<meta property="article:author" content="TakamiyaMioo     (Zhao Haoyu)">
+<meta property="article:tag" content="CV , stereo matching , GwcNet">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/avatar.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "双目相机立体匹配-stereo matching",
+  "url": "http://example.com/2026/03/23/%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/",
+  "image": "http://example.com/img/avatar.png",
+  "datePublished": "2026-03-23T08:08:35.000Z",
+  "dateModified": "2026-03-23T16:09:27.671Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "TakamiyaMioo     (Zhao Haoyu)",
+      "url": "http://example.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/my-favicon.png"><link rel="canonical" href="http://example.com/2026/03/23/%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '双目相机立体匹配-stereo matching',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div class="bg-animation" id="web_bg" style="background-image: url(/img/banner.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-mode"><i class="fa-fw fas fa-adjust"></i><span> 模式</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-layout"><i class="fa-fw fas fa-arrows-alt-h"></i><span> 布局</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">TakamiyaMioo's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">双目相机立体匹配-stereo matching</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-mode"><i class="fa-fw fas fa-adjust"></i><span> 模式</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-layout"><i class="fa-fw fas fa-arrows-alt-h"></i><span> 布局</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">双目相机立体匹配-stereo matching</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-23T08:08:35.000Z" title="发表于 2026-03-23 16:08:35">2026-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-23T16:09:27.671Z" title="更新于 2026-03-24 00:09:27">2026-03-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A7%91%E7%A0%94%E5%AD%A6%E4%B9%A0/">科研学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>最近在学习CV相关的双目相机立体匹配<strong>Stereo Matching</strong>，本文是关于GwcNet的一些学习和思考。开始之前，先需要理解几个概念：视差、双目相机匹配、代价体。</p>
+<h2 id="视差"><a href="#视差" class="headerlink" title="视差"></a>视差</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>有一个理想的双目相机系统，两个相机的成像平面是共面和行对齐的，左图中某个点，与对应右图中的匹配点在同一个水平线上。</p>
+<p>如果空间中有一个三维点 $P$，它在左图的像素坐标是 $(u_L, v)$，在右图的对应坐标是 $(u_R, v)$ （注意纵坐标 $v$ 是一样的），那么这个点的视差 $d$ 就是它们在水平方向上的坐标差：<br>$$<br>d &#x3D; u_L - u_R<br>$$<br>这就是视差。它是一个<strong>标量</strong>，单位是<strong>像素（Pixel）</strong>。</p>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p>视差可以用来求一个像素点的深度（Depth），就是像素点对应的物体实际离相机的距离。具体公式为：<br>$$<br>Z &#x3D; \frac{f \cdot B}{d}<br>$$<br>Z为深度，f为相机焦距，B为基线（左右两个相机光心之间的物理距离），d为视差</p>
+<p><img src="https://raw.githubusercontent.com/TakamiyaMioo/images/main/2026_3/%E8%A7%86%E5%B7%AE.png" alt="代价体"></p>
+<h3 id="学术"><a href="#学术" class="headerlink" title="学术"></a>学术</h3><p>当前有一些立体匹配网络，基于代价体构建的GwcNet、IGEV，基于循环迭代的RAFT-Stereo。这些网络本质都是求视差d，即为左图的一个像素点，在右图如何寻找最准确的对应点求出视差$$d$$。</p>
+<p><em>简而言之，视差是连接2D图像特征和3D几何物理世界的桥梁。</em></p>
+<h2 id="双目相机的匹配"><a href="#双目相机的匹配" class="headerlink" title="双目相机的匹配"></a>双目相机的匹配</h2><h3 id="核心任务"><a href="#核心任务" class="headerlink" title="核心任务"></a>核心任务</h3><p>在左右两张图像中，把显示中同一个物理点的像素点找出来。（<em>寻找同名点</em>）</p>
+<p>这里举一个实例</p>
+<blockquote>
+<p>使用双目相机拍摄一个苹果。苹果的果梗在左相机$$(u_L,v)$$，在右相机的$$(u_R,v)$$。使用人眼很容易根据经验找出两幅图像的相同像素点。但是计算机需要一种算法，当它拿到左图果梗的像素时，能去右图里<strong>精确地“匹配”到</strong>对应的那个像素。</p>
+<p>事先要对相机做<strong>极线校正</strong>，使双目向机成像水平，这样找一点在另一图像中像素点，只需要沿着水平方向滑动搜索。</p>
+</blockquote>
+<h2 id="代价体"><a href="#代价体" class="headerlink" title="代价体"></a>代价体</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>Cost Volume，一种为了求解视差定值的数据结构，他是三维张量。</p>
+<p>在刚才的苹果匹配例子中，实际采用的是<strong>穷举法打分</strong>：对于左图的一个像素点，在右图中把所有可能的视差偏移量（比如0~192像素）穷举一遍，每次都计算出左右两个<em>像素块</em>的相似度或者差异度（<em>代价</em>）。当这个代价最小，即两个像素块差异最小时，可以认为找到了匹配像素点。</p>
+<p>有一些传统方法：</p>
+<ul>
+<li>传统方法：计算两个像素快的<em>绝对误差和 SAD</em></li>
+<li>深度学习：提取左右图的高维特征矩阵，计算内积，相似度越高越好</li>
+</ul>
+<p><strong>把左图所有的像素 $(H \times W)$，针对所有可能的视差搜索范围 $(D)$，全部算出一个匹配得分后，把这些得分堆叠在一起，就形成了一个三维的张量（Tensor）—— 这就是代价体（Cost Volume）。</strong></p>
+<p>它的维度通常是：<strong>最大视差数 $(D) \times$ 图像高度 $(H) \times$ 图像宽度 $(W)$</strong>。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/TakamiyaMioo/images@main/2026_3/%E4%BB%A3%E4%BB%B7%E4%BD%93.png" alt="代价体"></p>
+<ul>
+<li><p>关于这个坐标D ($D$ &#x2F; Disparity)，被称为通道维度或深度维度，它代表了所有的<strong>候选视差值</strong>。</p>
+</li>
+<li><p>关于坐标$(x, y, d)$的含义，每一个坐标存放一个数值（打分），这个数值代表了：左图的坐标 $(x, y)$ 这个像素，如果去和右图的坐标 $(x-d, y)$ 这个像素匹配，它们的“差异度（Cost）”或“相似度（Correlation）”有多大。</p>
+</li>
+</ul>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>有了这个存满打分值的三维张量，即可以求视差。</p>
+<p>如果这个数值$f(x_0, y_0, d_0)$是相似度，那么这个数值的最大值$f_m(x_0, y_0, d_0)$，对应的$(x_0, y_0, d_0)$点，这个$d_0$即为像素$(x_0, y_0)$实际视差。</p>
+<p><strong>为什么要把它做成一个完整的三维张量？</strong> 如果只看单个像素，很容易受噪声干扰（比如一块纯白色的墙，右图哪个位置看起来都很像）。把所有像素的匹配得分整合到一个宏大的 3D 张量中后，现代深度学习模型（比如 3D CNN 或 3D 堆叠沙漏网络）就可以在这个大张量里进行<strong>空间维度的平滑和上下文信息聚合</strong>。它可以参考周围像素的信息，把原本不明显的极值变得更加突出和准确。</p>
+<hr>
+<h1 id="GwcNet"><a href="#GwcNet" class="headerlink" title="GwcNet"></a>GwcNet</h1><p>Group-wise Correlation Stereo Network (GwcNet)</p>
+<p>这篇论文属于双目立体匹配领域<em>Stereo Matching</em>，是2019CVPR的会议论文。它提出了一种构建<strong>代价体</strong>的高效方法（GwcNet），方便求解视差。</p>
+<h2 id="背景-构建代价体的两难"><a href="#背景-构建代价体的两难" class="headerlink" title="背景 - 构建代价体的两难"></a>背景 - 构建代价体的两难</h2><p>极端一：</p>
+<p>未完待更</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">TakamiyaMioo     (Zhao Haoyu)</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/03/23/%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/">http://example.com/2026/03/23/%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">TakamiyaMioo's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/CV-stereo-matching-GwcNet/">CV , stereo matching , GwcNet</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/03/21/%E7%94%A8%E7%8E%B0%E4%BB%A3-Ubuntu-%E7%BC%96%E8%AF%91%E4%B8%8A%E5%8F%A4-GCC-4-9-4-%E7%9A%84%E6%8E%92%E5%9D%91%E6%8C%87%E5%8D%97/" title="降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南</div></div><div class="info-2"><div class="info-item-1">最近在推进嵌入式 Linux 相关的实验任务时，需要在 WSL (Ubuntu) 环境下使用 crosstool-NG 1.24.0 编译一套目标架构为 ARM 的旧版交叉编译工具链 Gcc 4.9.4 Binutils 2.26.1 Linux 3.4.113 Glibc 2.12.1 在正式开始吐槽之前，先给刚接触底层的同学科普一个前提：为什么我们非要折腾“交叉编译”？我们最终的程序是要跑在 ARM 开发板上的，那里的 CPU 架构和我们电脑的 x86 完全不同，且开发板通常内存小、算力弱，根本带不动一个完整的编译环境。所以，我们必须在性能强大的 x86 宿主机（也就是你的电脑）上，利用一套特殊的编译器，直接生成 ARM 架构的可执行文件，然后再扔到板子上去跑。这就是交叉编译。 然而，在这个过程中，底层的环境配置往往比写代码本身还要折磨人。用 2026 年的现代 Ubuntu 系统去编译十几年前老古董代码的行动，引发了一连串的版本“代沟”和编译问题。  坑一：WSL2 的网络隔离与代理“薛定谔状态”一切灾难始于第一步：下载源码包疯狂 Timeout。 我开始在 Windows...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">TakamiyaMioo     (Zhao Haoyu)</div><div class="author-info-description">HUST EIC</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/TakamiyaMioo"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%86%E5%B7%AE"><span class="toc-number">1.</span> <span class="toc-text">视差</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">1.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8"><span class="toc-number">1.2.</span> <span class="toc-text">应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%A6%E6%9C%AF"><span class="toc-number">1.3.</span> <span class="toc-text">学术</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E7%9A%84%E5%8C%B9%E9%85%8D"><span class="toc-number">2.</span> <span class="toc-text">双目相机的匹配</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E4%BB%BB%E5%8A%A1"><span class="toc-number">2.1.</span> <span class="toc-text">核心任务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E4%BB%B7%E4%BD%93"><span class="toc-number">3.</span> <span class="toc-text">代价体</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-number">3.1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8"><span class="toc-number">3.2.</span> <span class="toc-text">作用</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GwcNet"><span class="toc-number">4.</span> <span class="toc-text">GwcNet</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF-%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93%E7%9A%84%E4%B8%A4%E9%9A%BE"><span class="toc-number">4.1.</span> <span class="toc-text">背景 - 构建代价体的两难</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/23/%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/" title="双目相机立体匹配-stereo matching">双目相机立体匹配-stereo matching</a><time datetime="2026-03-23T08:08:35.000Z" title="发表于 2026-03-23 16:08:35">2026-03-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/21/%E7%94%A8%E7%8E%B0%E4%BB%A3-Ubuntu-%E7%BC%96%E8%AF%91%E4%B8%8A%E5%8F%A4-GCC-4-9-4-%E7%9A%84%E6%8E%92%E5%9D%91%E6%8C%87%E5%8D%97/" title="降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南">降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南</a><time datetime="2026-03-21T12:06:12.000Z" title="发表于 2026-03-21 20:06:12">2026-03-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/18/%E7%A7%91%E7%A0%94%E5%88%A9%E5%99%A8%EF%BC%9A%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7-Zotero-%E8%BF%9B%E9%98%B6%E6%8A%98%E8%85%BE%E6%8C%87%E5%8D%97%E4%B8%8E-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/" title="科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流">科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流</a><time datetime="2026-03-18T12:30:00.000Z" title="发表于 2026-03-18 20:30:00">2026-03-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/17/%E8%AE%A9-AI-Agent-%E8%87%AA%E5%8A%A8%E5%8F%91%E5%8D%9A%E5%AE%A2%EF%BC%9F%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%9B%B2%E6%8A%98%E7%9A%84-Debug-%E5%AE%9E%E5%BD%95/" title="让 Agent 自动发博客 &amp; github一些常见网络问题">让 Agent 自动发博客 &amp; github一些常见网络问题</a><time datetime="2026-03-16T16:17:35.000Z" title="发表于 2026-03-17 00:17:35">2026-03-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/02/hello-world/" title="Hello World">Hello World</a><time datetime="2026-03-02T14:23:25.861Z" title="发表于 2026-03-02 22:23:25">2026-03-02</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text"><div class="footer-container">
+  <div class="footer-group footer-left">
+    <span>✨ Code for Life, Code for Fun.</span>
+  </div>
+  <div class="footer-group footer-center">
+    <div class="copyright">&copy; 2025 - 2026 <i class="fas fa-heart" style="color:#ff7e67"></i> TakamiyaMioo</div>
+    <div class="runtime">本站已运行 <span id="days_text">0</span> 天</div>
+  </div>
+  <div class="footer-group footer-right">
+    <span id="busuanzi_container_site_uv" title="总访客数">
+      <i class="fas fa-user"></i> <span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span class="separator">|</span>
+    <span id="busuanzi_container_site_pv" title="总访问量">
+      <i class="fas fa-eye"></i> <span id="busuanzi_value_site_pv"></span>
+    </span>
+  </div>
+</div>
+<script>
+  var start_date = new Date("2026-01-20");
+  var now_date = new Date();
+  var days = Math.floor((now_date - start_date) / (24 * 3600 * 1000));
+  var days_span = document.getElementById("days_text");
+  if(days_span) days_span.innerHTML = days;
+</script>
+</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><div class="js-pjax"></div><script src="/js/custom_nav.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.3"></script></div></div></body></html>

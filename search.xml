@@ -19,66 +19,51 @@
 ]]></content>
   </entry>
   <entry>
-    <title>让 AI Agent 自动发博客？记一次曲折的 Debug 实录</title>
-    <url>/2026/03/17/%E8%AE%A9-AI-Agent-%E8%87%AA%E5%8A%A8%E5%8F%91%E5%8D%9A%E5%AE%A2%EF%BC%9F%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%9B%B2%E6%8A%98%E7%9A%84-Debug-%E5%AE%9E%E5%BD%95/</url>
-    <content><![CDATA[<p>最近在本地终端折腾 OpenAI Codex。既然它能直接操作本地文件，我就在尝试：<strong>能不能直接用一句话命令它，帮我在本地生成一篇 Hexo 博客的 Markdown 文件，然后自动执行部署命令推送到我的 GitHub Pages 上？</strong></p>
-<p>预期中的剧本很简单：创建文件 -&gt; 补充 Front-matter -&gt; 执行 <code>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code> -&gt; 完美收工。</p>
-<p>但这终究只是预期。当这个自动化链路真正在 Windows 纯命令行环境下跑起来时，现实并不顺利。短短几分钟里，我精准踩中了从网络协议、进程交互到环境变量的各种底层大坑。</p>
-<p>以下是这次“翻车”与填坑的完整记录。如果你也在尝试把 AI Agent 接入本地工作流，这篇避坑指南应该能帮你省下大半天的 Debug 时间。</p>
-<h2 id="坑一：刚出门就撞墙，WebSocket-报错-10061"><a href="#坑一：刚出门就撞墙，WebSocket-报错-10061" class="headerlink" title="坑一：刚出门就撞墙，WebSocket 报错 10061"></a>坑一：刚出门就撞墙，WebSocket 报错 10061</h2><p>当指示 Agent 在本地执行脚手架命令 <code>hexo new post &quot;codex测试&quot;</code> 时，终端直接甩给我一行红字：<br><code>Falling back from WebSockets to HTTPS transport... (os error 10061)</code></p>
-<p><strong>排查与解决：</strong><br>这其实是个经典的网络代理问题。现在的终端 Agent 为了响应快，默认优先尝试建立 WebSocket 长连接。但在咱们的网络环境下，如果终端代理没配好，这个长连接请求就会被系统直接拒绝（10061 就是典型的 <code>WSAECONNREFUSED</code> 报错）。</p>
-<p>好在 Agent 比较聪明，握手失败后会自动降级到普通的 HTTPS 去拉取数据，不影响它继续干活。但为了避免每次都浪费时间重试，最根本的解决办法还是老老实实在终端里把环境变量挂上：</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 确保当前终端走本地的代理端口</span></span><br><span class="line"><span class="variable">$env:HTTPS_PROXY</span>=<span class="string">&quot;[http://127.0.0.1](http://127.0.0.1):YOUR_PORT&quot;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="坑二：静默执行遇上密码弹窗，进程直接卡死"><a href="#坑二：静默执行遇上密码弹窗，进程直接卡死" class="headerlink" title="坑二：静默执行遇上密码弹窗，进程直接卡死"></a>坑二：静默执行遇上密码弹窗，进程直接卡死</h2><p>Agent 成功写好了 Markdown 原稿，接着进入最后一步，准备调用 <code>hexo d</code> 把生成的静态页面推送到 GitHub。结果进程直接崩溃了：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Error: Spawn failed... (无法读取用户名/密码，/dev/tty 不可用)</span><br></pre></td></tr></table></figure>
-
-<p><strong>排查与解决：</strong></p>
-<p>这纯属是“无头环境”（Headless）引发的问题。</p>
-<p>我之前推送代码走的是 HTTPS 协议，平时手动敲 <code>hexo d</code> 时，Git 会弹出一个凭据窗口让我授权或者输入密码。但现在是 Agent 在后台子进程里敲命令，它是一个没有显示器也没有键盘的“幽灵”，根本接不住这个弹窗，找不到可用的 <code>/dev/tty</code>（终端输入设备），于是进程当场假死。</p>
-<p>加上 GitHub 早就禁用了密码推送，所以这里的唯一解法，就是<strong>彻底放弃 HTTPS，给本地配置 SSH 密钥免密登录。</strong></p>
-<h2 id="坑三：配好-SSH-却-Timeout，校园网-内网的常规操作"><a href="#坑三：配好-SSH-却-Timeout，校园网-内网的常规操作" class="headerlink" title="坑三：配好 SSH 却 Timeout，校园网&#x2F;内网的常规操作"></a>坑三：配好 SSH 却 Timeout，校园网&#x2F;内网的常规操作</h2><p>为了解决上一个问题，我老老实实生成了 Ed25519 密钥对，把公钥贴到了 GitHub 上。结果在终端一测连通性（<code>ssh -T git@github.com</code>），直接给我来个：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh: connect to host github.com port 22: Connection timed out</span><br></pre></td></tr></table></figure>
-
-<p><strong>排查与解决：</strong></p>
-<p>如果是平时在学校或者公司的网络环境，看到 <code>port 22</code> 和 <code>Timeout</code> 连在一起，基本就可以破案了：网关防火墙把 SSH 默认的出站 22 端口给封了。</p>
-<p>GitHub 官方留了个后门，允许我们通过 443（HTTPS端口）来走 SSH 流量。对于 Hexo 部署来说，去改本地的 <code>~/.ssh/config</code> 有时候还会被忽略，最简单暴力的做法是直接改 Hexo 根目录的 <code>_config.yml</code>，把地址换成绝对 SSH URI，强行让 Git 走 443：</p>
-<p>YAML</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  # 换掉原来的 HTTPS 地址，强行指定 ssh.github.com 和 443 端口</span><br><span class="line">  repo: ssh://git@ssh.github.com:443/TakamiyaMioo/TakamiyaMioo.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
-
-<h2 id="坑四：权限依然拒绝？Windows-与-Git-的“精神分裂”"><a href="#坑四：权限依然拒绝？Windows-与-Git-的“精神分裂”" class="headerlink" title="坑四：权限依然拒绝？Windows 与 Git 的“精神分裂”"></a>坑四：权限依然拒绝？Windows 与 Git 的“精神分裂”</h2><p>这是最搞心态的一个坑。</p>
-<p>我在 PowerShell 里手动执行 <code>ssh -T -p 443 git@ssh.github.com</code>，明明已经看到了成功的欢迎语（<code>Hi TakamiyaMioo! You&#39;ve successfully authenticated</code>）。</p>
-<p>满心欢喜地回头让终端去执行 <code>hexo d</code>，迎来的却是冷冰冰的：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git@ssh.github.com: Permission denied (publickey).</span><br></pre></td></tr></table></figure>
-
-<p><strong>排查与解决：</strong></p>
-<p>排查了半天才反应过来，Windows 环境下通常有两个互不干涉的 SSH 客户端！</p>
-<p>刚才测试成功的，是 Windows System32 目录自带的原生 OpenSSH（它正确读取了我的私钥）；而 <code>hexo d</code> 唤起的 Git，用的是 Git 安装目录里捆绑的那个精简版 SSH。这两个客户端完全隔离，Git 拿着一把“空钥匙”去开门，当然被拒绝。</p>
-<p>解决方法很简单，给 Git 加上一行全局配置，强行统一使用 Windows 系统的 SSH 客户端：</p>
-<p>Bash</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global core.sshCommand &quot;C:/Windows/System32/OpenSSH/ssh.exe&quot;</span><br></pre></td></tr></table></figure>
-
-<p>执行完这句后，再次部署，全程 0 弹窗、0 报错，文章终于被 AI 顺滑地推到了云端。</p>
+    <title>双目相机立体匹配-stereo matching</title>
+    <url>/2026/03/23/%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/</url>
+    <content><![CDATA[<p>最近在学习CV相关的双目相机立体匹配<strong>Stereo Matching</strong>，本文是关于GwcNet的一些学习和思考。开始之前，先需要理解几个概念：视差、双目相机匹配、代价体。</p>
+<h2 id="视差"><a href="#视差" class="headerlink" title="视差"></a>视差</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>有一个理想的双目相机系统，两个相机的成像平面是共面和行对齐的，左图中某个点，与对应右图中的匹配点在同一个水平线上。</p>
+<p>如果空间中有一个三维点 $P$，它在左图的像素坐标是 $(u_L, v)$，在右图的对应坐标是 $(u_R, v)$ （注意纵坐标 $v$ 是一样的），那么这个点的视差 $d$ 就是它们在水平方向上的坐标差：<br>$$<br>d &#x3D; u_L - u_R<br>$$<br>这就是视差。它是一个<strong>标量</strong>，单位是<strong>像素（Pixel）</strong>。</p>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p>视差可以用来求一个像素点的深度（Depth），就是像素点对应的物体实际离相机的距离。具体公式为：<br>$$<br>Z &#x3D; \frac{f \cdot B}{d}<br>$$<br>Z为深度，f为相机焦距，B为基线（左右两个相机光心之间的物理距离），d为视差</p>
+<p><img src="https://raw.githubusercontent.com/TakamiyaMioo/images/main/2026_3/%E8%A7%86%E5%B7%AE.png" alt="代价体"></p>
+<h3 id="学术"><a href="#学术" class="headerlink" title="学术"></a>学术</h3><p>当前有一些立体匹配网络，基于代价体构建的GwcNet、IGEV，基于循环迭代的RAFT-Stereo。这些网络本质都是求视差d，即为左图的一个像素点，在右图如何寻找最准确的对应点求出视差$$d$$。</p>
+<p><em>简而言之，视差是连接2D图像特征和3D几何物理世界的桥梁。</em></p>
+<h2 id="双目相机的匹配"><a href="#双目相机的匹配" class="headerlink" title="双目相机的匹配"></a>双目相机的匹配</h2><h3 id="核心任务"><a href="#核心任务" class="headerlink" title="核心任务"></a>核心任务</h3><p>在左右两张图像中，把显示中同一个物理点的像素点找出来。（<em>寻找同名点</em>）</p>
+<p>这里举一个实例</p>
+<blockquote>
+<p>使用双目相机拍摄一个苹果。苹果的果梗在左相机$$(u_L,v)$$，在右相机的$$(u_R,v)$$。使用人眼很容易根据经验找出两幅图像的相同像素点。但是计算机需要一种算法，当它拿到左图果梗的像素时，能去右图里<strong>精确地“匹配”到</strong>对应的那个像素。</p>
+<p>事先要对相机做<strong>极线校正</strong>，使双目向机成像水平，这样找一点在另一图像中像素点，只需要沿着水平方向滑动搜索。</p>
+</blockquote>
+<h2 id="代价体"><a href="#代价体" class="headerlink" title="代价体"></a>代价体</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>Cost Volume，一种为了求解视差定值的数据结构，他是三维张量。</p>
+<p>在刚才的苹果匹配例子中，实际采用的是<strong>穷举法打分</strong>：对于左图的一个像素点，在右图中把所有可能的视差偏移量（比如0~192像素）穷举一遍，每次都计算出左右两个<em>像素块</em>的相似度或者差异度（<em>代价</em>）。当这个代价最小，即两个像素块差异最小时，可以认为找到了匹配像素点。</p>
+<p>有一些传统方法：</p>
+<ul>
+<li>传统方法：计算两个像素快的<em>绝对误差和 SAD</em></li>
+<li>深度学习：提取左右图的高维特征矩阵，计算内积，相似度越高越好</li>
+</ul>
+<p><strong>把左图所有的像素 $(H \times W)$，针对所有可能的视差搜索范围 $(D)$，全部算出一个匹配得分后，把这些得分堆叠在一起，就形成了一个三维的张量（Tensor）—— 这就是代价体（Cost Volume）。</strong></p>
+<p>它的维度通常是：<strong>最大视差数 $(D) \times$ 图像高度 $(H) \times$ 图像宽度 $(W)$</strong>。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/TakamiyaMioo/images@main/2026_3/%E4%BB%A3%E4%BB%B7%E4%BD%93.png" alt="代价体"></p>
+<ul>
+<li><p>关于这个坐标D ($D$ &#x2F; Disparity)，被称为通道维度或深度维度，它代表了所有的<strong>候选视差值</strong>。</p>
+</li>
+<li><p>关于坐标$(x, y, d)$的含义，每一个坐标存放一个数值（打分），这个数值代表了：左图的坐标 $(x, y)$ 这个像素，如果去和右图的坐标 $(x-d, y)$ 这个像素匹配，它们的“差异度（Cost）”或“相似度（Correlation）”有多大。</p>
+</li>
+</ul>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>有了这个存满打分值的三维张量，即可以求视差。</p>
+<p>如果这个数值$f(x_0, y_0, d_0)$是相似度，那么这个数值的最大值$f_m(x_0, y_0, d_0)$，对应的$(x_0, y_0, d_0)$点，这个$d_0$即为像素$(x_0, y_0)$实际视差。</p>
+<p><strong>为什么要把它做成一个完整的三维张量？</strong> 如果只看单个像素，很容易受噪声干扰（比如一块纯白色的墙，右图哪个位置看起来都很像）。把所有像素的匹配得分整合到一个宏大的 3D 张量中后，现代深度学习模型（比如 3D CNN 或 3D 堆叠沙漏网络）就可以在这个大张量里进行<strong>空间维度的平滑和上下文信息聚合</strong>。它可以参考周围像素的信息，把原本不明显的极值变得更加突出和准确。</p>
 <hr>
-<h2 id="💡-总结与启发：别让你的-Agent-乱烧-Token"><a href="#💡-总结与启发：别让你的-Agent-乱烧-Token" class="headerlink" title="💡 总结与启发：别让你的 Agent 乱烧 Token"></a>💡 总结与启发：别让你的 Agent 乱烧 Token</h2><p>扫清了上面的基础设施障碍，AI Agent 才算真正接入了本地工作流。但经过这次折腾，我也发现了终端 AI 的一个极其费钱的陷阱：<strong>如果不加约束，它每次都会去扫全盘文件，疯狂消耗 Token。</strong></p>
-<p>想要高效、便宜地使唤这些智能体，得记住两点：</p>
-<ol>
-<li><strong>给项目加上 Git 灵魂</strong>：就算只是个纯文本的博客目录，也一定要 <code>git init</code>！现代的终端 Agent 极其依赖 Git，有了 Git 记录，它每次启动只需读取 <code>git status</code>，只把有改动的文件塞进上下文，能省下 90% 以上的无意义开销。</li>
-<li><strong>拒绝模糊指令，使用绝对路径</strong>：别跟 Agent 说“帮我改下昨天写的那篇测试文章”，直接下达精确指令：“分析 <code>source/_posts/codex测试.md</code>，在文末加一行署名”。精准投喂，效率最高。</li>
-</ol>
-<p>想要让 AI 顺畅接管工作，底层环境（特别是网络与 Git 权限）的稳定是第一步。基础打好了，上层玩起 AIGC 自动化才能真正起飞。</p>
+<h1 id="GwcNet"><a href="#GwcNet" class="headerlink" title="GwcNet"></a>GwcNet</h1><p>Group-wise Correlation Stereo Network (GwcNet)</p>
+<p>这篇论文属于双目立体匹配领域<em>Stereo Matching</em>，是2019CVPR的会议论文。它提出了一种构建<strong>代价体</strong>的高效方法（GwcNet），方便求解视差。</p>
+<h2 id="背景-构建代价体的两难"><a href="#背景-构建代价体的两难" class="headerlink" title="背景 - 构建代价体的两难"></a>背景 - 构建代价体的两难</h2><p>极端一：</p>
+<p>未完待更</p>
 ]]></content>
       <categories>
-        <category>技术折腾</category>
+        <category>科研学习</category>
       </categories>
       <tags>
-        <tag>AIGC</tag>
-        <tag>AI Agent</tag>
-        <tag>Hexo</tag>
-        <tag>Git</tag>
-        <tag>SSH</tag>
-        <tag>Windows</tag>
-        <tag>Codex</tag>
+        <tag>CV , stereo matching , GwcNet</tag>
       </tags>
   </entry>
   <entry>
@@ -156,7 +141,7 @@
   <entry>
     <title>科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流</title>
     <url>/2026/03/18/%E7%A7%91%E7%A0%94%E5%88%A9%E5%99%A8%EF%BC%9A%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7-Zotero-%E8%BF%9B%E9%98%B6%E6%8A%98%E8%85%BE%E6%8C%87%E5%8D%97%E4%B8%8E-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/</url>
-    <content><![CDATA[<p>市面上文献管理工具不少，EndNote 老牌但 UI 极其复古且收费，Mendeley 经常同步抽风。折腾了一圈，最终让我安心把所有身家性命（几十篇文献和笔记）托付出去的，只有 <strong>Zotero</strong>。</p>
+    <content><![CDATA[<p>市面上文献管理工具不少，EndNote 老牌但 UI 极其复古且收费，Mendeley 经常同步抽风。折腾了一圈，最终让我把几十篇文献和笔记托付出去的，只有 <strong>Zotero</strong>。</p>
 <p>特别是在 Zotero 7 更新后，底层的重构让它的顺滑度有了质的飞跃。今天不讲废话，直接聊聊怎么把这个开源工具打造成武装到牙齿的科研外脑。</p>
 <h2 id="一、-为什么是-Zotero？"><a href="#一、-为什么是-Zotero？" class="headerlink" title="一、 为什么是 Zotero？"></a>一、 为什么是 Zotero？</h2><p>Zotero 最戳中技术极客的点在于：<strong>完全开源、数据掌握在自己手里、生态无敌。</strong></p>
 <p>它的基础工作流极其优雅：</p>
@@ -187,10 +172,74 @@
         <category>折腾笔记</category>
       </categories>
       <tags>
-        <tag>AIGC</tag>
         <tag>科研工具</tag>
         <tag>Zotero</tag>
+        <tag>AIGC</tag>
         <tag>效率</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>让 Agent 自动发博客 &amp; github一些常见网络问题</title>
+    <url>/2026/03/17/%E8%AE%A9-AI-Agent-%E8%87%AA%E5%8A%A8%E5%8F%91%E5%8D%9A%E5%AE%A2%EF%BC%9F%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%9B%B2%E6%8A%98%E7%9A%84-Debug-%E5%AE%9E%E5%BD%95/</url>
+    <content><![CDATA[<p>我在平时开发、学习时非常讨厌一些网络问题，这些网络问题大多是GFW导致的。其实在这之外，Github的联网也有一些问题。</p>
+<p>最近在本地终端折腾 OpenAI Codex。既然它能直接操作本地文件，我就在尝试：<strong>能直接用一句话命令它，帮我在本地生成一篇 Hexo 博客的 Markdown 文件，然后自动执行部署命令推送到我的 GitHub Pages 上？</strong></p>
+<p>预期中的剧本很简单：创建文件 -&gt; 补充 Front-matter -&gt; 执行 <code>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code> -&gt; 完美收工。</p>
+<p>但这终究只是预期。当这个自动化链路真正在 Windows 纯命令行环境下跑起来时，现实并不顺利。短短几分钟里，我精准踩中了从网络协议、进程交互到环境变量的各种底层大坑。</p>
+<p>以下是这次翻车与填坑的完整记录。如果你也在尝试把 AI Agent 接入本地工作流，这篇避坑指南应该能帮你省下大半天的 Debug 时间。</p>
+<h2 id="1-刚出门就撞墙，WebSocket-报错-10061"><a href="#1-刚出门就撞墙，WebSocket-报错-10061" class="headerlink" title="1. 刚出门就撞墙，WebSocket 报错 10061"></a>1. 刚出门就撞墙，WebSocket 报错 10061</h2><p>当指示 Agent 在本地执行脚手架命令 <code>hexo new post &quot;codex测试&quot;</code> 时，终端直接甩给我一行红字：<br><code>Falling back from WebSockets to HTTPS transport... (os error 10061)</code></p>
+<p><strong>排查与解决：</strong><br>这其实是个经典的网络代理问题。现在的终端 Agent 为了响应快，默认优先尝试建立 WebSocket 长连接。但在咱们的网络环境下，如果终端代理没配好，这个长连接请求就会被系统直接拒绝（10061 就是典型的 <code>WSAECONNREFUSED</code> 报错）。</p>
+<p>好在 Agent 比较聪明，握手失败后会自动降级到普通的 HTTPS 去拉取数据，不影响它继续干活。但为了避免每次都浪费时间重试，最根本的解决办法还是老老实实在终端里把环境变量挂上：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 确保当前终端走本地的代理端口</span></span><br><span class="line"><span class="variable">$env:HTTPS_PROXY</span>=<span class="string">&quot;[http://127.0.0.1](http://127.0.0.1):YOUR_PORT&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-静默执行遇上密码弹窗，进程直接卡死"><a href="#2-静默执行遇上密码弹窗，进程直接卡死" class="headerlink" title="2. 静默执行遇上密码弹窗，进程直接卡死"></a>2. 静默执行遇上密码弹窗，进程直接卡死</h2><p>Agent 成功写好了 Markdown 原稿，接着进入最后一步，准备调用 <code>hexo d</code> 把生成的静态页面推送到 GitHub。结果进程直接崩溃了：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Error: Spawn failed... (无法读取用户名/密码，/dev/tty 不可用)</span><br></pre></td></tr></table></figure>
+
+<p><strong>排查与解决：</strong></p>
+<p>这纯属是“无头环境”（Headless）引发的问题。</p>
+<p>我之前推送代码走的是 HTTPS 协议，平时手动敲 <code>hexo d</code> 时，Git 会弹出一个凭据窗口让我授权或者输入密码。但现在是 Agent 在后台子进程里敲命令，它是一个没有显示器也没有键盘的“幽灵”，根本接不住这个弹窗，找不到可用的 <code>/dev/tty</code>（终端输入设备），于是进程当场假死。</p>
+<p>加上 GitHub 早就禁用了密码推送，所以这里的唯一解法，就是<strong>彻底放弃 HTTPS，给本地配置 SSH 密钥免密登录。</strong></p>
+<h2 id="3-配好-SSH-却-Timeout，校园网-内网的常规操作"><a href="#3-配好-SSH-却-Timeout，校园网-内网的常规操作" class="headerlink" title="3. 配好 SSH 却 Timeout，校园网&#x2F;内网的常规操作"></a>3. 配好 SSH 却 Timeout，校园网&#x2F;内网的常规操作</h2><p>为了解决上一个问题，我生成了 Ed25519 密钥对，把公钥贴到了 GitHub 上。结果在终端一测连通性（<code>ssh -T git@github.com</code>），直接给我来个：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh: connect to host github.com port 22: Connection timed out</span><br></pre></td></tr></table></figure>
+
+<p><strong>排查与解决：</strong></p>
+<p>如果是平时在学校或者公司的网络环境，看到 <code>port 22</code> 和 <code>Timeout</code> 连在一起，基本就可以破案了：网关防火墙把 SSH 默认的出站 22 端口给封了。</p>
+<p>GitHub 官方留了个后门，允许我们通过 443（HTTPS端口）来走 SSH 流量。对于 Hexo 部署来说，去改本地的 <code>~/.ssh/config</code> 有时候还会被忽略，最简单暴力的做法是直接改 Hexo 根目录的 <code>_config.yml</code>，把地址换成绝对 SSH URI，强行让 Git 走 443：</p>
+<p>YAML</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  # 换掉原来的 HTTPS 地址，强行指定 ssh.github.com 和 443 端口</span><br><span class="line">  repo: ssh://git@ssh.github.com:443/TakamiyaMioo/TakamiyaMioo.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-权限依然拒绝？Windows-与-Git-的“分裂”"><a href="#4-权限依然拒绝？Windows-与-Git-的“分裂”" class="headerlink" title="4. 权限依然拒绝？Windows 与 Git 的“分裂”"></a>4. 权限依然拒绝？Windows 与 Git 的“分裂”</h2><p>这是最搞心态的一个坑。</p>
+<p>我在 PowerShell 里手动执行 <code>ssh -T -p 443 git@ssh.github.com</code>，明明已经看到了成功的欢迎语（<code>Hi TakamiyaMioo! You&#39;ve successfully authenticated</code>）。</p>
+<p>回头让终端去执行 <code>hexo d</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git@ssh.github.com: Permission denied (publickey).</span><br></pre></td></tr></table></figure>
+
+<p><strong>排查与解决：</strong></p>
+<p>排查了半天才反应过来，Windows 环境下通常有两个互不干涉的 SSH 客户端！</p>
+<p>刚才测试成功的，是 Windows System32 目录自带的原生 OpenSSH（它正确读取了我的私钥）；而 <code>hexo d</code> 唤起的 Git，用的是 Git 安装目录里捆绑的那个精简版 SSH。这两个客户端完全隔离，Git 拿着一把“空钥匙”去开门，当然被拒绝。</p>
+<p>解决方法很简单，给 Git 加上一行全局配置，强行统一使用 Windows 系统的 SSH 客户端：</p>
+<p>Bash</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global core.sshCommand &quot;C:/Windows/System32/OpenSSH/ssh.exe&quot;</span><br></pre></td></tr></table></figure>
+
+<p>执行完这句后，再次部署，全程 0 弹窗、0 报错，文章终于被 AI 顺滑地推到了云端。</p>
+<hr>
+<h2 id="总结与启发：别让你的-Agent-乱烧-Token"><a href="#总结与启发：别让你的-Agent-乱烧-Token" class="headerlink" title="总结与启发：别让你的 Agent 乱烧 Token"></a>总结与启发：别让你的 Agent 乱烧 Token</h2><p>扫清了上面的基础设施障碍，AI Agent 才算真正接入了本地工作流。但经过这次折腾，我也发现了终端 AI 的一个极其费钱的陷阱：<strong>如果不加约束，它每次都会去扫全盘文件，疯狂消耗 Token。</strong></p>
+<p>想要高效、便宜地使唤这些智能体，得记住两点：</p>
+<ol>
+<li><strong>给项目加上 Git 灵魂</strong>：就算只是个纯文本的博客目录，也一定要 <code>git init</code>！现代的终端 Agent 极其依赖 Git，有了 Git 记录，它每次启动只需读取 <code>git status</code>，只把有改动的文件塞进上下文，能省下 90% 以上的无意义开销。</li>
+<li><strong>拒绝模糊指令，使用绝对路径</strong>：别跟 Agent 说“帮我改下昨天写的那篇测试文章”，直接下达精确指令：“分析 <code>source/_posts/codex测试.md</code>，在文末加一行署名”。精准投喂，效率最高。</li>
+</ol>
+<p>想要让 AI 顺畅接管工作，底层环境（特别是网络与 Git 权限）的稳定是第一步。基础打好了，上层玩起 AIGC 自动化才能真正起飞。</p>
+]]></content>
+      <categories>
+        <category>技术折腾</category>
+      </categories>
+      <tags>
+        <tag>AIGC</tag>
+        <tag>AI Agent</tag>
+        <tag>Hexo</tag>
+        <tag>Git</tag>
+        <tag>SSH</tag>
+        <tag>Windows</tag>
+        <tag>Codex</tag>
       </tags>
   </entry>
 </search>

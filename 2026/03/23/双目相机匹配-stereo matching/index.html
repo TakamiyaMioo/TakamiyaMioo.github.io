@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://haoyu123.top/img/avatar.png">
 <meta property="article:published_time" content="2026-03-23T08:08:35.000Z">
-<meta property="article:modified_time" content="2026-03-27T03:25:48.610Z">
+<meta property="article:modified_time" content="2026-03-27T16:47:33.024Z">
 <meta property="article:author" content="TakamiyaMioo     (Zhao Haoyu)">
 <meta property="article:tag" content="CV">
 <meta property="article:tag" content="GwcNet">
@@ -20,7 +20,7 @@
   "url": "https://haoyu123.top/2026/03/23/%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/",
   "image": "https://haoyu123.top/img/avatar.png",
   "datePublished": "2026-03-23T08:08:35.000Z",
-  "dateModified": "2026-03-27T03:25:48.610Z",
+  "dateModified": "2026-03-27T16:47:33.024Z",
   "author": [
     {
       "@type": "Person",
@@ -191,7 +191,7 @@
     btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
     btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
   }
-})()</script><div class="bg-animation" id="web_bg" style="background-image: url(/img/banner.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-mode"><i class="fa-fw fas fa-adjust"></i><span> 模式</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-layout"><i class="fa-fw fas fa-arrows-alt-h"></i><span> 布局</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">TakamiyaMioo's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">双目相机立体匹配-stereo matching</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-mode"><i class="fa-fw fas fa-adjust"></i><span> 模式</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-layout"><i class="fa-fw fas fa-arrows-alt-h"></i><span> 布局</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">双目相机立体匹配-stereo matching</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-23T08:08:35.000Z" title="发表于 2026-03-23 16:08:35">2026-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-27T03:25:48.610Z" title="更新于 2026-03-27 11:25:48">2026-03-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A7%91%E7%A0%94%E5%AD%A6%E4%B9%A0/">科研学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>[TOC]</p>
+})()</script><div class="bg-animation" id="web_bg" style="background-image: url(/img/banner.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-mode"><i class="fa-fw fas fa-adjust"></i><span> 模式</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-layout"><i class="fa-fw fas fa-arrows-alt-h"></i><span> 布局</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">TakamiyaMioo's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">双目相机立体匹配-stereo matching</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-mode"><i class="fa-fw fas fa-adjust"></i><span> 模式</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-layout"><i class="fa-fw fas fa-arrows-alt-h"></i><span> 布局</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">双目相机立体匹配-stereo matching</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-23T08:08:35.000Z" title="发表于 2026-03-23 16:08:35">2026-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-27T16:47:33.024Z" title="更新于 2026-03-28 00:47:33">2026-03-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A7%91%E7%A0%94%E5%AD%A6%E4%B9%A0/">科研学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>[TOC]</p>
 <h1 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h1><p>最近在学习CV相关的双目相机立体匹配<strong>Stereo Matching</strong>，本文是关于GwcNet的一些学习和思考。开始之前，先需要理解几个概念：视差、双目相机匹配、代价体。</p>
 <h2 id="RGB像素"><a href="#RGB像素" class="headerlink" title="RGB像素"></a>RGB像素</h2><p>图像由像素组成，一张 1920x1080 分辨率的屏幕就代表有1920x1080个像素。RGB代表光的三原色。R=Red，G=Green，B=Blue。这三种颜色通过不同的亮度组合可以形成各种颜色。计算机给每种颜色的亮度划分了 <strong>0 ~ 255</strong> 共 256 个等级。</p>
 <p>可以计算出，三种原色，256种亮度，可以组合出$256^3≈1677万$中颜色。</p>
@@ -234,7 +234,65 @@ Z = \frac{f \cdot B}{d}</script><p>Z为深度，f为相机焦距，B为基线（
 <h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>有了这个存满打分值的三维张量，即可以求视差。</p>
 <p>如果这个数值$f(x_0, y_0, d_0)$是相似度，那么这个数值的最大值$f_m(x_0, y_0, d_0)$，对应的$(x_0, y_0, d_0)$点，这个$d_0$即为像素$(x_0, y_0)$实际视差。</p>
 <p><strong>为什么要把它做成一个完整的三维张量？</strong> 如果只看单个像素，很容易受噪声干扰（比如一块纯白色的墙，右图哪个位置看起来都很像）。把所有像素的匹配得分整合到一个宏大的 3D 张量中后，现代深度学习模型（比如 3D CNN 或 3D 堆叠沙漏网络）就可以在这个大张量里进行<strong>空间维度的平滑和上下文信息聚合</strong>。它可以参考周围像素的信息，把原本不明显的极值变得更加突出和准确。</p>
-<h2 id="求视差的基本流程"><a href="#求视差的基本流程" class="headerlink" title="求视差的基本流程"></a>求视差的基本流程</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs mermaid">graph TD<br>    %% 定义样式<br>    classDef inputNode fill:#f9f9f9,stroke:#333,stroke-width:2px;<br>    classDef processNode fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;<br>    classDef tensorNode fill:#fff3e0,stroke:#ff9800,stroke-width:2px,stroke-dasharray: 5 5;<br>    classDef outputNode fill:#e8f5e9,stroke:#4caf50,stroke-width:2px;<br>    classDef highlightNode fill:#ffebee,stroke:#f44336,stroke-width:3px;<br><br>    subgraph step1 [&quot;Step 1: 输入 (Input)&quot;]<br>        IL[/&quot;左图 (Left Image)\nTensor: (3, H, W)&quot;/]<br>        IR[/&quot;右图 (Right Image)\nTensor: (3, H, W)&quot;/]<br>    end<br><br>    subgraph step2 [&quot;Step 2: 特征提取 (Feature Extraction)&quot;]<br>        CNN(&quot;共享权重 2D CNN\n(如 ResNet 提特征)&quot;)<br>        FL[/&quot;左图特征 (Left Features)\nTensor: (C, H, W)&quot;/]<br>        FR[/&quot;右图特征 (Right Features)\nTensor: (C, H, W)&quot;/]<br><br>        IL --&gt; CNN<br>        IR --&gt; CNN<br>        CNN --&gt; FL<br>        CNN --&gt; FR<br>    end<br><br>    subgraph step3 [&quot;Step 3: 代价体构建 (Cost Volume Construction)&quot;]<br>        GWC&#123;&quot;匹配度计算\n(核心:分组相关)&quot;&#125;<br>        CV1[/&quot;初始代价体 (Initial Cost Volume)\nTensor: (Groups, D, H, W)&quot;/]<br><br>        FL --&gt;|滑窗搜索| GWC<br>        FR --&gt;|同源比对| GWC<br>        GWC --&gt;|&quot;打包匹配得分&quot;| CV1<br>    end<br><br>    subgraph step4 [&quot;Step 4: 代价聚合 (Cost Aggregation)&quot;]<br>        AGG(&quot;3D 卷积神经网络\n(如 3D Stacked Hourglass)&quot;)<br>        CV2[/&quot;精炼代价体 (Refined Cost Volume)\nTensor: (1, D, H, W)&quot;/]<br><br>        CV1 --&gt;|&quot;上下文过滤去噪&quot;| AGG<br>        AGG --&gt;|&quot;输出所有视差概率分布&quot;| CV2<br>    end<br><br>    subgraph step5 [&quot;Step 5: 视差回归 (Disparity Regression)&quot;]<br>        SARG(&quot;Soft-argmin 操作\n(概率加权求和)&quot;)<br>        OUT[/&quot;终极输出：视差图 (Disparity Map)\nTensor: (1, H, W)&quot;/]<br><br>        CV2 --&gt;|&quot;将概率转为连续数值&quot;| SARG<br>        SARG --&gt; OUT<br>    end<br><br>    %% ==========================================<br>    %% 统一分配样式 (兼容 Typora 10.9+ 的最安全写法)<br>    %% ==========================================<br>    class IL,IR inputNode;<br>    class CNN,AGG,SARG processNode;<br>    class FL,FR,CV1,CV2 tensorNode;<br>    class OUT outputNode;<br>    class GWC highlightNode;<br></code></pre></td></tr></table></figure>
+<h2 id="求视差的基本流程"><a href="#求视差的基本流程" class="headerlink" title="求视差的基本流程"></a>求视差的基本流程</h2><div class="mermaid-wrap"><pre class="mermaid-src" data-config="{}" hidden>
+    graph TD
+    %% 定义样式
+    classDef inputNode fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef processNode fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;
+    classDef tensorNode fill:#fff3e0,stroke:#ff9800,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef outputNode fill:#e8f5e9,stroke:#4caf50,stroke-width:2px;
+    classDef highlightNode fill:#ffebee,stroke:#f44336,stroke-width:3px;
+
+    subgraph step1 [&quot;Step 1: 输入 (Input)&quot;]
+        IL[&#x2F;&quot;左图 (Left Image)\nTensor: (3, H, W)&quot;&#x2F;]
+        IR[&#x2F;&quot;右图 (Right Image)\nTensor: (3, H, W)&quot;&#x2F;]
+    end
+
+    subgraph step2 [&quot;Step 2: 特征提取 (Feature Extraction)&quot;]
+        CNN(&quot;共享权重 2D CNN\n(如 ResNet 提特征)&quot;)
+        FL[&#x2F;&quot;左图特征 (Left Features)\nTensor: (C, H, W)&quot;&#x2F;]
+        FR[&#x2F;&quot;右图特征 (Right Features)\nTensor: (C, H, W)&quot;&#x2F;]
+
+        IL --&gt; CNN
+        IR --&gt; CNN
+        CNN --&gt; FL
+        CNN --&gt; FR
+    end
+
+    subgraph step3 [&quot;Step 3: 代价体构建 (Cost Volume Construction)&quot;]
+        GWC{&quot;匹配度计算\n(核心:分组相关)&quot;}
+        CV1[&#x2F;&quot;初始代价体 (Initial Cost Volume)\nTensor: (Groups, D, H, W)&quot;&#x2F;]
+
+        FL --&gt;|滑窗搜索| GWC
+        FR --&gt;|同源比对| GWC
+        GWC --&gt;|&quot;打包匹配得分&quot;| CV1
+    end
+
+    subgraph step4 [&quot;Step 4: 代价聚合 (Cost Aggregation)&quot;]
+        AGG(&quot;3D 卷积神经网络\n(如 3D Stacked Hourglass)&quot;)
+        CV2[&#x2F;&quot;精炼代价体 (Refined Cost Volume)\nTensor: (1, D, H, W)&quot;&#x2F;]
+
+        CV1 --&gt;|&quot;上下文过滤去噪&quot;| AGG
+        AGG --&gt;|&quot;输出所有视差概率分布&quot;| CV2
+    end
+
+    subgraph step5 [&quot;Step 5: 视差回归 (Disparity Regression)&quot;]
+        SARG(&quot;Soft-argmin 操作\n(概率加权求和)&quot;)
+        OUT[&#x2F;&quot;终极输出：视差图 (Disparity Map)\nTensor: (1, H, W)&quot;&#x2F;]
+
+        CV2 --&gt;|&quot;将概率转为连续数值&quot;| SARG
+        SARG --&gt; OUT
+    end
+
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+    %% 统一分配样式 (兼容 Typora 10.9+ 的最安全写法)
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+    class IL,IR inputNode;
+    class CNN,AGG,SARG processNode;
+    class FL,FR,CV1,CV2 tensorNode;
+    class OUT outputNode;
+    class GWC highlightNode;
+  </pre></div>
 <h3 id="关于这个流程"><a href="#关于这个流程" class="headerlink" title="关于这个流程"></a>关于这个流程</h3><p>这个流程本质上是计算机在做信号搜索与解码。</p>
 <h4 id="Step1-RGB像素输入"><a href="#Step1-RGB像素输入" class="headerlink" title="Step1 RGB像素输入"></a>Step1 RGB像素输入</h4><p>系统接收到左右图，为许多RGB像素点。但不能直接使用RGB原始像素去匹配，因为左右图相同颜色的点可能不止一对，引发歧义。</p>
 <h4 id="Step2-特征提取"><a href="#Step2-特征提取" class="headerlink" title="Step2 特征提取"></a>Step2 特征提取</h4><p>为解决歧义，使用2D CNN<em>卷积神经网络</em>，将原本单薄的 RGB 像素被编码成了一个高维的<strong>特征向量</strong>（比如64维度），,然后Pooling进行降采样，这个特征向量包含了一个像素点高级征信息（如是否处于边缘、材质），是他的“指纹”。</p>

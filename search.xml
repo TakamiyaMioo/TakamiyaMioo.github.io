@@ -1,123 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流</title>
-    <url>/2026/03/18/%E7%A7%91%E7%A0%94%E5%88%A9%E5%99%A8%EF%BC%9A%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7-Zotero-%E8%BF%9B%E9%98%B6%E6%8A%98%E8%85%BE%E6%8C%87%E5%8D%97%E4%B8%8E-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/</url>
-    <content><![CDATA[<p>市面上文献管理工具不少，EndNote 老牌但 UI 极其复古且收费，Mendeley 经常同步抽风。折腾了一圈，最终让我把几十篇文献和笔记托付出去的，只有 <strong>Zotero</strong>。</p>
-<p>特别是在 Zotero 7 更新后，底层的重构让它的顺滑度有了质的飞跃。今天不讲废话，直接聊聊怎么把这个开源工具打造成武装到牙齿的科研外脑。</p>
-<h2 id="一、-为什么是-Zotero？"><a href="#一、-为什么是-Zotero？" class="headerlink" title="一、 为什么是 Zotero？"></a>一、 为什么是 Zotero？</h2><p>Zotero 最戳中技术极客的点在于：<strong>完全开源、数据掌握在自己手里、生态无敌。</strong></p>
-<p>它的基础工作流极其优雅：</p>
-<ol>
-<li><strong>一键抓取</strong>：装上浏览器插件 <code>Zotero Connector</code>。逛 IEEE 或 arXiv 看到好文章，点一下浏览器右上角，PDF 原文、作者、年份、期刊 Metadata 直接进库。</li>
-<li><strong>多端同步</strong>：别用它自带的那点可怜的免费空间。直接在设置里通过 WebDAV 挂载坚果云或者你自己的服务器，实现文献库的无缝同步。</li>
-<li><strong>沉浸阅读</strong>：Zotero 7 内置的阅读器已经完全够用了，高亮、截图、划线，还能自动把标注提取成 Markdown 笔记。</li>
-</ol>
-<blockquote>
-<p><strong>吐槽一下</strong>：很多新手连 Metadata（元数据）都不抓，直接把 PDF 拖进软件里，文件名全是一串乱码。拜托，文献管理的本质是构建数据库，没有干净的元数据，后期检索和引用就是一场灾难。</p>
-</blockquote>
-<h2 id="二、-核心插件：把生产力拉满"><a href="#二、-核心插件：把生产力拉满" class="headerlink" title="二、 核心插件：把生产力拉满"></a>二、 核心插件：把生产力拉满</h2><p>Zotero 就是一个毛坯房，真正的精装修全靠社区那群用爱发电的开发者。</p>
-<p><em>【图片位置 2：放一张 Zotero 附加组件（Add-ons）管理界面的截图，展示你安装的几个核心插件列表。】</em></p>
-<h3 id="1-翻译与阅读辅助：Zotero-PDF-Translate"><a href="#1-翻译与阅读辅助：Zotero-PDF-Translate" class="headerlink" title="1. 翻译与阅读辅助：Zotero PDF Translate"></a>1. 翻译与阅读辅助：Zotero PDF Translate</h3><p>啃外文文献，尤其是那种通篇长难句的硬核论文，翻译插件是刚需。它可以实现 PDF 划词翻译，并且在文献列表里直接把标题和摘要翻译成中文。支持 DeepL 和 Google 引擎，翻译质量非常能打。</p>
-<h3 id="2-个性化与进度管理：Zotero-Style"><a href="#2-个性化与进度管理：Zotero-Style" class="headerlink" title="2. 个性化与进度管理：Zotero Style"></a>2. 个性化与进度管理：Zotero Style</h3><p>默认的列表太素了。装上它，你可以给不同的标签设置显眼的颜色。最戳我痛点的是它的<strong>阅读进度条</strong>功能。哪篇看了一半，哪篇完全没动，列表里一目了然，专治各种“屯论文不看”的拖延症。</p>
-<h3 id="3-学术写作的终极浪漫：Better-BibTeX-BBT"><a href="#3-学术写作的终极浪漫：Better-BibTeX-BBT" class="headerlink" title="3. 学术写作的终极浪漫：Better BibTeX (BBT)"></a>3. 学术写作的终极浪漫：Better BibTeX (BBT)</h3><p>这玩意儿是我强推 Zotero 的核心原因。平时写 Report 或者跑论文，如果不用 LaTeX + VS Code，那排版简直是反人类。<br>BBT 可以自动为你的每一篇文献生成独一无二的 Citation Key（引用键），并且能<strong>实时静默同步</strong> <code>.bib</code> 文件到你的本地项目里。你在 Zotero 里刚抓了一篇新论文，切到 VS Code 里马上就能 <code>\cite{}</code> 出来，丝滑得让人感动。</p>
-<h2 id="三、-重头戏：接入大语言模型-AIdea-插件配置"><a href="#三、-重头戏：接入大语言模型-AIdea-插件配置" class="headerlink" title="三、 重头戏：接入大语言模型 (AIdea 插件配置)"></a>三、 重头戏：接入大语言模型 (AIdea 插件配置)</h2><p>AIGC 时代，看论文不带个 AI 助手，就像蒙着眼睛走路。我试过很多所谓的“AI 读论文”插件，很多都要自己配 API Key，稍微问多点，几十万 Token 跑没，钱包就在滴血。</p>
-<p>目前我最推荐、也是我主力在用的是 <strong>AIdea</strong>。</p>
-<p><em>【图片位置 3：放一张你正在阅读某篇论文（例如之前看的那篇 Group-wise Correlation 相关的视觉论文），右侧开着 AIdea 侧边栏，正在让大模型总结文章核心贡献的截图。】</em></p>
-<h3 id="1-为什么选-AIdea？（白嫖的快乐）"><a href="#1-为什么选-AIdea？（白嫖的快乐）" class="headerlink" title="1. 为什么选 AIdea？（白嫖的快乐）"></a>1. 为什么选 AIdea？（白嫖的快乐）</h3><p>它最大的亮点是支持 <strong>OAuth 授权登录</strong>，直接绕开了繁琐的 API 密钥配置。<br>如果你有通过了学生认证的 GitHub 账号，强烈建议直接在插件里走 GitHub Copilot 授权。这就相当于你可以接近无限量、免费地在侧边栏调用 GPT-4 级别的模型。一边看复杂的网络架构图，一边让 AI 帮你拆解算法逻辑，效率翻倍。</p>
-<h3 id="2-避坑指南：模型别乱选"><a href="#2-避坑指南：模型别乱选" class="headerlink" title="2. 避坑指南：模型别乱选"></a>2. 避坑指南：模型别乱选</h3><p>这里分享一个刚踩过的坑。很多同学在插件里配好了环境，一发问就报错：<code>System message must be at the beginning</code>。</p>
-<p>这通常是因为<strong>选错了模型接口</strong>。比如你想让 AI 总结全文，却在底下的下拉菜单里手滑选了 <code>vision-model</code>（专门用来识别图像的视觉模型），或者选了代码补全的 <code>coder-model</code>。接口数据格式对不上，服务器直接无情拒绝。</p>
-<p><strong>正确的姿势</strong>：<br>日常做全文总结、解释数学公式、提炼创新点，老老实实在模型列表里选择纯文本的巨头——比如 <code>claude-opus</code> 系列，或者你本地配好 CLI 的 <code>gemini-pro</code>，再或者是 Copilot 里的常规模型。把专业的活儿交给对的模型。</p>
-<h2 id="四、-总结"><a href="#四、-总结" class="headerlink" title="四、 总结"></a>四、 总结</h2><p>工具永远只是手段，真正的科研还是得靠自己掉头发。但一套配置调优的 Zotero + BBT 自动化引用 + AIdea 侧边栏，至少能让你在跟各种前沿论文死磕时，手里的兵器稍微锋利一点。</p>
-<p>别折腾了，赶紧去看论文吧。</p>
-]]></content>
-      <categories>
-        <category>折腾笔记</category>
-      </categories>
-      <tags>
-        <tag>科研工具</tag>
-        <tag>Zotero</tag>
-        <tag>AIGC</tag>
-        <tag>效率</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Hello World</title>
     <url>/2026/03/02/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><code class="hljs bash">$ hexo new <span class="hljs-string">&quot;My New Post&quot;</span><br></code></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><code class="hljs bash">$ hexo server<br></code></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><code class="hljs bash">$ hexo generate<br></code></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><code class="hljs bash">$ hexo deploy<br></code></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
-  </entry>
-  <entry>
-    <title>降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南</title>
-    <url>/2026/03/21/%E7%94%A8%E7%8E%B0%E4%BB%A3-Ubuntu-%E7%BC%96%E8%AF%91%E4%B8%8A%E5%8F%A4-GCC-4-9-4-%E7%9A%84%E6%8E%92%E5%9D%91%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<p>最近在推进嵌入式 Linux 相关的实验任务时，需要在 WSL (Ubuntu) 环境下使用 <code>crosstool-NG 1.24.0</code> 编译一套目标架构为 ARM 的旧版交叉编译工具链</p>
-<p>Gcc 4.9.4</p>
-<p>Binutils 2.26.1</p>
-<p>Linux 3.4.113</p>
-<p>Glibc 2.12.1</p>
-<p>在正式开始吐槽之前，先给刚接触底层的同学科普一个前提：<strong>为什么我们非要折腾“交叉编译”？</strong><br>我们最终的程序是要跑在 ARM 开发板上的，那里的 CPU 架构和我们电脑的 x86 完全不同，且开发板通常内存小、算力弱，根本带不动一个完整的编译环境。所以，我们必须在性能强大的 x86 宿主机（也就是你的电脑）上，利用一套特殊的编译器，直接生成 ARM 架构的可执行文件，然后再扔到板子上去跑。这就是交叉编译。</p>
-<p>然而，在这个过程中，底层的环境配置往往比写代码本身还要折磨人。用 2026 年的现代 Ubuntu 系统去编译十几年前老古董代码的行动，引发了一连串的版本“代沟”和编译问题。</p>
-<hr>
-<h2 id="坑一：WSL2-的网络隔离与代理“薛定谔状态”"><a href="#坑一：WSL2-的网络隔离与代理“薛定谔状态”" class="headerlink" title="坑一：WSL2 的网络隔离与代理“薛定谔状态”"></a>坑一：WSL2 的网络隔离与代理“薛定谔状态”</h2><p>一切灾难始于第一步：下载源码包疯狂 Timeout。</p>
-<p>我开始在 Windows 上挂了梯子，就理所当然地以为 WSL 里的 Linux 也能直接翻墙。<strong>大错特错。</strong> WSL2 并不是和 Windows 共享同一个网络栈，而是通过 Hyper-V 虚拟交换机跑在一个 NAT（网络地址转换）网络里。从 WSL 的视角来看，你的 Windows 宿主机是一台具有独立 IP 的“另一台电脑”。</p>
-<p>如果你只是在终端里临时 <code>export http_proxy=http://127.0.0.1:7897</code>，不仅毫无作用（因为 127.0.0.1 是 WSL 自己），而且一旦重启终端，环境变量就会全部阵亡。</p>
-<p><strong>终极解法</strong>：我们需要让 WSL 动态获取它“宿主爸爸”（Windows）的真实局域网 IP，并把这段逻辑写死在配置文件里。打开你的 <code>~/.bashrc</code>，在最末尾加上这几行代码（注意把 7897 换成你自己的代理端口）：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 动态获取 Windows 宿主机 IP</span></span><br><span class="line"><span class="built_in">export</span> host_ip=$(ip route | grep default | awk <span class="string">&#x27;&#123;print $3&#125;&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置代理</span></span><br><span class="line"><span class="built_in">export</span> http_proxy=<span class="string">&quot;http://<span class="variable">$&#123;host_ip&#125;</span>:7897&quot;</span></span><br><span class="line"><span class="built_in">export</span> https_proxy=<span class="string">&quot;http://<span class="variable">$&#123;host_ip&#125;</span>:7897&quot;</span></span><br><span class="line"><span class="built_in">export</span> all_proxy=<span class="string">&quot;socks5://<span class="variable">$&#123;host_ip&#125;</span>:7897&quot;</span></span><br></pre></td></tr></table></figure>
-<p>加完后执行 <code>source ~/.bashrc</code>。用 <code>curl -I https://www.google.com</code> 测一下，通了再往下走，否则后面的依赖包下载会让你痛不欲生。</p>
-<blockquote>
-<p><strong>[插入图片：此处可放一张终端里 curl Google 成功返回 HTTP 200 的截图，证明网络打通]</strong></p>
-</blockquote>
-<h2 id="坑二：被-Menuconfig-的“虚假繁荣”背刺"><a href="#坑二：被-Menuconfig-的“虚假繁荣”背刺" class="headerlink" title="坑二：被 Menuconfig 的“虚假繁荣”背刺"></a>坑二：被 Menuconfig 的“虚假繁荣”背刺</h2><p>解决了网络，进入 <code>./ct-ng menuconfig</code> 配置编译选项。这是一个Bios风格的蓝色UI界面。改完参数，退出，重新 build——结果依然报一模一样的错。</p>
-<p>习惯了现代 IDE 代码实时保存的我，被这古老的 ncurses 图形界面狠狠上了一课。在这个蓝底白字的复古菜单里，如果你改完配置，不手动用左右方向键选中底部那个极其不起眼的 <code>&lt; Save &gt;</code> 选项，并明确按下回车覆写 <code>.config</code> 文件，那你刚才的所有操作就等于无事发生。别信它的自动保存，手动 Save 才是王道。</p>
-<blockquote>
-<p><strong>[插入图片：此处可放一张 menuconfig 蓝底界面的截图，可以用红框圈出底部的 <code>&lt; Save &gt;</code> 按钮]</strong></p>
-</blockquote>
-<h2 id="坑三：C-标准的“代沟”与偏方的破灭"><a href="#坑三：C-标准的“代沟”与偏方的破灭" class="headerlink" title="坑三：C++ 标准的“代沟”与偏方的破灭"></a>坑三：C++ 标准的“代沟”与偏方的破灭</h2><p>从 <code>Pass-1 core C gcc compiler</code> 阶段开始，编译早早夭折，报错直指一句老代码：<code>error: use of an operand of type &#39;bool&#39; in &#39;operator++&#39; is forbidden in C++17</code>。</p>
-<p>这是非常典型的“宿主毒化”（Host Poisoning）。现在的 Ubuntu 系统自带的 GCC 实在太新了，默认开启 C++17 甚至更高标准。而在现代标准里，十几年前老代码库里那种随意的 <code>bool++</code> 写法是被按在地上摩擦的语法错误。</p>
-<p>起初，我尝试在菜单的 <code>Extra host compiler flags</code> 中注入“偏方”：<code>-fpermissive -std=gnu++11</code>，试图强制编译器降级并宽容报错。这招确实骗过了前期的 C++ 代码，但却<strong>埋下了更大的雷</strong>。当进度条龟速爬行了十几分钟，开始编译纯 C 语言编写的 <code>libatomic</code> 库时，纯 C 编译器 <code>cc1</code> 看到 <code>-std=gnu++11</code> 这个 C++ 专属指令，直接当场罢工，满屏的红字 <code>-Werror</code> 宣告偏方彻底破产。</p>
-<p><strong>治标不如治本。</strong> 遇到老古董代码，不要妄图用全局 flag 掩盖版本差异。最稳妥的办法是直接在系统里装一个包容度极高的老将——GCC 9，并篡位成系统默认编译器：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt install gcc-9 g++-9 -y</span><br><span class="line"><span class="built_in">sudo</span> update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 100</span><br><span class="line"><span class="built_in">sudo</span> update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 100</span><br></pre></td></tr></table></figure>
-<h2 id="坑四：crosstool-NG-丧心病狂的“焦土政策”"><a href="#坑四：crosstool-NG-丧心病狂的“焦土政策”" class="headerlink" title="坑四：crosstool-NG 丧心病狂的“焦土政策”"></a>坑四：crosstool-NG 丧心病狂的“焦土政策”</h2><p>在这里必须要吐槽一下 <code>crosstool-NG</code> 极其反直觉的报错处理机制。</p>
-<p>只要中途出了一丁点错，不管你修复了多小的配置，再次运行 <code>./ct-ng build</code> 时，系统会毫不留情地从第 1 秒开始重跑。它没有任何“断点续传”的慈悲，默认会极其铁腕地删掉所有的编译半成品。每一次试错，付出的都是十几二十分钟的干等。在这种高压下，写代码的人硬是被逼着练就了极强的“禅定”功夫。</p>
-<h2 id="坑五：毫无意义的-libc-info-文档劫难"><a href="#坑五：毫无意义的-libc-info-文档劫难" class="headerlink" title="坑五：毫无意义的 libc.info 文档劫难"></a>坑五：毫无意义的 libc.info 文档劫难</h2><p>好不容易熬到了 <code>Installing C library</code> 阶段，系统又因为 <code>makeinfo</code> 崩溃了：<code>[Makefile:198: ... libc.info] Error 1</code>。</p>
-<p>仔细一查原因，差点一口老血吐出来。因为我新版 Ubuntu 的 <code>texinfo</code> 工具，看不惯十多年前 <code>glibc</code> 源码中不规范的 <code>.texi</code> 语法。最荒谬的是，这个导致整个宏大工程中道崩殂的元凶，仅仅是一份我们在实验中一辈子都不会去翻看的说明文档！</p>
-<p>既然文档没用，且在配置里极难剔除，那就用 Linux 极客最爱的“流氓”障眼法。在私人目录下写一个永远返回成功的空脚本，伪装成系统的 <code>makeinfo</code> 工具：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p ~/my_fake_tools</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;#!/bin/bash&#x27;</span> &gt; ~/my_fake_tools/makeinfo</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;exit 0&#x27;</span> &gt;&gt; ~/my_fake_tools/makeinfo</span><br><span class="line"><span class="built_in">chmod</span> +x ~/my_fake_tools/makeinfo</span><br><span class="line"><span class="built_in">export</span> PATH=~/my_fake_tools:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
-<p>这就叫：既然解决不了提出问题的人（老旧文档），那就直接屏蔽处理这个问题的人（工具）。</p>
-<h2 id="坑六：黎明前的黑暗，Native-GDB-宏定义冲突"><a href="#坑六：黎明前的黑暗，Native-GDB-宏定义冲突" class="headerlink" title="坑六：黎明前的黑暗，Native GDB 宏定义冲突"></a>坑六：黎明前的黑暗，Native GDB 宏定义冲突</h2><p>历经 20 分钟的漫长等待，进度条终于走到了最后一步 <code>Installing native gdb</code>。结果终端又弹出了致命的错误：<code>macro &quot;putc&quot; requires 2 arguments, but only 1 given</code>。</p>
-<p>原因很无语：老版 GDB 源码里自定义了一个单参数的 <code>putc</code> 函数，结果和现代 Linux 系统底层强制要求双参数的 <code>putc</code> 宏撞了车。</p>
-<p>稍微冷静下来一想，我们在宿主机上进行交叉编译实验，完全只需要调试开发板的 <code>Cross-GDB</code>，根本用不上给目标板原生环境准备的 <code>Native GDB</code>。于是果断进入 <code>./ct-ng menuconfig</code>，在 <code>Debug facilities</code> 菜单中，把 <code>[ ] Native gdb</code> 取消勾选，直接物理超度这个没用的附属品。</p>
-<hr>
-<h2 id="终局：验收战利品"><a href="#终局：验收战利品" class="headerlink" title="终局：验收战利品"></a>终局：验收战利品</h2><p>在清空缓存、重启编译，并经历了最后一次漫长的等待后，屏幕底部终于弹出了那句激动人心的 <code>[INFO ]  Build completed</code>。</p>
-<p>将新生成的工具链目录加入环境变量，随手写一个经典的 <code>hello.c</code> 进行终极测试：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">arm-unknown-linux-gnueabi-gcc hello.c -o hello_arm</span><br><span class="line">file hello_arm</span><br></pre></td></tr></table></figure>
-<p>输出结果：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hello_arm: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.3, <span class="keyword">for</span> GNU/Linux 3.4.113, with debug_info, not stripped</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>[插入图片：此处放上终端里执行 file hello_arm 后输出完整文件属性的截图，作为完美通关的证明]</strong></p>
-</blockquote>
-<p>看到 <code>ARM</code> 和 <code>32-bit LSB</code> 的那一刻，这大半天血压的起起落落全都值了。它证明了我手里的这份二进制文件，已经脱离了 x86 宿主机的束缚，成为了一把真正的跨界武器。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>搭建交叉编译环境，本质上就是一场对抗系统依赖树和历史版本债务的“考古行动”。现代操作系统的严谨性和安全性正在不断进化，随之而来的代价，就是抛弃了过去老代码的容错空间。</p>
-<p>虽然 crosstool-NG 容错率为零的铁血机制让人抓狂，但正是这种焦土政策，保证了最终产出工具链的绝对纯净。经过这次实验，不仅彻底搞定了底层环境，更让我对 Linux 下的工具链调用机制（Host 与 Target 架构分离、编译器预设、环境变量劫持）有了极具痛感的肌肉记忆。</p>
-<p>不过我也想吐槽一下学院的实验课：使用要用老掉牙的硬件板卡和软件系统，既脱离了技术的进步，也让我们在实际开发过程遇到很多如版本冲突的问题。我同学选的dsp实验课更是史中石，他们用的CCS只能在windows XP上运行，<span style="text-decoration:line-through;">真有你的，电信学院。</span></p>
-]]></content>
-      <categories>
-        <category>踩坑日常</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-        <tag>crosstool-NG</tag>
-        <tag>GCC</tag>
-        <tag>WSL</tag>
-        <tag>环境配置</tag>
-      </tags>
   </entry>
   <entry>
     <title>双目相机立体匹配-stereo matching</title>
@@ -165,7 +60,7 @@ Z = \frac{f \cdot B}{d}</script><p>Z为深度，f为相机焦距，B为基线（
 <h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>有了这个存满打分值的三维张量，即可以求视差。</p>
 <p>如果这个数值$f(x_0, y_0, d_0)$是相似度，那么这个数值的最大值$f_m(x_0, y_0, d_0)$，对应的$(x_0, y_0, d_0)$点，这个$d_0$即为像素$(x_0, y_0)$实际视差。</p>
 <p><strong>为什么要把它做成一个完整的三维张量？</strong> 如果只看单个像素，很容易受噪声干扰（比如一块纯白色的墙，右图哪个位置看起来都很像）。把所有像素的匹配得分整合到一个宏大的 3D 张量中后，现代深度学习模型（比如 3D CNN 或 3D 堆叠沙漏网络）就可以在这个大张量里进行<strong>空间维度的平滑和上下文信息聚合</strong>。它可以参考周围像素的信息，把原本不明显的极值变得更加突出和准确。</p>
-<h2 id="求视差的基本流程"><a href="#求视差的基本流程" class="headerlink" title="求视差的基本流程"></a>求视差的基本流程</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    %% 定义样式</span><br><span class="line">    classDef inputNode fill:#f9f9f9,stroke:#333,stroke-width:2px;</span><br><span class="line">    classDef processNode fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;</span><br><span class="line">    classDef tensorNode fill:#fff3e0,stroke:#ff9800,stroke-width:2px,stroke-dasharray: 5 5;</span><br><span class="line">    classDef outputNode fill:#e8f5e9,stroke:#4caf50,stroke-width:2px;</span><br><span class="line">    classDef highlightNode fill:#ffebee,stroke:#f44336,stroke-width:3px;</span><br><span class="line"></span><br><span class="line">    subgraph step1 [&quot;Step 1: 输入 (Input)&quot;]</span><br><span class="line">        IL[/&quot;左图 (Left Image)\nTensor: (3, H, W)&quot;/]</span><br><span class="line">        IR[/&quot;右图 (Right Image)\nTensor: (3, H, W)&quot;/]</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph step2 [&quot;Step 2: 特征提取 (Feature Extraction)&quot;]</span><br><span class="line">        CNN(&quot;共享权重 2D CNN\n(如 ResNet 提特征)&quot;)</span><br><span class="line">        FL[/&quot;左图特征 (Left Features)\nTensor: (C, H, W)&quot;/]</span><br><span class="line">        FR[/&quot;右图特征 (Right Features)\nTensor: (C, H, W)&quot;/]</span><br><span class="line"></span><br><span class="line">        IL --&gt; CNN</span><br><span class="line">        IR --&gt; CNN</span><br><span class="line">        CNN --&gt; FL</span><br><span class="line">        CNN --&gt; FR</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph step3 [&quot;Step 3: 代价体构建 (Cost Volume Construction)&quot;]</span><br><span class="line">        GWC&#123;&quot;匹配度计算\n(核心:分组相关)&quot;&#125;</span><br><span class="line">        CV1[/&quot;初始代价体 (Initial Cost Volume)\nTensor: (Groups, D, H, W)&quot;/]</span><br><span class="line"></span><br><span class="line">        FL --&gt;|滑窗搜索| GWC</span><br><span class="line">        FR --&gt;|同源比对| GWC</span><br><span class="line">        GWC --&gt;|&quot;打包匹配得分&quot;| CV1</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph step4 [&quot;Step 4: 代价聚合 (Cost Aggregation)&quot;]</span><br><span class="line">        AGG(&quot;3D 卷积神经网络\n(如 3D Stacked Hourglass)&quot;)</span><br><span class="line">        CV2[/&quot;精炼代价体 (Refined Cost Volume)\nTensor: (1, D, H, W)&quot;/]</span><br><span class="line"></span><br><span class="line">        CV1 --&gt;|&quot;上下文过滤去噪&quot;| AGG</span><br><span class="line">        AGG --&gt;|&quot;输出所有视差概率分布&quot;| CV2</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph step5 [&quot;Step 5: 视差回归 (Disparity Regression)&quot;]</span><br><span class="line">        SARG(&quot;Soft-argmin 操作\n(概率加权求和)&quot;)</span><br><span class="line">        OUT[/&quot;终极输出：视差图 (Disparity Map)\nTensor: (1, H, W)&quot;/]</span><br><span class="line"></span><br><span class="line">        CV2 --&gt;|&quot;将概率转为连续数值&quot;| SARG</span><br><span class="line">        SARG --&gt; OUT</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 统一分配样式 (兼容 Typora 10.9+ 的最安全写法)</span><br><span class="line">    %% ==========================================</span><br><span class="line">    class IL,IR inputNode;</span><br><span class="line">    class CNN,AGG,SARG processNode;</span><br><span class="line">    class FL,FR,CV1,CV2 tensorNode;</span><br><span class="line">    class OUT outputNode;</span><br><span class="line">    class GWC highlightNode;</span><br></pre></td></tr></table></figure>
+<h2 id="求视差的基本流程"><a href="#求视差的基本流程" class="headerlink" title="求视差的基本流程"></a>求视差的基本流程</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs mermaid">graph TD<br>    %% 定义样式<br>    classDef inputNode fill:#f9f9f9,stroke:#333,stroke-width:2px;<br>    classDef processNode fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;<br>    classDef tensorNode fill:#fff3e0,stroke:#ff9800,stroke-width:2px,stroke-dasharray: 5 5;<br>    classDef outputNode fill:#e8f5e9,stroke:#4caf50,stroke-width:2px;<br>    classDef highlightNode fill:#ffebee,stroke:#f44336,stroke-width:3px;<br><br>    subgraph step1 [&quot;Step 1: 输入 (Input)&quot;]<br>        IL[/&quot;左图 (Left Image)\nTensor: (3, H, W)&quot;/]<br>        IR[/&quot;右图 (Right Image)\nTensor: (3, H, W)&quot;/]<br>    end<br><br>    subgraph step2 [&quot;Step 2: 特征提取 (Feature Extraction)&quot;]<br>        CNN(&quot;共享权重 2D CNN\n(如 ResNet 提特征)&quot;)<br>        FL[/&quot;左图特征 (Left Features)\nTensor: (C, H, W)&quot;/]<br>        FR[/&quot;右图特征 (Right Features)\nTensor: (C, H, W)&quot;/]<br><br>        IL --&gt; CNN<br>        IR --&gt; CNN<br>        CNN --&gt; FL<br>        CNN --&gt; FR<br>    end<br><br>    subgraph step3 [&quot;Step 3: 代价体构建 (Cost Volume Construction)&quot;]<br>        GWC&#123;&quot;匹配度计算\n(核心:分组相关)&quot;&#125;<br>        CV1[/&quot;初始代价体 (Initial Cost Volume)\nTensor: (Groups, D, H, W)&quot;/]<br><br>        FL --&gt;|滑窗搜索| GWC<br>        FR --&gt;|同源比对| GWC<br>        GWC --&gt;|&quot;打包匹配得分&quot;| CV1<br>    end<br><br>    subgraph step4 [&quot;Step 4: 代价聚合 (Cost Aggregation)&quot;]<br>        AGG(&quot;3D 卷积神经网络\n(如 3D Stacked Hourglass)&quot;)<br>        CV2[/&quot;精炼代价体 (Refined Cost Volume)\nTensor: (1, D, H, W)&quot;/]<br><br>        CV1 --&gt;|&quot;上下文过滤去噪&quot;| AGG<br>        AGG --&gt;|&quot;输出所有视差概率分布&quot;| CV2<br>    end<br><br>    subgraph step5 [&quot;Step 5: 视差回归 (Disparity Regression)&quot;]<br>        SARG(&quot;Soft-argmin 操作\n(概率加权求和)&quot;)<br>        OUT[/&quot;终极输出：视差图 (Disparity Map)\nTensor: (1, H, W)&quot;/]<br><br>        CV2 --&gt;|&quot;将概率转为连续数值&quot;| SARG<br>        SARG --&gt; OUT<br>    end<br><br>    %% ==========================================<br>    %% 统一分配样式 (兼容 Typora 10.9+ 的最安全写法)<br>    %% ==========================================<br>    class IL,IR inputNode;<br>    class CNN,AGG,SARG processNode;<br>    class FL,FR,CV1,CV2 tensorNode;<br>    class OUT outputNode;<br>    class GWC highlightNode;<br></code></pre></td></tr></table></figure>
 <h3 id="关于这个流程"><a href="#关于这个流程" class="headerlink" title="关于这个流程"></a>关于这个流程</h3><p>这个流程本质上是计算机在做信号搜索与解码。</p>
 <h4 id="Step1-RGB像素输入"><a href="#Step1-RGB像素输入" class="headerlink" title="Step1 RGB像素输入"></a>Step1 RGB像素输入</h4><p>系统接收到左右图，为许多RGB像素点。但不能直接使用RGB原始像素去匹配，因为左右图相同颜色的点可能不止一对，引发歧义。</p>
 <h4 id="Step2-特征提取"><a href="#Step2-特征提取" class="headerlink" title="Step2 特征提取"></a>Step2 特征提取</h4><p>为解决歧义，使用2D CNN<em>卷积神经网络</em>，将原本单薄的 RGB 像素被编码成了一个高维的<strong>特征向量</strong>（比如64维度），,然后Pooling进行降采样，这个特征向量包含了一个像素点高级征信息（如是否处于边缘、材质），是他的“指纹”。</p>
@@ -204,9 +99,109 @@ Z = \frac{f \cdot B}{d}</script><p>Z为深度，f为相机焦距，B为基线（
       </tags>
   </entry>
   <entry>
-    <title>迭代构建代价体</title>
-    <url>/2026/03/24/%E8%BF%AD%E4%BB%A3%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93/</url>
-    <content><![CDATA[]]></content>
+    <title>科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流</title>
+    <url>/2026/03/18/%E7%A7%91%E7%A0%94%E5%88%A9%E5%99%A8%EF%BC%9A%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7-Zotero-%E8%BF%9B%E9%98%B6%E6%8A%98%E8%85%BE%E6%8C%87%E5%8D%97%E4%B8%8E-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/</url>
+    <content><![CDATA[<p>市面上文献管理工具不少，EndNote 老牌但 UI 极其复古且收费，Mendeley 经常同步抽风。折腾了一圈，最终让我把几十篇文献和笔记托付出去的，只有 <strong>Zotero</strong>。</p>
+<p>特别是在 Zotero 7 更新后，底层的重构让它的顺滑度有了质的飞跃。今天不讲废话，直接聊聊怎么把这个开源工具打造成武装到牙齿的科研外脑。</p>
+<h2 id="一、-为什么是-Zotero？"><a href="#一、-为什么是-Zotero？" class="headerlink" title="一、 为什么是 Zotero？"></a>一、 为什么是 Zotero？</h2><p>Zotero 最戳中技术极客的点在于：<strong>完全开源、数据掌握在自己手里、生态无敌。</strong></p>
+<p>它的基础工作流极其优雅：</p>
+<ol>
+<li><strong>一键抓取</strong>：装上浏览器插件 <code>Zotero Connector</code>。逛 IEEE 或 arXiv 看到好文章，点一下浏览器右上角，PDF 原文、作者、年份、期刊 Metadata 直接进库。</li>
+<li><strong>多端同步</strong>：别用它自带的那点可怜的免费空间。直接在设置里通过 WebDAV 挂载坚果云或者你自己的服务器，实现文献库的无缝同步。</li>
+<li><strong>沉浸阅读</strong>：Zotero 7 内置的阅读器已经完全够用了，高亮、截图、划线，还能自动把标注提取成 Markdown 笔记。</li>
+</ol>
+<blockquote>
+<p><strong>吐槽一下</strong>：很多新手连 Metadata（元数据）都不抓，直接把 PDF 拖进软件里，文件名全是一串乱码。拜托，文献管理的本质是构建数据库，没有干净的元数据，后期检索和引用就是一场灾难。</p>
+</blockquote>
+<h2 id="二、-核心插件：把生产力拉满"><a href="#二、-核心插件：把生产力拉满" class="headerlink" title="二、 核心插件：把生产力拉满"></a>二、 核心插件：把生产力拉满</h2><p>Zotero 就是一个毛坯房，真正的精装修全靠社区那群用爱发电的开发者。</p>
+<p><em>【图片位置 2：放一张 Zotero 附加组件（Add-ons）管理界面的截图，展示你安装的几个核心插件列表。】</em></p>
+<h3 id="1-翻译与阅读辅助：Zotero-PDF-Translate"><a href="#1-翻译与阅读辅助：Zotero-PDF-Translate" class="headerlink" title="1. 翻译与阅读辅助：Zotero PDF Translate"></a>1. 翻译与阅读辅助：Zotero PDF Translate</h3><p>啃外文文献，尤其是那种通篇长难句的硬核论文，翻译插件是刚需。它可以实现 PDF 划词翻译，并且在文献列表里直接把标题和摘要翻译成中文。支持 DeepL 和 Google 引擎，翻译质量非常能打。</p>
+<h3 id="2-个性化与进度管理：Zotero-Style"><a href="#2-个性化与进度管理：Zotero-Style" class="headerlink" title="2. 个性化与进度管理：Zotero Style"></a>2. 个性化与进度管理：Zotero Style</h3><p>默认的列表太素了。装上它，你可以给不同的标签设置显眼的颜色。最戳我痛点的是它的<strong>阅读进度条</strong>功能。哪篇看了一半，哪篇完全没动，列表里一目了然，专治各种“屯论文不看”的拖延症。</p>
+<h3 id="3-学术写作的终极浪漫：Better-BibTeX-BBT"><a href="#3-学术写作的终极浪漫：Better-BibTeX-BBT" class="headerlink" title="3. 学术写作的终极浪漫：Better BibTeX (BBT)"></a>3. 学术写作的终极浪漫：Better BibTeX (BBT)</h3><p>这玩意儿是我强推 Zotero 的核心原因。平时写 Report 或者跑论文，如果不用 LaTeX + VS Code，那排版简直是反人类。<br>BBT 可以自动为你的每一篇文献生成独一无二的 Citation Key（引用键），并且能<strong>实时静默同步</strong> <code>.bib</code> 文件到你的本地项目里。你在 Zotero 里刚抓了一篇新论文，切到 VS Code 里马上就能 <code>\cite{}</code> 出来，丝滑得让人感动。</p>
+<h2 id="三、-重头戏：接入大语言模型-AIdea-插件配置"><a href="#三、-重头戏：接入大语言模型-AIdea-插件配置" class="headerlink" title="三、 重头戏：接入大语言模型 (AIdea 插件配置)"></a>三、 重头戏：接入大语言模型 (AIdea 插件配置)</h2><p>AIGC 时代，看论文不带个 AI 助手，就像蒙着眼睛走路。我试过很多所谓的“AI 读论文”插件，很多都要自己配 API Key，稍微问多点，几十万 Token 跑没，钱包就在滴血。</p>
+<p>目前我最推荐、也是我主力在用的是 <strong>AIdea</strong>。</p>
+<p><em>【图片位置 3：放一张你正在阅读某篇论文（例如之前看的那篇 Group-wise Correlation 相关的视觉论文），右侧开着 AIdea 侧边栏，正在让大模型总结文章核心贡献的截图。】</em></p>
+<h3 id="1-为什么选-AIdea？（白嫖的快乐）"><a href="#1-为什么选-AIdea？（白嫖的快乐）" class="headerlink" title="1. 为什么选 AIdea？（白嫖的快乐）"></a>1. 为什么选 AIdea？（白嫖的快乐）</h3><p>它最大的亮点是支持 <strong>OAuth 授权登录</strong>，直接绕开了繁琐的 API 密钥配置。<br>如果你有通过了学生认证的 GitHub 账号，强烈建议直接在插件里走 GitHub Copilot 授权。这就相当于你可以接近无限量、免费地在侧边栏调用 GPT-4 级别的模型。一边看复杂的网络架构图，一边让 AI 帮你拆解算法逻辑，效率翻倍。</p>
+<h3 id="2-避坑指南：模型别乱选"><a href="#2-避坑指南：模型别乱选" class="headerlink" title="2. 避坑指南：模型别乱选"></a>2. 避坑指南：模型别乱选</h3><p>这里分享一个刚踩过的坑。很多同学在插件里配好了环境，一发问就报错：<code>System message must be at the beginning</code>。</p>
+<p>这通常是因为<strong>选错了模型接口</strong>。比如你想让 AI 总结全文，却在底下的下拉菜单里手滑选了 <code>vision-model</code>（专门用来识别图像的视觉模型），或者选了代码补全的 <code>coder-model</code>。接口数据格式对不上，服务器直接无情拒绝。</p>
+<p><strong>正确的姿势</strong>：<br>日常做全文总结、解释数学公式、提炼创新点，老老实实在模型列表里选择纯文本的巨头——比如 <code>claude-opus</code> 系列，或者你本地配好 CLI 的 <code>gemini-pro</code>，再或者是 Copilot 里的常规模型。把专业的活儿交给对的模型。</p>
+<h2 id="四、-总结"><a href="#四、-总结" class="headerlink" title="四、 总结"></a>四、 总结</h2><p>工具永远只是手段，真正的科研还是得靠自己掉头发。但一套配置调优的 Zotero + BBT 自动化引用 + AIdea 侧边栏，至少能让你在跟各种前沿论文死磕时，手里的兵器稍微锋利一点。</p>
+<p>别折腾了，赶紧去看论文吧。</p>
+]]></content>
+      <categories>
+        <category>折腾笔记</category>
+      </categories>
+      <tags>
+        <tag>科研工具</tag>
+        <tag>Zotero</tag>
+        <tag>AIGC</tag>
+        <tag>效率</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南</title>
+    <url>/2026/03/21/%E7%94%A8%E7%8E%B0%E4%BB%A3-Ubuntu-%E7%BC%96%E8%AF%91%E4%B8%8A%E5%8F%A4-GCC-4-9-4-%E7%9A%84%E6%8E%92%E5%9D%91%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<p>最近在推进嵌入式 Linux 相关的实验任务时，需要在 WSL (Ubuntu) 环境下使用 <code>crosstool-NG 1.24.0</code> 编译一套目标架构为 ARM 的旧版交叉编译工具链</p>
+<p>Gcc 4.9.4</p>
+<p>Binutils 2.26.1</p>
+<p>Linux 3.4.113</p>
+<p>Glibc 2.12.1</p>
+<p>在正式开始吐槽之前，先给刚接触底层的同学科普一个前提：<strong>为什么我们非要折腾“交叉编译”？</strong><br>我们最终的程序是要跑在 ARM 开发板上的，那里的 CPU 架构和我们电脑的 x86 完全不同，且开发板通常内存小、算力弱，根本带不动一个完整的编译环境。所以，我们必须在性能强大的 x86 宿主机（也就是你的电脑）上，利用一套特殊的编译器，直接生成 ARM 架构的可执行文件，然后再扔到板子上去跑。这就是交叉编译。</p>
+<p>然而，在这个过程中，底层的环境配置往往比写代码本身还要折磨人。用 2026 年的现代 Ubuntu 系统去编译十几年前老古董代码的行动，引发了一连串的版本“代沟”和编译问题。</p>
+<hr>
+<h2 id="坑一：WSL2-的网络隔离与代理“薛定谔状态”"><a href="#坑一：WSL2-的网络隔离与代理“薛定谔状态”" class="headerlink" title="坑一：WSL2 的网络隔离与代理“薛定谔状态”"></a>坑一：WSL2 的网络隔离与代理“薛定谔状态”</h2><p>一切灾难始于第一步：下载源码包疯狂 Timeout。</p>
+<p>我开始在 Windows 上挂了梯子，就理所当然地以为 WSL 里的 Linux 也能直接翻墙。<strong>大错特错。</strong> WSL2 并不是和 Windows 共享同一个网络栈，而是通过 Hyper-V 虚拟交换机跑在一个 NAT（网络地址转换）网络里。从 WSL 的视角来看，你的 Windows 宿主机是一台具有独立 IP 的“另一台电脑”。</p>
+<p>如果你只是在终端里临时 <code>export http_proxy=http://127.0.0.1:7897</code>，不仅毫无作用（因为 127.0.0.1 是 WSL 自己），而且一旦重启终端，环境变量就会全部阵亡。</p>
+<p><strong>终极解法</strong>：我们需要让 WSL 动态获取它“宿主爸爸”（Windows）的真实局域网 IP，并把这段逻辑写死在配置文件里。打开你的 <code>~/.bashrc</code>，在最末尾加上这几行代码（注意把 7897 换成你自己的代理端口）：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 动态获取 Windows 宿主机 IP</span><br><span class="hljs-built_in">export</span> host_ip=$(ip route | grep default | awk <span class="hljs-string">&#x27;&#123;print $3&#125;&#x27;</span>)<br><br><span class="hljs-comment"># 设置代理</span><br><span class="hljs-built_in">export</span> http_proxy=<span class="hljs-string">&quot;http://<span class="hljs-variable">$&#123;host_ip&#125;</span>:7897&quot;</span><br><span class="hljs-built_in">export</span> https_proxy=<span class="hljs-string">&quot;http://<span class="hljs-variable">$&#123;host_ip&#125;</span>:7897&quot;</span><br><span class="hljs-built_in">export</span> all_proxy=<span class="hljs-string">&quot;socks5://<span class="hljs-variable">$&#123;host_ip&#125;</span>:7897&quot;</span><br></code></pre></td></tr></table></figure>
+<p>加完后执行 <code>source ~/.bashrc</code>。用 <code>curl -I https://www.google.com</code> 测一下，通了再往下走，否则后面的依赖包下载会让你痛不欲生。</p>
+<blockquote>
+<p><strong>[插入图片：此处可放一张终端里 curl Google 成功返回 HTTP 200 的截图，证明网络打通]</strong></p>
+</blockquote>
+<h2 id="坑二：被-Menuconfig-的“虚假繁荣”背刺"><a href="#坑二：被-Menuconfig-的“虚假繁荣”背刺" class="headerlink" title="坑二：被 Menuconfig 的“虚假繁荣”背刺"></a>坑二：被 Menuconfig 的“虚假繁荣”背刺</h2><p>解决了网络，进入 <code>./ct-ng menuconfig</code> 配置编译选项。这是一个Bios风格的蓝色UI界面。改完参数，退出，重新 build——结果依然报一模一样的错。</p>
+<p>习惯了现代 IDE 代码实时保存的我，被这古老的 ncurses 图形界面狠狠上了一课。在这个蓝底白字的复古菜单里，如果你改完配置，不手动用左右方向键选中底部那个极其不起眼的 <code>&lt; Save &gt;</code> 选项，并明确按下回车覆写 <code>.config</code> 文件，那你刚才的所有操作就等于无事发生。别信它的自动保存，手动 Save 才是王道。</p>
+<blockquote>
+<p><strong>[插入图片：此处可放一张 menuconfig 蓝底界面的截图，可以用红框圈出底部的 <code>&lt; Save &gt;</code> 按钮]</strong></p>
+</blockquote>
+<h2 id="坑三：C-标准的“代沟”与偏方的破灭"><a href="#坑三：C-标准的“代沟”与偏方的破灭" class="headerlink" title="坑三：C++ 标准的“代沟”与偏方的破灭"></a>坑三：C++ 标准的“代沟”与偏方的破灭</h2><p>从 <code>Pass-1 core C gcc compiler</code> 阶段开始，编译早早夭折，报错直指一句老代码：<code>error: use of an operand of type &#39;bool&#39; in &#39;operator++&#39; is forbidden in C++17</code>。</p>
+<p>这是非常典型的“宿主毒化”（Host Poisoning）。现在的 Ubuntu 系统自带的 GCC 实在太新了，默认开启 C++17 甚至更高标准。而在现代标准里，十几年前老代码库里那种随意的 <code>bool++</code> 写法是被按在地上摩擦的语法错误。</p>
+<p>起初，我尝试在菜单的 <code>Extra host compiler flags</code> 中注入“偏方”：<code>-fpermissive -std=gnu++11</code>，试图强制编译器降级并宽容报错。这招确实骗过了前期的 C++ 代码，但却<strong>埋下了更大的雷</strong>。当进度条龟速爬行了十几分钟，开始编译纯 C 语言编写的 <code>libatomic</code> 库时，纯 C 编译器 <code>cc1</code> 看到 <code>-std=gnu++11</code> 这个 C++ 专属指令，直接当场罢工，满屏的红字 <code>-Werror</code> 宣告偏方彻底破产。</p>
+<p><strong>治标不如治本。</strong> 遇到老古董代码，不要妄图用全局 flag 掩盖版本差异。最稳妥的办法是直接在系统里装一个包容度极高的老将——GCC 9，并篡位成系统默认编译器：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt update<br><span class="hljs-built_in">sudo</span> apt install gcc-9 g++-9 -y<br><span class="hljs-built_in">sudo</span> update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 100<br><span class="hljs-built_in">sudo</span> update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 100<br></code></pre></td></tr></table></figure>
+<h2 id="坑四：crosstool-NG-丧心病狂的“焦土政策”"><a href="#坑四：crosstool-NG-丧心病狂的“焦土政策”" class="headerlink" title="坑四：crosstool-NG 丧心病狂的“焦土政策”"></a>坑四：crosstool-NG 丧心病狂的“焦土政策”</h2><p>在这里必须要吐槽一下 <code>crosstool-NG</code> 极其反直觉的报错处理机制。</p>
+<p>只要中途出了一丁点错，不管你修复了多小的配置，再次运行 <code>./ct-ng build</code> 时，系统会毫不留情地从第 1 秒开始重跑。它没有任何“断点续传”的慈悲，默认会极其铁腕地删掉所有的编译半成品。每一次试错，付出的都是十几二十分钟的干等。在这种高压下，写代码的人硬是被逼着练就了极强的“禅定”功夫。</p>
+<h2 id="坑五：毫无意义的-libc-info-文档劫难"><a href="#坑五：毫无意义的-libc-info-文档劫难" class="headerlink" title="坑五：毫无意义的 libc.info 文档劫难"></a>坑五：毫无意义的 libc.info 文档劫难</h2><p>好不容易熬到了 <code>Installing C library</code> 阶段，系统又因为 <code>makeinfo</code> 崩溃了：<code>[Makefile:198: ... libc.info] Error 1</code>。</p>
+<p>仔细一查原因，差点一口老血吐出来。因为我新版 Ubuntu 的 <code>texinfo</code> 工具，看不惯十多年前 <code>glibc</code> 源码中不规范的 <code>.texi</code> 语法。最荒谬的是，这个导致整个宏大工程中道崩殂的元凶，仅仅是一份我们在实验中一辈子都不会去翻看的说明文档！</p>
+<p>既然文档没用，且在配置里极难剔除，那就用 Linux 极客最爱的“流氓”障眼法。在私人目录下写一个永远返回成功的空脚本，伪装成系统的 <code>makeinfo</code> 工具：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> -p ~/my_fake_tools<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;#!/bin/bash&#x27;</span> &gt; ~/my_fake_tools/makeinfo<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;exit 0&#x27;</span> &gt;&gt; ~/my_fake_tools/makeinfo<br><span class="hljs-built_in">chmod</span> +x ~/my_fake_tools/makeinfo<br><span class="hljs-built_in">export</span> PATH=~/my_fake_tools:<span class="hljs-variable">$PATH</span><br></code></pre></td></tr></table></figure>
+<p>这就叫：既然解决不了提出问题的人（老旧文档），那就直接屏蔽处理这个问题的人（工具）。</p>
+<h2 id="坑六：黎明前的黑暗，Native-GDB-宏定义冲突"><a href="#坑六：黎明前的黑暗，Native-GDB-宏定义冲突" class="headerlink" title="坑六：黎明前的黑暗，Native GDB 宏定义冲突"></a>坑六：黎明前的黑暗，Native GDB 宏定义冲突</h2><p>历经 20 分钟的漫长等待，进度条终于走到了最后一步 <code>Installing native gdb</code>。结果终端又弹出了致命的错误：<code>macro &quot;putc&quot; requires 2 arguments, but only 1 given</code>。</p>
+<p>原因很无语：老版 GDB 源码里自定义了一个单参数的 <code>putc</code> 函数，结果和现代 Linux 系统底层强制要求双参数的 <code>putc</code> 宏撞了车。</p>
+<p>稍微冷静下来一想，我们在宿主机上进行交叉编译实验，完全只需要调试开发板的 <code>Cross-GDB</code>，根本用不上给目标板原生环境准备的 <code>Native GDB</code>。于是果断进入 <code>./ct-ng menuconfig</code>，在 <code>Debug facilities</code> 菜单中，把 <code>[ ] Native gdb</code> 取消勾选，直接物理超度这个没用的附属品。</p>
+<hr>
+<h2 id="终局：验收战利品"><a href="#终局：验收战利品" class="headerlink" title="终局：验收战利品"></a>终局：验收战利品</h2><p>在清空缓存、重启编译，并经历了最后一次漫长的等待后，屏幕底部终于弹出了那句激动人心的 <code>[INFO ]  Build completed</code>。</p>
+<p>将新生成的工具链目录加入环境变量，随手写一个经典的 <code>hello.c</code> 进行终极测试：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><code class="hljs bash">arm-unknown-linux-gnueabi-gcc hello.c -o hello_arm<br>file hello_arm<br></code></pre></td></tr></table></figure>
+<p>输出结果：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><code class="hljs bash">hello_arm: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.3, <span class="hljs-keyword">for</span> GNU/Linux 3.4.113, with debug_info, not stripped<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>[插入图片：此处放上终端里执行 file hello_arm 后输出完整文件属性的截图，作为完美通关的证明]</strong></p>
+</blockquote>
+<p>看到 <code>ARM</code> 和 <code>32-bit LSB</code> 的那一刻，这大半天血压的起起落落全都值了。它证明了我手里的这份二进制文件，已经脱离了 x86 宿主机的束缚，成为了一把真正的跨界武器。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>搭建交叉编译环境，本质上就是一场对抗系统依赖树和历史版本债务的“考古行动”。现代操作系统的严谨性和安全性正在不断进化，随之而来的代价，就是抛弃了过去老代码的容错空间。</p>
+<p>虽然 crosstool-NG 容错率为零的铁血机制让人抓狂，但正是这种焦土政策，保证了最终产出工具链的绝对纯净。经过这次实验，不仅彻底搞定了底层环境，更让我对 Linux 下的工具链调用机制（Host 与 Target 架构分离、编译器预设、环境变量劫持）有了极具痛感的肌肉记忆。</p>
+<p>不过我也想吐槽一下学院的实验课：使用要用老掉牙的硬件板卡和软件系统，既脱离了技术的进步，也让我们在实际开发过程遇到很多如版本冲突的问题。我同学选的dsp实验课更是史中石，他们用的CCS只能在windows XP上运行，<span style="text-decoration:line-through;">真有你的，电信学院。</span></p>
+]]></content>
+      <categories>
+        <category>踩坑日常</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>crosstool-NG</tag>
+        <tag>GCC</tag>
+        <tag>WSL</tag>
+        <tag>环境配置</tag>
+      </tags>
   </entry>
   <entry>
     <title>让 Agent 自动发博客 &amp; github一些常见网络问题</title>
@@ -219,30 +214,30 @@ Z = \frac{f \cdot B}{d}</script><p>Z为深度，f为相机焦距，B为基线（
 <h2 id="1-刚出门就撞墙，WebSocket-报错-10061"><a href="#1-刚出门就撞墙，WebSocket-报错-10061" class="headerlink" title="1. 刚出门就撞墙，WebSocket 报错 10061"></a>1. 刚出门就撞墙，WebSocket 报错 10061</h2><p>当指示 Agent 在本地执行脚手架命令 <code>hexo new post &quot;codex测试&quot;</code> 时，终端直接甩给我一行红字：<br><code>Falling back from WebSockets to HTTPS transport... (os error 10061)</code></p>
 <p><strong>排查与解决：</strong><br>这其实是个经典的网络代理问题。现在的终端 Agent 为了响应快，默认优先尝试建立 WebSocket 长连接。但在咱们的网络环境下，如果终端代理没配好，这个长连接请求就会被系统直接拒绝（10061 就是典型的 <code>WSAECONNREFUSED</code> 报错）。</p>
 <p>好在 Agent 比较聪明，握手失败后会自动降级到普通的 HTTPS 去拉取数据，不影响它继续干活。但为了避免每次都浪费时间重试，最根本的解决办法还是老老实实在终端里把环境变量挂上：</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 确保当前终端走本地的代理端口</span></span><br><span class="line"><span class="variable">$env:HTTPS_PROXY</span>=<span class="string">&quot;[http://127.0.0.1](http://127.0.0.1):YOUR_PORT&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># 确保当前终端走本地的代理端口</span><br><span class="hljs-variable">$env:HTTPS_PROXY</span>=<span class="hljs-string">&quot;[http://127.0.0.1](http://127.0.0.1):YOUR_PORT&quot;</span><br></code></pre></td></tr></table></figure>
 <h2 id="2-静默执行遇上密码弹窗，进程直接卡死"><a href="#2-静默执行遇上密码弹窗，进程直接卡死" class="headerlink" title="2. 静默执行遇上密码弹窗，进程直接卡死"></a>2. 静默执行遇上密码弹窗，进程直接卡死</h2><p>Agent 成功写好了 Markdown 原稿，接着进入最后一步，准备调用 <code>hexo d</code> 把生成的静态页面推送到 GitHub。结果进程直接崩溃了：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Error: Spawn failed... (无法读取用户名/密码，/dev/tty 不可用)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">Error: Spawn failed... (无法读取用户名/密码，/dev/tty 不可用)<br></code></pre></td></tr></table></figure>
 <p><strong>排查与解决：</strong></p>
 <p>这纯属是“无头环境”（Headless）引发的问题。</p>
 <p>我之前推送代码走的是 HTTPS 协议，平时手动敲 <code>hexo d</code> 时，Git 会弹出一个凭据窗口让我授权或者输入密码。但现在是 Agent 在后台子进程里敲命令，它是一个没有显示器也没有键盘的“幽灵”，根本接不住这个弹窗，找不到可用的 <code>/dev/tty</code>（终端输入设备），于是进程当场假死。</p>
 <p>加上 GitHub 早就禁用了密码推送，所以这里的唯一解法，就是<strong>彻底放弃 HTTPS，给本地配置 SSH 密钥免密登录。</strong></p>
 <h2 id="3-配好-SSH-却-Timeout，校园网-内网的常规操作"><a href="#3-配好-SSH-却-Timeout，校园网-内网的常规操作" class="headerlink" title="3. 配好 SSH 却 Timeout，校园网/内网的常规操作"></a>3. 配好 SSH 却 Timeout，校园网/内网的常规操作</h2><p>为了解决上一个问题，我生成了 Ed25519 密钥对，把公钥贴到了 GitHub 上。结果在终端一测连通性（<code>ssh -T git@github.com</code>），直接给我来个：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh: connect to host github.com port 22: Connection timed out</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">ssh: connect to host github.com port 22: Connection timed out<br></code></pre></td></tr></table></figure>
 <p><strong>排查与解决：</strong></p>
 <p>如果是平时在学校或者公司的网络环境，看到 <code>port 22</code> 和 <code>Timeout</code> 连在一起，基本就可以破案了：网关防火墙把 SSH 默认的出站 22 端口给封了。</p>
 <p>GitHub 官方留了个后门，允许我们通过 443（HTTPS端口）来走 SSH 流量。对于 Hexo 部署来说，去改本地的 <code>~/.ssh/config</code> 有时候还会被忽略，最简单暴力的做法是直接改 Hexo 根目录的 <code>_config.yml</code>，把地址换成绝对 SSH URI，强行让 Git 走 443：</p>
 <p>YAML</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  # 换掉原来的 HTTPS 地址，强行指定 ssh.github.com 和 443 端口</span><br><span class="line">  repo: ssh://git@ssh.github.com:443/TakamiyaMioo/TakamiyaMioo.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">deploy:<br>  type: git<br>  # 换掉原来的 HTTPS 地址，强行指定 ssh.github.com 和 443 端口<br>  repo: ssh://git@ssh.github.com:443/TakamiyaMioo/TakamiyaMioo.github.io.git<br>  branch: main<br></code></pre></td></tr></table></figure>
 <h2 id="4-权限依然拒绝？Windows-与-Git-的“分裂”"><a href="#4-权限依然拒绝？Windows-与-Git-的“分裂”" class="headerlink" title="4. 权限依然拒绝？Windows 与 Git 的“分裂”"></a>4. 权限依然拒绝？Windows 与 Git 的“分裂”</h2><p>这是最搞心态的一个坑。</p>
 <p>我在 PowerShell 里手动执行 <code>ssh -T -p 443 git@ssh.github.com</code>，明明已经看到了成功的欢迎语（<code>Hi TakamiyaMioo! You&#39;ve successfully authenticated</code>）。</p>
 <p>回头让终端去执行 <code>hexo d</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git@ssh.github.com: Permission denied (publickey).</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">git@ssh.github.com: Permission denied (publickey).<br></code></pre></td></tr></table></figure>
 <p><strong>排查与解决：</strong></p>
 <p>排查了半天才反应过来，Windows 环境下通常有两个互不干涉的 SSH 客户端！</p>
 <p>刚才测试成功的，是 Windows System32 目录自带的原生 OpenSSH（它正确读取了我的私钥）；而 <code>hexo d</code> 唤起的 Git，用的是 Git 安装目录里捆绑的那个精简版 SSH。这两个客户端完全隔离，Git 拿着一把“空钥匙”去开门，当然被拒绝。</p>
 <p>解决方法很简单，给 Git 加上一行全局配置，强行统一使用 Windows 系统的 SSH 客户端：</p>
 <p>Bash</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global core.sshCommand &quot;C:/Windows/System32/OpenSSH/ssh.exe&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">git config --global core.sshCommand &quot;C:/Windows/System32/OpenSSH/ssh.exe&quot;<br></code></pre></td></tr></table></figure>
 <p>执行完这句后，再次部署，全程 0 弹窗、0 报错，文章终于被 AI 顺滑地推到了云端。</p>
 <hr>
 <h2 id="总结与启发：别让你的-Agent-乱烧-Token"><a href="#总结与启发：别让你的-Agent-乱烧-Token" class="headerlink" title="总结与启发：别让你的 Agent 乱烧 Token"></a>总结与启发：别让你的 Agent 乱烧 Token</h2><p>扫清了上面的基础设施障碍，AI Agent 才算真正接入了本地工作流。但经过这次折腾，我也发现了终端 AI 的一个极其费钱的陷阱：<strong>如果不加约束，它每次都会去扫全盘文件，疯狂消耗 Token。</strong></p>
@@ -265,5 +260,10 @@ Z = \frac{f \cdot B}{d}</script><p>Z为深度，f为相机焦距，B为基线（
         <tag>Windows</tag>
         <tag>Codex</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>迭代构建代价体</title>
+    <url>/2026/03/24/%E8%BF%AD%E4%BB%A3%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93/</url>
+    <content><![CDATA[]]></content>
   </entry>
 </search>

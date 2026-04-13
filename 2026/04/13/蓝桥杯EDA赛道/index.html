@@ -1,0 +1,500 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>蓝桥杯EDA赛道 | TakamiyaMioo's Blog</title><meta name="author" content="TakamiyaMioo     (Zhao Haoyu)"><meta name="copyright" content="TakamiyaMioo     (Zhao Haoyu)"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="蓝桥杯 EDA 省赛[TOC]  嘉立创EDA的 Wiki ：考试题型 | 嘉立创EDA教育与开源文档中心 往届赛题资料可以在&#x3D;&#x3D;嘉立创开源平台&#x3D;&#x3D;找到：https:&#x2F;&#x2F;oshwhub.com&#x2F;course-examples 我认为最有用的是B站账号 嘉立创EDA 的课程，针对每个大题都有讲解，先跟着课程学一遍。 【第十五届蓝桥杯】EDA设计与开发：设计符号与封装库_哔哩哔哩_bilibili 原">
+<meta property="og:type" content="article">
+<meta property="og:title" content="蓝桥杯EDA赛道">
+<meta property="og:url" content="https://haoyu123.top/2026/04/13/%E8%93%9D%E6%A1%A5%E6%9D%AFEDA%E8%B5%9B%E9%81%93/index.html">
+<meta property="og:site_name" content="TakamiyaMioo&#39;s Blog">
+<meta property="og:description" content="蓝桥杯 EDA 省赛[TOC]  嘉立创EDA的 Wiki ：考试题型 | 嘉立创EDA教育与开源文档中心 往届赛题资料可以在&#x3D;&#x3D;嘉立创开源平台&#x3D;&#x3D;找到：https:&#x2F;&#x2F;oshwhub.com&#x2F;course-examples 我认为最有用的是B站账号 嘉立创EDA 的课程，针对每个大题都有讲解，先跟着课程学一遍。 【第十五届蓝桥杯】EDA设计与开发：设计符号与封装库_哔哩哔哩_bilibili 原">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://haoyu123.top/img/avatar.png">
+<meta property="article:published_time" content="2026-04-13T07:52:19.000Z">
+<meta property="article:modified_time" content="2026-04-13T07:54:25.811Z">
+<meta property="article:author" content="TakamiyaMioo     (Zhao Haoyu)">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://haoyu123.top/img/avatar.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "蓝桥杯EDA赛道",
+  "url": "https://haoyu123.top/2026/04/13/%E8%93%9D%E6%A1%A5%E6%9D%AFEDA%E8%B5%9B%E9%81%93/",
+  "image": "https://haoyu123.top/img/avatar.png",
+  "datePublished": "2026-04-13T07:52:19.000Z",
+  "dateModified": "2026-04-13T07:54:25.811Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "TakamiyaMioo     (Zhao Haoyu)",
+      "url": "https://haoyu123.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/my-favicon.png"><link rel="canonical" href="https://haoyu123.top/2026/04/13/%E8%93%9D%E6%A1%A5%E6%9D%AFEDA%E8%B5%9B%E9%81%93/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '蓝桥杯EDA赛道',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div class="bg-animation" id="web_bg" style="background-image: url(/img/banner.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-mode"><i class="fa-fw fas fa-adjust"></i><span> 模式</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-layout"><i class="fa-fw fas fa-arrows-alt-h"></i><span> 布局</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">TakamiyaMioo's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">蓝桥杯EDA赛道</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-mode"><i class="fa-fw fas fa-adjust"></i><span> 模式</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-layout"><i class="fa-fw fas fa-arrows-alt-h"></i><span> 布局</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">蓝桥杯EDA赛道</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-13T07:52:19.000Z" title="发表于 2026-04-13 15:52:19">2026-04-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-13T07:54:25.811Z" title="更新于 2026-04-13 15:54:25">2026-04-13</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="蓝桥杯-EDA-省赛"><a href="#蓝桥杯-EDA-省赛" class="headerlink" title="蓝桥杯 EDA 省赛"></a>蓝桥杯 EDA 省赛</h1><p>[TOC]</p>
+<hr>
+<p>嘉立创EDA的 Wiki ：<a target="_blank" rel="noopener" href="https://wiki.lceda.cn/zh-hans/contest/lq-contests/exam-type.html">考试题型 | 嘉立创EDA教育与开源文档中心</a></p>
+<p>往届赛题资料可以在==嘉立创开源平台==找到：<a target="_blank" rel="noopener" href="https://oshwhub.com/course-examples">https://oshwhub.com/course-examples</a></p>
+<p>我认为最有用的是B站账号 嘉立创EDA 的课程，针对每个大题都有讲解，先跟着课程学一遍。</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1jw411u7ib/?spm_id_from=333.337.search-card.all.click&amp;vd_source=8b1e17c295fef3a177cef037b74a5a02">【第十五届蓝桥杯】EDA设计与开发：设计符号与封装库_哔哩哔哩_bilibili</a></p>
+<p>原理图设计：<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_74712453/article/details/137630913">蓝桥杯EDA常见电路原理图设计和分析-CSDN博客</a></p>
+<p>客观题：<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_74712453/article/details/137293930">蓝桥杯EDA客观题-CSDN博客</a></p>
+<h2 id="题型"><a href="#题型" class="headerlink" title="题型"></a>题型</h2><p>选择 15’ + 设计 85‘ 五个小时。论坛说时间紧张，五个小时真的紧张吗？</p>
+<p>选择是10道题，每道题1.5分。</p>
+<p>设计题基本有：</p>
+<p><strong>元件设计、封装设计、原理图设计、PCB设计</strong>，PCB设计占大头</p>
+<h2 id="设计题型分析"><a href="#设计题型分析" class="headerlink" title="设计题型分析"></a>设计题型分析</h2><p>设计题的四个题是一个连贯的、从底层元件构建到搭建系统的工程闭环。</p>
+<h3 id="元件设计"><a href="#元件设计" class="headerlink" title="元件设计"></a>元件设计</h3><p> <strong>题型一：元件设计 / 符号库设计（约 3-5 分）</strong></p>
+<p>为未知芯片创建一个逻辑符号，供后续原理图使用。</p>
+<p>具体任务：</p>
+<ul>
+<li>在库编辑器中新创建一个符号 Symbol ；</li>
+<li>题目给一个参考图，参照图绘制器件边框；</li>
+<li>放置引脚 Pin ，极其严格地设计 <strong>引脚序号</strong>。</li>
+</ul>
+<p>注意<strong>引脚序号和名称</strong>绝对不能错，这关系到后面的原理图与封装的映射关系。</p>
+<h3 id="封装设计"><a href="#封装设计" class="headerlink" title="封装设计"></a>封装设计</h3><p><strong>题型二：封装设计 / 封装库设计（约 4-5 分）</strong></p>
+<p>为第一题的逻辑符号赋予物理形态。</p>
+<p>具体任务：</p>
+<ul>
+<li>新建 PCB 封装，与第一题原理图符号绑定；</li>
+<li><strong>坐标系</strong>控制，题目会硬性规定原点位置（如“设置引脚1为坐标原点”），必须严格遵守；</li>
+<li><strong>焊盘</strong>参数设置，准确设置焊盘的形状（矩形、长圆形等）、宽度、高度；</li>
+<li><strong>空间几何定位</strong>，根据给定的尺寸图（如中心距 1.90mm、间距 0.95mm 等），利用坐标精确定位每一个焊盘的位置；</li>
+<li><strong>编号对应</strong>，焊盘编号按要求，与第一题符号库引脚序号一一对应。</li>
+</ul>
+<h3 id="原理图设计"><a href="#原理图设计" class="headerlink" title="原理图设计"></a>原理图设计</h3><p><strong>题型三：原理图设计（约 5-8 分）</strong></p>
+<p>使用前两步做好的自制元件、其他元件设计原理图。</p>
+<p>具体任务：</p>
+<ul>
+<li><p>在官方提供的工程文件模板（<code>.eprj</code>）中的指定区域内进行设计。</p>
+</li>
+<li><p>调用并放置刚才做好的器件（如 <code>BCON</code> 或 <code>PDS</code>）。</p>
+</li>
+<li><p>根据题目提供的参考电路图，使用导线和网络标签（Net Label）将新器件与外围电路（电容、电阻、LED、排针等）正确连接。</p>
+</li>
+</ul>
+<p><strong>红线警告：</strong> 题目明确强调“<strong>不可修改已给定元件的位号、名称、网络端口名称等信息</strong>”。不要画蛇添足去重命名现有的网络或器件，只要把空缺的连接补齐即可。最后需要导出网表文件（<code>.enet</code>）。</p>
+<h3 id="PCB设计"><a href="#PCB设计" class="headerlink" title="PCB设计"></a>PCB设计</h3><p><strong>题型四：印制线路板 (PCB) 设计（70 分，绝对大头）</strong></p>
+<p>这个有点复杂，后面单独讲。</p>
+<h2 id="真题练习"><a href="#真题练习" class="headerlink" title="真题练习"></a>真题练习</h2><h3 id="客观题"><a href="#客观题" class="headerlink" title="客观题"></a>客观题</h3><p>背就完了：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_74712453/article/details/137293930">蓝桥杯EDA客观题-CSDN博客</a></p>
+<h3 id="元件设计-1"><a href="#元件设计-1" class="headerlink" title="元件设计"></a>元件设计</h3><p>新建一个自己的元件库，在这个元件库里设计自己的元件和封装。</p>
+<p>新建元件的时候可以选择分类。一级分类、二级分类。后面寻找和编辑这些元件封装的时候，打开嘉立创底部面板，在里面找到自己的元件库，就能拿找到对应的元件和封装。</p>
+<p>DIP是直插封装，SOP是贴片封装，SOP8的8代表8个引脚。现在芯片的数据手册上找到引脚信息，封装类型。</p>
+<p>网格距离0.05，画好符号：</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260408202312341.png" width="50%" /></p>
+<p>名称是芯片内部，引脚编号是外部：</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260408203133176.png" alt="image-20260408203133176" style="zoom:50%;" /></p>
+<h4 id="快速操作"><a href="#快速操作" class="headerlink" title="快速操作"></a>快速操作</h4><p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260408203656792.png" alt="image-20260408203656792" style="zoom:33%;" /></p>
+<p>除了手搓，也可以在<strong>左上角向导</strong>里面直接用模板。<strong>注意这个生成模板会清空画布当前存在的所有东西</strong>。</p>
+<p>命名也是，在右上角有一个<strong>魔术棒符号</strong>（高级符号向导）</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260408203952391.png" alt="image-20260408203952391" style="zoom: 50%;" /></p>
+<h3 id="设计封装"><a href="#设计封装" class="headerlink" title="　设计封装"></a>　设计封装</h3><p>在数据手册寻找改元件的封装信息，一般在最下方。这个有点折磨，类似建模，手搓一个实物（芯片）出来。主要结构就是==焊盘+指示框+指示圆圈==。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260409005024450.png" alt="image-20260409005024450" style="zoom: 33%;" /></p>
+<p>焊盘的属性有：尺寸、图层、间距。</p>
+<ul>
+<li><p>尺寸要根据数据手册自己计算形状、长度和宽度。</p>
+</li>
+<li><p>图层要看封装类型，<span style="color:#FF0000;">SOP为贴片，是单层；DIP是直插，是双层焊盘？</span></p>
+</li>
+<li><p>间距也要计算。可以把网格大小设置为间距，利用网格设定间距。</p>
+</li>
+</ul>
+<p>网格尺寸是显示出来的方格，栅格是实际图形移动的最小距离，这两个可以绑定，也可以取消绑定。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260409212502242.png" alt="image-20260409212502242"></p>
+<p>然后在左侧库设计，属性，把器件（符号是自己画的）和封装进行绑定。</p>
+<p>封装有两种设计方式，==手搓和向导导入模板==。向导在右边栏中。注意参数的设定。尺寸要看数据手册。范围或者点值。==一般左下为第一引脚==。注意一个元件只能绑定一种封装。</p>
+<blockquote>
+<p>个人感觉使用向导设计封装很效率，就用这个。</p>
+</blockquote>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260410190339449.png" alt="image-20260410190339449" style="zoom: 33%;" /></p>
+<h4 id="重要技巧"><a href="#重要技巧" class="headerlink" title="重要技巧"></a><span style="color:#FF0000;">重要技巧</span></h4><ol>
+<li>焊盘间距利用网格、栅格来间接确定。</li>
+<li>两排焊盘的距离可以用尺寸（右上角的尺子确定）。注意焊盘一般有==四个角+中心==4个位置可以选定测量。</li>
+<li>善于利用对齐。选定几个，对齐，选定参考对象。</li>
+<li>焊盘的编号的序号排列不能错，这个很重要！</li>
+<li>注意中心的矩形框是==提示作用==，在==顶层丝印层==。</li>
+<li><p>关于中心矩形框的设计。先用两点圆弧画一个半圆，再右键矩形，==拆分为独立线条==，把左边的线条删掉。补上两个新的，就画好了。<br><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260410194641102.png" alt="image-20260410194641102" style="zoom:33%;" /></p>
+</li>
+<li><p>比赛的时候需要导出封装文件。在左上角文件 - 另存为 - 本地 - IC.efoo 文件。</p>
+</li>
+</ol>
+<h3 id="原理图设计-1"><a href="#原理图设计-1" class="headerlink" title="原理图设计"></a>原理图设计</h3><p>这个要导入官方的提供的工程文件。</p>
+<p>所有的工程文档都在这里可以找到：<a target="_blank" rel="noopener" href="https://oshwhub.com/course-examples">https://oshwhub.com/course-examples</a> ，搜蓝桥杯就有。</p>
+<p>导入工程 Project ，==在开始标签页选择导入专业版==，注意导入的是压缩包，不要解压，直接带导入。</p>
+<blockquote>
+<p>通过嘉立创EDA（专业版）导入试题附件中提供的工程文件（Project.zip）。</p>
+<p>打开原理图，通过给定的元器件，在给定矩形区域内，使用给定的元器件（电阻、电容、稳压二极管（3.3V）等）<span style="color:#FF0000;">完成输入电源电压的检测功能</span>。</p>
+<p>备注：原理图中元器件位号、名称、网络标识符名称及给定的网络连接关系不可以修改。</p>
+</blockquote>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411004539625.png" alt="image-20260411004539625" style="zoom:50%;" /></p>
+<p>命名一般没有要求，默认即可。这个导入的就是一个板子的工程文件。包含原理图和PCB设计图。之前我们设计的是元器件和封装，是自己创建元件库，有相应的库文件，存在里面。要区分开。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411004909903.png" alt="image-20260411004909903" style="zoom:50%;" /></p>
+<p>可以见到：打开的原理图，大部分以及设计好了，需要我们完成的工作如下，就是题目说的矩形区域：</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411005241114.png" alt="image-20260411005241114" style="zoom:50%;" /></p>
+<p>这个就是电源调理电路，电阻分压，稳压二极管稳压，电容滤波。需要关注这个DC、BAT_AIN 网络标签，Ctrl F查找网络标签。</p>
+<p>可以利用快捷键，点放置，里面有提示。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411010928410.png" alt="image-20260411010928410" style="zoom:50%;" /></p>
+<h4 id="电路设计知识"><a href="#电路设计知识" class="headerlink" title="　电路设计知识"></a>　<span style="color:#FF0000;">电路设计知识</span></h4><p>这个比较看重电路设计知识，一些常见电路设计知识如下：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_74712453/article/details/137630913">蓝桥杯EDA常见电路原理图设计和分析-CSDN博客</a></p>
+<h2 id="PCB设计-1"><a href="#PCB设计-1" class="headerlink" title="　PCB设计"></a>　PCB设计</h2><p>可以分为布局、布线（走线和铺铜等）</p>
+<h3 id="PCB布局"><a href="#PCB布局" class="headerlink" title="PCB布局"></a>PCB布局</h3><p>==现在要导入库，另外一个压缩包。==在嘉立创开始页导入专业版</p>
+<p>库里面是封装，需要我们自己关联封装，选一个元件，点击封装，按照word里的要求进行一一绑定。更新。</p>
+<p>然后在设计中选 转换到PCB。</p>
+<p>==元器件的布局在word里面也有要求==</p>
+<blockquote>
+<p>2024.2</p>
+<p>l 电机接口（CN5）：坐标位置（X=24mm, Y=6mm），旋转角度0°。</p>
+<p>l 电机接口（CN6）：坐标位置（X=36mm, Y=6mm），旋转角度0°。</p>
+<p>l 编码器接口（CN3）：坐标位置（X=56mm, Y=6mm），旋转角度0°。</p>
+<p>l 编码器接口（CN4）：坐标位置（X=80mm, Y=6mm），旋转角度0°。</p>
+<p>l 安装孔TP1-TP4坐标位置：</p>
+<p>TP1: 坐标位置（X=97mm, Y=3mm）</p>
+<p>TP2: 坐标位置（X=3mm, Y=3mm）</p>
+<p>TP3: 坐标位置（X=3mm, Y=67mm）</p>
+<p>TP4: 坐标位置（X=97mm, Y=67mm）</p>
+</blockquote>
+<p>这些布局很简单，==就是在原理图中找到元器件，点击选中，在到PCB里面，对应会高亮，直接修改坐标即可==。从原理图跳转到PCB是==交叉选择==。</p>
+<h4 id="重要技巧-1"><a href="#重要技巧-1" class="headerlink" title="重要技巧"></a>重要技巧</h4><ol>
+<li><p>题目会对部分元件的位置有要求，直接在原理图找到，交叉选择到PCB，输入坐标；</p>
+</li>
+<li><p>其余的==模块化==，选中模块，设计-布局传递。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411180016075.png" alt="image-20260411180016075" style="zoom:50%;" /></p>
+</li>
+<li><p>可以把飞线打开</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411180809535.png" alt="image-20260411180809535" style="zoom:50%;" /></p>
+<p>同时可以在右边栏设置：可以把飞线中的GND关闭。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411181029782.png" alt="image-20260411181029782" style="zoom:50%;" /></p>
+</li>
+<li><p>先放主控芯片，放中间；然后放晶振，放旁边；</p>
+</li>
+</ol>
+<p>最后，这是教程的布局：</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411181737876.png" alt="image-20260411181737876" style="zoom: 33%;" /></p>
+<p>这个就是尽量交叉的线少一点：</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411211831845.png" alt="image-20260411211831845" style="zoom: 33%;" /></p>
+<h3 id="PCB布线"><a href="#PCB布线" class="headerlink" title="PCB布线"></a>PCB布线</h3><p>题目会给设计规则，在做上角选设计、设计规则。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411223005406.png" alt="image-20260411223005406"></p>
+<p>先画信号信号线，再画电源线（这个要粗一点，40mail），GND使用铺铜完成。</p>
+<h4 id="关于铺铜"><a href="#关于铺铜" class="headerlink" title="关于铺铜"></a>关于铺铜</h4><p>在放置-铺铜，注意上下两层的GND可以多打几个过孔，连接上下两层的铺铜。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411224409128.png" alt="image-20260411224409128" style="zoom:50%;" /></p>
+<p>最后检查DRC。</p>
+<p>这里要记住两个快捷键：</p>
+<p>shitf M 隐藏铺铜区域</p>
+<p>shift B 重建铺铜区域</p>
+<p>注意晶振周围禁止铺铜，可以放置-禁止区域-重建铺铜</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>工程另存为本地，提交。</p>
+<h1 id="赛后感受"><a href="#赛后感受" class="headerlink" title="赛后感受"></a>赛后感受</h1><p>我参加的是2026届蓝桥杯EDA，在湖北工业大学考试。直观感受就是题量很大，剩下一亿根飞线没连接。具体题型的话，就是选择+封装设计+原理图+PCB。封装设计很常规。原理图不用自己设计，直接照抄他给的。原理图一共有五张（可见量是有多么大）。我在布局的时候，整整五张原理图的元件摆了有一个小时，到最后的运放都摆不下了，只能硬塞。而且一些模块离得太远。这些问题导致布线变得极其操蛋。本来元件就多（往届不会超过100个，都是一张原理图，八九十个元器件都是很出格了，这次元件数量估计在150以上），连线的时间完全不够。</p>
+<p>华科同行去比赛的小伙伴有好多，大多都是在电工基地带过的，暑假一起打过电赛的，电信和集成的同学，我基本都认识。 和他们交谈下来，没有一个EDA能画完的。就离谱，出题人你整这么大？</p>
+<p>总之，蓝桥杯就是一圈钱的比赛，没什么分量，写在简历上无人在意。画300块钱，浪费几天来备考，还要毁掉你的周末，坐牢五小时。简直就是弟中之弟。有这个钱不如去吃几顿疯狂星期四。如果不是实在缺这点保研加分，建议还是别碰这坨大份。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://haoyu123.top">TakamiyaMioo     (Zhao Haoyu)</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://haoyu123.top/2026/04/13/%E8%93%9D%E6%A1%A5%E6%9D%AFEDA%E8%B5%9B%E9%81%93/">https://haoyu123.top/2026/04/13/%E8%93%9D%E6%A1%A5%E6%9D%AFEDA%E8%B5%9B%E9%81%93/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://haoyu123.top" target="_blank">TakamiyaMioo's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width no-desc" href="/2026/03/24/%E8%BF%AD%E4%BB%A3%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93/" title="迭代构建代价体"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">迭代构建代价体</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">TakamiyaMioo     (Zhao Haoyu)</div><div class="author-info-description">HUST EIC</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/TakamiyaMioo"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%93%9D%E6%A1%A5%E6%9D%AF-EDA-%E7%9C%81%E8%B5%9B"><span class="toc-number">1.</span> <span class="toc-text">蓝桥杯 EDA 省赛</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E5%9E%8B"><span class="toc-number">1.1.</span> <span class="toc-text">题型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E9%A2%98%E5%9E%8B%E5%88%86%E6%9E%90"><span class="toc-number">1.2.</span> <span class="toc-text">设计题型分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%83%E4%BB%B6%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.2.1.</span> <span class="toc-text">元件设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%81%E8%A3%85%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.2.2.</span> <span class="toc-text">封装设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%E5%9B%BE%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.2.3.</span> <span class="toc-text">原理图设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PCB%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.2.4.</span> <span class="toc-text">PCB设计</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9C%9F%E9%A2%98%E7%BB%83%E4%B9%A0"><span class="toc-number">1.3.</span> <span class="toc-text">真题练习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E8%A7%82%E9%A2%98"><span class="toc-number">1.3.1.</span> <span class="toc-text">客观题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%83%E4%BB%B6%E8%AE%BE%E8%AE%A1-1"><span class="toc-number">1.3.2.</span> <span class="toc-text">元件设计</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E6%93%8D%E4%BD%9C"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">快速操作</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E5%B0%81%E8%A3%85"><span class="toc-number">1.3.3.</span> <span class="toc-text">　设计封装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E6%8A%80%E5%B7%A7"><span class="toc-number">1.3.3.1.</span> <span class="toc-text">重要技巧</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%E5%9B%BE%E8%AE%BE%E8%AE%A1-1"><span class="toc-number">1.3.4.</span> <span class="toc-text">原理图设计</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1%E7%9F%A5%E8%AF%86"><span class="toc-number">1.3.4.1.</span> <span class="toc-text">　电路设计知识</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PCB%E8%AE%BE%E8%AE%A1-1"><span class="toc-number">1.4.</span> <span class="toc-text">　PCB设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PCB%E5%B8%83%E5%B1%80"><span class="toc-number">1.4.1.</span> <span class="toc-text">PCB布局</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E6%8A%80%E5%B7%A7-1"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">重要技巧</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PCB%E5%B8%83%E7%BA%BF"><span class="toc-number">1.4.2.</span> <span class="toc-text">PCB布线</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E9%93%BA%E9%93%9C"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">关于铺铜</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-number">1.5.</span> <span class="toc-text">最后</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B5%9B%E5%90%8E%E6%84%9F%E5%8F%97"><span class="toc-number">2.</span> <span class="toc-text">赛后感受</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/13/%E8%93%9D%E6%A1%A5%E6%9D%AFEDA%E8%B5%9B%E9%81%93/" title="蓝桥杯EDA赛道">蓝桥杯EDA赛道</a><time datetime="2026-04-13T07:52:19.000Z" title="发表于 2026-04-13 15:52:19">2026-04-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/24/%E8%BF%AD%E4%BB%A3%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93/" title="迭代构建代价体">迭代构建代价体</a><time datetime="2026-03-24T00:05:59.000Z" title="发表于 2026-03-24 08:05:59">2026-03-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/23/%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/" title="双目相机立体匹配-stereo matching">双目相机立体匹配-stereo matching</a><time datetime="2026-03-23T08:08:35.000Z" title="发表于 2026-03-23 16:08:35">2026-03-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/21/%E7%94%A8%E7%8E%B0%E4%BB%A3-Ubuntu-%E7%BC%96%E8%AF%91%E4%B8%8A%E5%8F%A4-GCC-4-9-4-%E7%9A%84%E6%8E%92%E5%9D%91%E6%8C%87%E5%8D%97/" title="降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南">降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南</a><time datetime="2026-03-21T12:06:12.000Z" title="发表于 2026-03-21 20:06:12">2026-03-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/18/%E7%A7%91%E7%A0%94%E5%88%A9%E5%99%A8%EF%BC%9A%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7-Zotero-%E8%BF%9B%E9%98%B6%E6%8A%98%E8%85%BE%E6%8C%87%E5%8D%97%E4%B8%8E-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/" title="科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流">科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流</a><time datetime="2026-03-18T12:30:00.000Z" title="发表于 2026-03-18 20:30:00">2026-03-18</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text"><div class="footer-container">
+  <div class="footer-group footer-left">
+    <span>✨ Code for Life, Code for Fun.</span>
+  </div>
+  <div class="footer-group footer-center">
+    <div class="copyright">&copy; 2025 - 2026 <i class="fas fa-heart" style="color:#ff7e67"></i> TakamiyaMioo</div>
+    <div class="runtime">本站已运行 <span id="days_text">0</span> 天</div>
+  </div>
+  <div class="footer-group footer-right">
+    <span id="busuanzi_container_site_uv" title="总访客数">
+      <i class="fas fa-user"></i> <span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span class="separator">|</span>
+    <span id="busuanzi_container_site_pv" title="总访问量">
+      <i class="fas fa-eye"></i> <span id="busuanzi_value_site_pv"></span>
+    </span>
+  </div>
+</div>
+<script>
+  var start_date = new Date("2026-01-20");
+  var now_date = new Date();
+  var days = Math.floor((now_date - start_date) / (24 * 3600 * 1000));
+  var days_span = document.getElementById("days_text");
+  if(days_span) days_span.innerHTML = days;
+</script>
+</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        loader: {
+          load: [
+            // Four font extension packages (optional)
+            //- '[tex]/bbm',
+            //- '[tex]/bboldx',
+            //- '[tex]/dsfont',
+            '[tex]/mhchem'
+          ],
+          paths: {
+            'mathjax-newcm': '[mathjax]/../@mathjax/mathjax-newcm-font',
+
+            //- // Four font extension packages (optional)
+            //- 'mathjax-bbm-extension': '[mathjax]/../@mathjax/mathjax-bbm-font-extension',
+            //- 'mathjax-bboldx-extension': '[mathjax]/../@mathjax/mathjax-bboldx-font-extension',
+            //- 'mathjax-dsfont-extension': '[mathjax]/../@mathjax/mathjax-dsfont-font-extension',
+            'mathjax-mhchem-extension': '[mathjax]/../@mathjax/mathjax-mhchem-font-extension'
+          }
+        },
+        output: {
+          font: 'mathjax-newcm',
+        },
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'none',
+          packages: {
+            '[+]': [
+              'mhchem'
+            ]
+          }
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          enableMenu: true,
+          menuOptions: {
+            settings: {
+              enrich: false  // Turn off Braille and voice narration text automatic generation
+            }
+          },
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const config = mermaidSrc.dataset.config ? JSON.parse(mermaidSrc.dataset.config) : {}
+      if (!config.theme) {
+        config.theme = theme
+      }
+      const mermaidThemeConfig = `%%{init: ${JSON.stringify(config)}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (true) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@11.12.2/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script src="/js/custom_nav.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.3"></script></div></div></body></html>

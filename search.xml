@@ -1,43 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流</title>
-    <url>/2026/03/18/2_%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7Zotero%E8%BF%9B%E9%98%B6%E6%8A%98%E8%85%BE%E6%8C%87%E5%8D%97%E4%B8%8EAI%E5%B7%A5%E4%BD%9C%E6%B5%81/</url>
-    <content><![CDATA[<p>市面上文献管理工具不少，EndNote 老牌但 UI 极其复古且收费，Mendeley 经常同步抽风。折腾了一圈，最终让我把几十篇文献和笔记托付出去的，只有 <strong>Zotero</strong>。</p>
-<p>特别是在 Zotero 7 更新后，底层的重构让它的顺滑度有了质的飞跃。今天不讲废话，直接聊聊怎么把这个开源工具打造成武装到牙齿的科研外脑。</p>
-<h2 id="一、-为什么是-Zotero？"><a href="#一、-为什么是-Zotero？" class="headerlink" title="一、 为什么是 Zotero？"></a>一、 为什么是 Zotero？</h2><p>Zotero 最戳中技术极客的点在于：<strong>完全开源、数据掌握在自己手里、生态无敌。</strong></p>
-<p>它的基础工作流极其优雅：</p>
+    <title>让 Agent 自动发博客 &amp; github一些常见网络问题</title>
+    <url>/2026/03/17/1_%E8%AE%A9-AI-Agent-%E8%87%AA%E5%8A%A8%E5%8F%91%E5%8D%9A%E5%AE%A2%EF%BC%9F%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%9B%B2%E6%8A%98%E7%9A%84-Debug-%E5%AE%9E%E5%BD%95/</url>
+    <content><![CDATA[<p>我在平时开发、学习时非常讨厌一些网络问题，这些网络问题大多是GFW导致的。其实在这之外，Github的联网也有一些问题。</p>
+<p>最近在本地终端折腾 OpenAI Codex。既然它能直接操作本地文件，我就在尝试：<strong>能直接用一句话命令它，帮我在本地生成一篇 Hexo 博客的 Markdown 文件，然后自动执行部署命令推送到我的 GitHub Pages 上？</strong></p>
+<p>预期中的剧本很简单：创建文件 -&gt; 补充 Front-matter -&gt; 执行 <code>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code> -&gt; 完美收工。</p>
+<p>但这终究只是预期。当这个自动化链路真正在 Windows 纯命令行环境下跑起来时，现实并不顺利。短短几分钟里，我精准踩中了从网络协议、进程交互到环境变量的各种底层大坑。</p>
+<p>以下是这次翻车与填坑的完整记录。如果你也在尝试把 AI Agent 接入本地工作流，这篇避坑指南应该能帮你省下大半天的 Debug 时间。</p>
+<h2 id="1-刚出门就撞墙，WebSocket-报错-10061"><a href="#1-刚出门就撞墙，WebSocket-报错-10061" class="headerlink" title="1. 刚出门就撞墙，WebSocket 报错 10061"></a>1. 刚出门就撞墙，WebSocket 报错 10061</h2><p>当指示 Agent 在本地执行脚手架命令 <code>hexo new post &quot;codex测试&quot;</code> 时，终端直接甩给我一行红字：<br><code>Falling back from WebSockets to HTTPS transport... (os error 10061)</code></p>
+<p><strong>排查与解决：</strong><br>这其实是个经典的网络代理问题。现在的终端 Agent 为了响应快，默认优先尝试建立 WebSocket 长连接。但在咱们的网络环境下，如果终端代理没配好，这个长连接请求就会被系统直接拒绝（10061 就是典型的 <code>WSAECONNREFUSED</code> 报错）。</p>
+<p>好在 Agent 比较聪明，握手失败后会自动降级到普通的 HTTPS 去拉取数据，不影响它继续干活。但为了避免每次都浪费时间重试，最根本的解决办法还是老老实实在终端里把环境变量挂上：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 确保当前终端走本地的代理端口</span></span><br><span class="line"><span class="variable">$env:HTTPS_PROXY</span>=<span class="string">&quot;[http://127.0.0.1](http://127.0.0.1):YOUR_PORT&quot;</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-静默执行遇上密码弹窗，进程直接卡死"><a href="#2-静默执行遇上密码弹窗，进程直接卡死" class="headerlink" title="2. 静默执行遇上密码弹窗，进程直接卡死"></a>2. 静默执行遇上密码弹窗，进程直接卡死</h2><p>Agent 成功写好了 Markdown 原稿，接着进入最后一步，准备调用 <code>hexo d</code> 把生成的静态页面推送到 GitHub。结果进程直接崩溃了：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Error: Spawn failed... (无法读取用户名/密码，/dev/tty 不可用)</span><br></pre></td></tr></table></figure>
+<p><strong>排查与解决：</strong></p>
+<p>这纯属是“无头环境”（Headless）引发的问题。</p>
+<p>我之前推送代码走的是 HTTPS 协议，平时手动敲 <code>hexo d</code> 时，Git 会弹出一个凭据窗口让我授权或者输入密码。但现在是 Agent 在后台子进程里敲命令，它是一个没有显示器也没有键盘的“幽灵”，根本接不住这个弹窗，找不到可用的 <code>/dev/tty</code>（终端输入设备），于是进程当场假死。</p>
+<p>加上 GitHub 早就禁用了密码推送，所以这里的唯一解法，就是<strong>彻底放弃 HTTPS，给本地配置 SSH 密钥免密登录。</strong></p>
+<h2 id="3-配好-SSH-却-Timeout，校园网-内网的常规操作"><a href="#3-配好-SSH-却-Timeout，校园网-内网的常规操作" class="headerlink" title="3. 配好 SSH 却 Timeout，校园网/内网的常规操作"></a>3. 配好 SSH 却 Timeout，校园网/内网的常规操作</h2><p>为了解决上一个问题，我生成了 Ed25519 密钥对，把公钥贴到了 GitHub 上。结果在终端一测连通性（<code>ssh -T git@github.com</code>），直接给我来个：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh: connect to host github.com port 22: Connection timed out</span><br></pre></td></tr></table></figure>
+<p><strong>排查与解决：</strong></p>
+<p>如果是平时在学校或者公司的网络环境，看到 <code>port 22</code> 和 <code>Timeout</code> 连在一起，基本就可以破案了：网关防火墙把 SSH 默认的出站 22 端口给封了。</p>
+<p>GitHub 官方留了个后门，允许我们通过 443（HTTPS端口）来走 SSH 流量。对于 Hexo 部署来说，去改本地的 <code>~/.ssh/config</code> 有时候还会被忽略，最简单暴力的做法是直接改 Hexo 根目录的 <code>_config.yml</code>，把地址换成绝对 SSH URI，强行让 Git 走 443：</p>
+<p>YAML</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  # 换掉原来的 HTTPS 地址，强行指定 ssh.github.com 和 443 端口</span><br><span class="line">  repo: ssh://git@ssh.github.com:443/TakamiyaMioo/TakamiyaMioo.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
+<h2 id="4-权限依然拒绝？Windows-与-Git-的“分裂”"><a href="#4-权限依然拒绝？Windows-与-Git-的“分裂”" class="headerlink" title="4. 权限依然拒绝？Windows 与 Git 的“分裂”"></a>4. 权限依然拒绝？Windows 与 Git 的“分裂”</h2><p>这是最搞心态的一个坑。</p>
+<p>我在 PowerShell 里手动执行 <code>ssh -T -p 443 git@ssh.github.com</code>，明明已经看到了成功的欢迎语（<code>Hi TakamiyaMioo! You&#39;ve successfully authenticated</code>）。</p>
+<p>回头让终端去执行 <code>hexo d</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git@ssh.github.com: Permission denied (publickey).</span><br></pre></td></tr></table></figure>
+<p><strong>排查与解决：</strong></p>
+<p>排查了半天才反应过来，Windows 环境下通常有两个互不干涉的 SSH 客户端！</p>
+<p>刚才测试成功的，是 Windows System32 目录自带的原生 OpenSSH（它正确读取了我的私钥）；而 <code>hexo d</code> 唤起的 Git，用的是 Git 安装目录里捆绑的那个精简版 SSH。这两个客户端完全隔离，Git 拿着一把“空钥匙”去开门，当然被拒绝。</p>
+<p>解决方法很简单，给 Git 加上一行全局配置，强行统一使用 Windows 系统的 SSH 客户端：</p>
+<p>Bash</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global core.sshCommand &quot;C:/Windows/System32/OpenSSH/ssh.exe&quot;</span><br></pre></td></tr></table></figure>
+<p>执行完这句后，再次部署，全程 0 弹窗、0 报错，文章终于被 AI 顺滑地推到了云端。</p>
+<hr>
+<h2 id="总结与启发：别让你的-Agent-乱烧-Token"><a href="#总结与启发：别让你的-Agent-乱烧-Token" class="headerlink" title="总结与启发：别让你的 Agent 乱烧 Token"></a>总结与启发：别让你的 Agent 乱烧 Token</h2><p>扫清了上面的基础设施障碍，AI Agent 才算真正接入了本地工作流。但经过这次折腾，我也发现了终端 AI 的一个极其费钱的陷阱：<strong>如果不加约束，它每次都会去扫全盘文件，疯狂消耗 Token。</strong></p>
+<p>想要高效、便宜地使唤这些智能体，得记住两点：</p>
 <ol>
-<li><strong>一键抓取</strong>：装上浏览器插件 <code>Zotero Connector</code>。逛 IEEE 或 arXiv 看到好文章，点一下浏览器右上角，PDF 原文、作者、年份、期刊 Metadata 直接进库。</li>
-<li><strong>多端同步</strong>：别用它自带的那点可怜的免费空间。直接在设置里通过 WebDAV 挂载坚果云或者你自己的服务器，实现文献库的无缝同步。</li>
-<li><strong>沉浸阅读</strong>：Zotero 7 内置的阅读器已经完全够用了，高亮、截图、划线，还能自动把标注提取成 Markdown 笔记。</li>
+<li><strong>给项目加上 Git 灵魂</strong>：就算只是个纯文本的博客目录，也一定要 <code>git init</code>！现代的终端 Agent 极其依赖 Git，有了 Git 记录，它每次启动只需读取 <code>git status</code>，只把有改动的文件塞进上下文，能省下 90% 以上的无意义开销。</li>
+<li><strong>拒绝模糊指令，使用绝对路径</strong>：别跟 Agent 说“帮我改下昨天写的那篇测试文章”，直接下达精确指令：“分析 <code>source/_posts/codex测试.md</code>，在文末加一行署名”。精准投喂，效率最高。</li>
 </ol>
-<blockquote>
-<p><strong>吐槽一下</strong>：很多新手连 Metadata（元数据）都不抓，直接把 PDF 拖进软件里，文件名全是一串乱码。拜托，文献管理的本质是构建数据库，没有干净的元数据，后期检索和引用就是一场灾难。</p>
-</blockquote>
-<h2 id="二、-核心插件：把生产力拉满"><a href="#二、-核心插件：把生产力拉满" class="headerlink" title="二、 核心插件：把生产力拉满"></a>二、 核心插件：把生产力拉满</h2><p>Zotero 就是一个毛坯房，真正的精装修全靠社区那群用爱发电的开发者。</p>
-<p><em>【图片位置 2：放一张 Zotero 附加组件（Add-ons）管理界面的截图，展示你安装的几个核心插件列表。】</em></p>
-<h3 id="1-翻译与阅读辅助：Zotero-PDF-Translate"><a href="#1-翻译与阅读辅助：Zotero-PDF-Translate" class="headerlink" title="1. 翻译与阅读辅助：Zotero PDF Translate"></a>1. 翻译与阅读辅助：Zotero PDF Translate</h3><p>啃外文文献，尤其是那种通篇长难句的硬核论文，翻译插件是刚需。它可以实现 PDF 划词翻译，并且在文献列表里直接把标题和摘要翻译成中文。支持 DeepL 和 Google 引擎，翻译质量非常能打。</p>
-<h3 id="2-个性化与进度管理：Zotero-Style"><a href="#2-个性化与进度管理：Zotero-Style" class="headerlink" title="2. 个性化与进度管理：Zotero Style"></a>2. 个性化与进度管理：Zotero Style</h3><p>默认的列表太素了。装上它，你可以给不同的标签设置显眼的颜色。最戳我痛点的是它的<strong>阅读进度条</strong>功能。哪篇看了一半，哪篇完全没动，列表里一目了然，专治各种“屯论文不看”的拖延症。</p>
-<h3 id="3-学术写作的终极浪漫：Better-BibTeX-BBT"><a href="#3-学术写作的终极浪漫：Better-BibTeX-BBT" class="headerlink" title="3. 学术写作的终极浪漫：Better BibTeX (BBT)"></a>3. 学术写作的终极浪漫：Better BibTeX (BBT)</h3><p>这玩意儿是我强推 Zotero 的核心原因。平时写 Report 或者跑论文，如果不用 LaTeX + VS Code，那排版简直是反人类。<br>BBT 可以自动为你的每一篇文献生成独一无二的 Citation Key（引用键），并且能<strong>实时静默同步</strong> <code>.bib</code> 文件到你的本地项目里。你在 Zotero 里刚抓了一篇新论文，切到 VS Code 里马上就能 <code>\cite{}</code> 出来，丝滑得让人感动。</p>
-<h2 id="三、-重头戏：接入大语言模型-AIdea-插件配置"><a href="#三、-重头戏：接入大语言模型-AIdea-插件配置" class="headerlink" title="三、 重头戏：接入大语言模型 (AIdea 插件配置)"></a>三、 重头戏：接入大语言模型 (AIdea 插件配置)</h2><p>AIGC 时代，看论文不带个 AI 助手，就像蒙着眼睛走路。我试过很多所谓的“AI 读论文”插件，很多都要自己配 API Key，稍微问多点，几十万 Token 跑没，钱包就在滴血。</p>
-<p>目前我最推荐、也是我主力在用的是 <strong>AIdea</strong>。</p>
-<p><em>【图片位置 3：放一张你正在阅读某篇论文（例如之前看的那篇 Group-wise Correlation 相关的视觉论文），右侧开着 AIdea 侧边栏，正在让大模型总结文章核心贡献的截图。】</em></p>
-<h3 id="1-为什么选-AIdea？（白嫖的快乐）"><a href="#1-为什么选-AIdea？（白嫖的快乐）" class="headerlink" title="1. 为什么选 AIdea？（白嫖的快乐）"></a>1. 为什么选 AIdea？（白嫖的快乐）</h3><p>它最大的亮点是支持 <strong>OAuth 授权登录</strong>，直接绕开了繁琐的 API 密钥配置。<br>如果你有通过了学生认证的 GitHub 账号，强烈建议直接在插件里走 GitHub Copilot 授权。这就相当于你可以接近无限量、免费地在侧边栏调用 GPT-4 级别的模型。一边看复杂的网络架构图，一边让 AI 帮你拆解算法逻辑，效率翻倍。</p>
-<h3 id="2-避坑指南：模型别乱选"><a href="#2-避坑指南：模型别乱选" class="headerlink" title="2. 避坑指南：模型别乱选"></a>2. 避坑指南：模型别乱选</h3><p>这里分享一个刚踩过的坑。很多同学在插件里配好了环境，一发问就报错：<code>System message must be at the beginning</code>。</p>
-<p>这通常是因为<strong>选错了模型接口</strong>。比如你想让 AI 总结全文，却在底下的下拉菜单里手滑选了 <code>vision-model</code>（专门用来识别图像的视觉模型），或者选了代码补全的 <code>coder-model</code>。接口数据格式对不上，服务器直接无情拒绝。</p>
-<p><strong>正确的姿势</strong>：<br>日常做全文总结、解释数学公式、提炼创新点，老老实实在模型列表里选择纯文本的巨头——比如 <code>claude-opus</code> 系列，或者你本地配好 CLI 的 <code>gemini-pro</code>，再或者是 Copilot 里的常规模型。把专业的活儿交给对的模型。</p>
-<h2 id="四、-总结"><a href="#四、-总结" class="headerlink" title="四、 总结"></a>四、 总结</h2><p>工具永远只是手段，真正的科研还是得靠自己掉头发。但一套配置调优的 Zotero + BBT 自动化引用 + AIdea 侧边栏，至少能让你在跟各种前沿论文死磕时，手里的兵器稍微锋利一点。</p>
-<p>别折腾了，赶紧去看论文吧。</p>
+<p>想要让 AI 顺畅接管工作，底层环境（特别是网络与 Git 权限）的稳定是第一步。基础打好了，上层玩起 AIGC 自动化才能真正起飞。</p>
 ]]></content>
       <categories>
-        <category>折腾笔记</category>
+        <category>技术折腾</category>
       </categories>
       <tags>
-        <tag>科研工具</tag>
-        <tag>Zotero</tag>
         <tag>AIGC</tag>
-        <tag>效率</tag>
+        <tag>AI Agent</tag>
+        <tag>Hexo</tag>
+        <tag>Git</tag>
+        <tag>SSH</tag>
+        <tag>Windows</tag>
+        <tag>Codex</tag>
       </tags>
   </entry>
   <entry>
@@ -141,64 +159,6 @@
       </tags>
   </entry>
   <entry>
-    <title>让 Agent 自动发博客 &amp; github一些常见网络问题</title>
-    <url>/2026/03/17/1_%E8%AE%A9-AI-Agent-%E8%87%AA%E5%8A%A8%E5%8F%91%E5%8D%9A%E5%AE%A2%EF%BC%9F%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%9B%B2%E6%8A%98%E7%9A%84-Debug-%E5%AE%9E%E5%BD%95/</url>
-    <content><![CDATA[<p>我在平时开发、学习时非常讨厌一些网络问题，这些网络问题大多是GFW导致的。其实在这之外，Github的联网也有一些问题。</p>
-<p>最近在本地终端折腾 OpenAI Codex。既然它能直接操作本地文件，我就在尝试：<strong>能直接用一句话命令它，帮我在本地生成一篇 Hexo 博客的 Markdown 文件，然后自动执行部署命令推送到我的 GitHub Pages 上？</strong></p>
-<p>预期中的剧本很简单：创建文件 -&gt; 补充 Front-matter -&gt; 执行 <code>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code> -&gt; 完美收工。</p>
-<p>但这终究只是预期。当这个自动化链路真正在 Windows 纯命令行环境下跑起来时，现实并不顺利。短短几分钟里，我精准踩中了从网络协议、进程交互到环境变量的各种底层大坑。</p>
-<p>以下是这次翻车与填坑的完整记录。如果你也在尝试把 AI Agent 接入本地工作流，这篇避坑指南应该能帮你省下大半天的 Debug 时间。</p>
-<h2 id="1-刚出门就撞墙，WebSocket-报错-10061"><a href="#1-刚出门就撞墙，WebSocket-报错-10061" class="headerlink" title="1. 刚出门就撞墙，WebSocket 报错 10061"></a>1. 刚出门就撞墙，WebSocket 报错 10061</h2><p>当指示 Agent 在本地执行脚手架命令 <code>hexo new post &quot;codex测试&quot;</code> 时，终端直接甩给我一行红字：<br><code>Falling back from WebSockets to HTTPS transport... (os error 10061)</code></p>
-<p><strong>排查与解决：</strong><br>这其实是个经典的网络代理问题。现在的终端 Agent 为了响应快，默认优先尝试建立 WebSocket 长连接。但在咱们的网络环境下，如果终端代理没配好，这个长连接请求就会被系统直接拒绝（10061 就是典型的 <code>WSAECONNREFUSED</code> 报错）。</p>
-<p>好在 Agent 比较聪明，握手失败后会自动降级到普通的 HTTPS 去拉取数据，不影响它继续干活。但为了避免每次都浪费时间重试，最根本的解决办法还是老老实实在终端里把环境变量挂上：</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 确保当前终端走本地的代理端口</span></span><br><span class="line"><span class="variable">$env:HTTPS_PROXY</span>=<span class="string">&quot;[http://127.0.0.1](http://127.0.0.1):YOUR_PORT&quot;</span></span><br></pre></td></tr></table></figure>
-<h2 id="2-静默执行遇上密码弹窗，进程直接卡死"><a href="#2-静默执行遇上密码弹窗，进程直接卡死" class="headerlink" title="2. 静默执行遇上密码弹窗，进程直接卡死"></a>2. 静默执行遇上密码弹窗，进程直接卡死</h2><p>Agent 成功写好了 Markdown 原稿，接着进入最后一步，准备调用 <code>hexo d</code> 把生成的静态页面推送到 GitHub。结果进程直接崩溃了：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Error: Spawn failed... (无法读取用户名/密码，/dev/tty 不可用)</span><br></pre></td></tr></table></figure>
-<p><strong>排查与解决：</strong></p>
-<p>这纯属是“无头环境”（Headless）引发的问题。</p>
-<p>我之前推送代码走的是 HTTPS 协议，平时手动敲 <code>hexo d</code> 时，Git 会弹出一个凭据窗口让我授权或者输入密码。但现在是 Agent 在后台子进程里敲命令，它是一个没有显示器也没有键盘的“幽灵”，根本接不住这个弹窗，找不到可用的 <code>/dev/tty</code>（终端输入设备），于是进程当场假死。</p>
-<p>加上 GitHub 早就禁用了密码推送，所以这里的唯一解法，就是<strong>彻底放弃 HTTPS，给本地配置 SSH 密钥免密登录。</strong></p>
-<h2 id="3-配好-SSH-却-Timeout，校园网-内网的常规操作"><a href="#3-配好-SSH-却-Timeout，校园网-内网的常规操作" class="headerlink" title="3. 配好 SSH 却 Timeout，校园网/内网的常规操作"></a>3. 配好 SSH 却 Timeout，校园网/内网的常规操作</h2><p>为了解决上一个问题，我生成了 Ed25519 密钥对，把公钥贴到了 GitHub 上。结果在终端一测连通性（<code>ssh -T git@github.com</code>），直接给我来个：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh: connect to host github.com port 22: Connection timed out</span><br></pre></td></tr></table></figure>
-<p><strong>排查与解决：</strong></p>
-<p>如果是平时在学校或者公司的网络环境，看到 <code>port 22</code> 和 <code>Timeout</code> 连在一起，基本就可以破案了：网关防火墙把 SSH 默认的出站 22 端口给封了。</p>
-<p>GitHub 官方留了个后门，允许我们通过 443（HTTPS端口）来走 SSH 流量。对于 Hexo 部署来说，去改本地的 <code>~/.ssh/config</code> 有时候还会被忽略，最简单暴力的做法是直接改 Hexo 根目录的 <code>_config.yml</code>，把地址换成绝对 SSH URI，强行让 Git 走 443：</p>
-<p>YAML</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  # 换掉原来的 HTTPS 地址，强行指定 ssh.github.com 和 443 端口</span><br><span class="line">  repo: ssh://git@ssh.github.com:443/TakamiyaMioo/TakamiyaMioo.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
-<h2 id="4-权限依然拒绝？Windows-与-Git-的“分裂”"><a href="#4-权限依然拒绝？Windows-与-Git-的“分裂”" class="headerlink" title="4. 权限依然拒绝？Windows 与 Git 的“分裂”"></a>4. 权限依然拒绝？Windows 与 Git 的“分裂”</h2><p>这是最搞心态的一个坑。</p>
-<p>我在 PowerShell 里手动执行 <code>ssh -T -p 443 git@ssh.github.com</code>，明明已经看到了成功的欢迎语（<code>Hi TakamiyaMioo! You&#39;ve successfully authenticated</code>）。</p>
-<p>回头让终端去执行 <code>hexo d</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git@ssh.github.com: Permission denied (publickey).</span><br></pre></td></tr></table></figure>
-<p><strong>排查与解决：</strong></p>
-<p>排查了半天才反应过来，Windows 环境下通常有两个互不干涉的 SSH 客户端！</p>
-<p>刚才测试成功的，是 Windows System32 目录自带的原生 OpenSSH（它正确读取了我的私钥）；而 <code>hexo d</code> 唤起的 Git，用的是 Git 安装目录里捆绑的那个精简版 SSH。这两个客户端完全隔离，Git 拿着一把“空钥匙”去开门，当然被拒绝。</p>
-<p>解决方法很简单，给 Git 加上一行全局配置，强行统一使用 Windows 系统的 SSH 客户端：</p>
-<p>Bash</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global core.sshCommand &quot;C:/Windows/System32/OpenSSH/ssh.exe&quot;</span><br></pre></td></tr></table></figure>
-<p>执行完这句后，再次部署，全程 0 弹窗、0 报错，文章终于被 AI 顺滑地推到了云端。</p>
-<hr>
-<h2 id="总结与启发：别让你的-Agent-乱烧-Token"><a href="#总结与启发：别让你的-Agent-乱烧-Token" class="headerlink" title="总结与启发：别让你的 Agent 乱烧 Token"></a>总结与启发：别让你的 Agent 乱烧 Token</h2><p>扫清了上面的基础设施障碍，AI Agent 才算真正接入了本地工作流。但经过这次折腾，我也发现了终端 AI 的一个极其费钱的陷阱：<strong>如果不加约束，它每次都会去扫全盘文件，疯狂消耗 Token。</strong></p>
-<p>想要高效、便宜地使唤这些智能体，得记住两点：</p>
-<ol>
-<li><strong>给项目加上 Git 灵魂</strong>：就算只是个纯文本的博客目录，也一定要 <code>git init</code>！现代的终端 Agent 极其依赖 Git，有了 Git 记录，它每次启动只需读取 <code>git status</code>，只把有改动的文件塞进上下文，能省下 90% 以上的无意义开销。</li>
-<li><strong>拒绝模糊指令，使用绝对路径</strong>：别跟 Agent 说“帮我改下昨天写的那篇测试文章”，直接下达精确指令：“分析 <code>source/_posts/codex测试.md</code>，在文末加一行署名”。精准投喂，效率最高。</li>
-</ol>
-<p>想要让 AI 顺畅接管工作，底层环境（特别是网络与 Git 权限）的稳定是第一步。基础打好了，上层玩起 AIGC 自动化才能真正起飞。</p>
-]]></content>
-      <categories>
-        <category>技术折腾</category>
-      </categories>
-      <tags>
-        <tag>AIGC</tag>
-        <tag>AI Agent</tag>
-        <tag>Hexo</tag>
-        <tag>Git</tag>
-        <tag>SSH</tag>
-        <tag>Windows</tag>
-        <tag>Codex</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南</title>
     <url>/2026/03/21/3_%E7%94%A8%E7%8E%B0%E4%BB%A3-Ubuntu-%E7%BC%96%E8%AF%91%E4%B8%8A%E5%8F%A4-GCC-4-9-4-%E7%9A%84%E6%8E%92%E5%9D%91%E6%8C%87%E5%8D%97/</url>
     <content><![CDATA[<p>最近在推进嵌入式 Linux 相关的实验任务时，需要在 WSL (Ubuntu) 环境下使用 <code>crosstool-NG 1.24.0</code> 编译一套目标架构为 ARM 的旧版交叉编译工具链</p>
@@ -261,6 +221,46 @@
         <tag>GCC</tag>
         <tag>WSL</tag>
         <tag>环境配置</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流</title>
+    <url>/2026/03/18/2_%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7Zotero%E8%BF%9B%E9%98%B6%E6%8A%98%E8%85%BE%E6%8C%87%E5%8D%97%E4%B8%8EAI%E5%B7%A5%E4%BD%9C%E6%B5%81/</url>
+    <content><![CDATA[<p>市面上文献管理工具不少，EndNote 老牌但 UI 极其复古且收费，Mendeley 经常同步抽风。折腾了一圈，最终让我把几十篇文献和笔记托付出去的，只有 <strong>Zotero</strong>。</p>
+<p>特别是在 Zotero 7 更新后，底层的重构让它的顺滑度有了质的飞跃。今天不讲废话，直接聊聊怎么把这个开源工具打造成武装到牙齿的科研外脑。</p>
+<h2 id="一、-为什么是-Zotero？"><a href="#一、-为什么是-Zotero？" class="headerlink" title="一、 为什么是 Zotero？"></a>一、 为什么是 Zotero？</h2><p>Zotero 最戳中技术极客的点在于：<strong>完全开源、数据掌握在自己手里、生态无敌。</strong></p>
+<p>它的基础工作流极其优雅：</p>
+<ol>
+<li><strong>一键抓取</strong>：装上浏览器插件 <code>Zotero Connector</code>。逛 IEEE 或 arXiv 看到好文章，点一下浏览器右上角，PDF 原文、作者、年份、期刊 Metadata 直接进库。</li>
+<li><strong>多端同步</strong>：别用它自带的那点可怜的免费空间。直接在设置里通过 WebDAV 挂载坚果云或者你自己的服务器，实现文献库的无缝同步。</li>
+<li><strong>沉浸阅读</strong>：Zotero 7 内置的阅读器已经完全够用了，高亮、截图、划线，还能自动把标注提取成 Markdown 笔记。</li>
+</ol>
+<blockquote>
+<p><strong>吐槽一下</strong>：很多新手连 Metadata（元数据）都不抓，直接把 PDF 拖进软件里，文件名全是一串乱码。拜托，文献管理的本质是构建数据库，没有干净的元数据，后期检索和引用就是一场灾难。</p>
+</blockquote>
+<h2 id="二、-核心插件：把生产力拉满"><a href="#二、-核心插件：把生产力拉满" class="headerlink" title="二、 核心插件：把生产力拉满"></a>二、 核心插件：把生产力拉满</h2><p>Zotero 就是一个毛坯房，真正的精装修全靠社区那群用爱发电的开发者。</p>
+<p><em>【图片位置 2：放一张 Zotero 附加组件（Add-ons）管理界面的截图，展示你安装的几个核心插件列表。】</em></p>
+<h3 id="1-翻译与阅读辅助：Zotero-PDF-Translate"><a href="#1-翻译与阅读辅助：Zotero-PDF-Translate" class="headerlink" title="1. 翻译与阅读辅助：Zotero PDF Translate"></a>1. 翻译与阅读辅助：Zotero PDF Translate</h3><p>啃外文文献，尤其是那种通篇长难句的硬核论文，翻译插件是刚需。它可以实现 PDF 划词翻译，并且在文献列表里直接把标题和摘要翻译成中文。支持 DeepL 和 Google 引擎，翻译质量非常能打。</p>
+<h3 id="2-个性化与进度管理：Zotero-Style"><a href="#2-个性化与进度管理：Zotero-Style" class="headerlink" title="2. 个性化与进度管理：Zotero Style"></a>2. 个性化与进度管理：Zotero Style</h3><p>默认的列表太素了。装上它，你可以给不同的标签设置显眼的颜色。最戳我痛点的是它的<strong>阅读进度条</strong>功能。哪篇看了一半，哪篇完全没动，列表里一目了然，专治各种“屯论文不看”的拖延症。</p>
+<h3 id="3-学术写作的终极浪漫：Better-BibTeX-BBT"><a href="#3-学术写作的终极浪漫：Better-BibTeX-BBT" class="headerlink" title="3. 学术写作的终极浪漫：Better BibTeX (BBT)"></a>3. 学术写作的终极浪漫：Better BibTeX (BBT)</h3><p>这玩意儿是我强推 Zotero 的核心原因。平时写 Report 或者跑论文，如果不用 LaTeX + VS Code，那排版简直是反人类。<br>BBT 可以自动为你的每一篇文献生成独一无二的 Citation Key（引用键），并且能<strong>实时静默同步</strong> <code>.bib</code> 文件到你的本地项目里。你在 Zotero 里刚抓了一篇新论文，切到 VS Code 里马上就能 <code>\cite{}</code> 出来，丝滑得让人感动。</p>
+<h2 id="三、-重头戏：接入大语言模型-AIdea-插件配置"><a href="#三、-重头戏：接入大语言模型-AIdea-插件配置" class="headerlink" title="三、 重头戏：接入大语言模型 (AIdea 插件配置)"></a>三、 重头戏：接入大语言模型 (AIdea 插件配置)</h2><p>AIGC 时代，看论文不带个 AI 助手，就像蒙着眼睛走路。我试过很多所谓的“AI 读论文”插件，很多都要自己配 API Key，稍微问多点，几十万 Token 跑没，钱包就在滴血。</p>
+<p>目前我最推荐、也是我主力在用的是 <strong>AIdea</strong>。</p>
+<p><em>【图片位置 3：放一张你正在阅读某篇论文（例如之前看的那篇 Group-wise Correlation 相关的视觉论文），右侧开着 AIdea 侧边栏，正在让大模型总结文章核心贡献的截图。】</em></p>
+<h3 id="1-为什么选-AIdea？（白嫖的快乐）"><a href="#1-为什么选-AIdea？（白嫖的快乐）" class="headerlink" title="1. 为什么选 AIdea？（白嫖的快乐）"></a>1. 为什么选 AIdea？（白嫖的快乐）</h3><p>它最大的亮点是支持 <strong>OAuth 授权登录</strong>，直接绕开了繁琐的 API 密钥配置。<br>如果你有通过了学生认证的 GitHub 账号，强烈建议直接在插件里走 GitHub Copilot 授权。这就相当于你可以接近无限量、免费地在侧边栏调用 GPT-4 级别的模型。一边看复杂的网络架构图，一边让 AI 帮你拆解算法逻辑，效率翻倍。</p>
+<h3 id="2-避坑指南：模型别乱选"><a href="#2-避坑指南：模型别乱选" class="headerlink" title="2. 避坑指南：模型别乱选"></a>2. 避坑指南：模型别乱选</h3><p>这里分享一个刚踩过的坑。很多同学在插件里配好了环境，一发问就报错：<code>System message must be at the beginning</code>。</p>
+<p>这通常是因为<strong>选错了模型接口</strong>。比如你想让 AI 总结全文，却在底下的下拉菜单里手滑选了 <code>vision-model</code>（专门用来识别图像的视觉模型），或者选了代码补全的 <code>coder-model</code>。接口数据格式对不上，服务器直接无情拒绝。</p>
+<p><strong>正确的姿势</strong>：<br>日常做全文总结、解释数学公式、提炼创新点，老老实实在模型列表里选择纯文本的巨头——比如 <code>claude-opus</code> 系列，或者你本地配好 CLI 的 <code>gemini-pro</code>，再或者是 Copilot 里的常规模型。把专业的活儿交给对的模型。</p>
+<h2 id="四、-总结"><a href="#四、-总结" class="headerlink" title="四、 总结"></a>四、 总结</h2><p>工具永远只是手段，真正的科研还是得靠自己掉头发。但一套配置调优的 Zotero + BBT 自动化引用 + AIdea 侧边栏，至少能让你在跟各种前沿论文死磕时，手里的兵器稍微锋利一点。</p>
+<p>别折腾了，赶紧去看论文吧。</p>
+]]></content>
+      <categories>
+        <category>折腾笔记</category>
+      </categories>
+      <tags>
+        <tag>AIGC</tag>
+        <tag>科研工具</tag>
+        <tag>Zotero</tag>
+        <tag>效率</tag>
       </tags>
   </entry>
   <entry>
@@ -443,167 +443,6 @@
 <blockquote>
 <p>虽然 Mermaid 不支持原生 LaTeX，但它 <strong>完全支持基础的 HTML 标签</strong>。你可以使用 <code>&lt;sub&gt;</code>（下标）和 <code>&lt;sup&gt;</code>（上标）来手动把公式“撑”起来。</p>
 </blockquote>
-]]></content>
-  </entry>
-  <entry>
-    <title>蓝桥杯EDA赛道</title>
-    <url>/2026/04/13/6_%E8%93%9D%E6%A1%A5%E6%9D%AFEDA%E8%B5%9B%E9%81%93/</url>
-    <content><![CDATA[<h1 id="蓝桥杯-EDA-省赛"><a href="#蓝桥杯-EDA-省赛" class="headerlink" title="蓝桥杯 EDA 省赛"></a>蓝桥杯 EDA 省赛</h1><hr>
-<p>嘉立创EDA的 Wiki ：<a href="https://wiki.lceda.cn/zh-hans/contest/lq-contests/exam-type.html">考试题型 | 嘉立创EDA教育与开源文档中心</a></p>
-<p>往届赛题资料可以在==嘉立创开源平台==找到：<a href="https://oshwhub.com/course-examples">https://oshwhub.com/course-examples</a></p>
-<p>我认为最有用的是B站账号 嘉立创EDA 的课程，针对每个大题都有讲解，先跟着课程学一遍。</p>
-<p><a href="https://www.bilibili.com/video/BV1jw411u7ib/?spm_id_from=333.337.search-card.all.click&amp;vd_source=8b1e17c295fef3a177cef037b74a5a02">【第十五届蓝桥杯】EDA设计与开发：设计符号与封装库_哔哩哔哩_bilibili</a></p>
-<p>原理图设计：<a href="https://blog.csdn.net/m0_74712453/article/details/137630913">蓝桥杯EDA常见电路原理图设计和分析-CSDN博客</a></p>
-<p>客观题：<a href="https://blog.csdn.net/m0_74712453/article/details/137293930">蓝桥杯EDA客观题-CSDN博客</a></p>
-<h2 id="题型"><a href="#题型" class="headerlink" title="题型"></a>题型</h2><p>选择 15’ + 设计 85‘ 五个小时。论坛说时间紧张，五个小时真的紧张吗？</p>
-<p>选择是10道题，每道题1.5分。</p>
-<p>设计题基本有：</p>
-<p><strong>元件设计、封装设计、原理图设计、PCB设计</strong>，PCB设计占大头</p>
-<h2 id="设计题型分析"><a href="#设计题型分析" class="headerlink" title="设计题型分析"></a>设计题型分析</h2><p>设计题的四个题是一个连贯的、从底层元件构建到搭建系统的工程闭环。</p>
-<h3 id="元件设计"><a href="#元件设计" class="headerlink" title="元件设计"></a>元件设计</h3><p> <strong>题型一：元件设计 / 符号库设计（约 3-5 分）</strong></p>
-<p>为未知芯片创建一个逻辑符号，供后续原理图使用。</p>
-<p>具体任务：</p>
-<ul>
-<li>在库编辑器中新创建一个符号 Symbol ；</li>
-<li>题目给一个参考图，参照图绘制器件边框；</li>
-<li>放置引脚 Pin ，极其严格地设计 <strong>引脚序号</strong>。</li>
-</ul>
-<p>注意<strong>引脚序号和名称</strong>绝对不能错，这关系到后面的原理图与封装的映射关系。</p>
-<h3 id="封装设计"><a href="#封装设计" class="headerlink" title="封装设计"></a>封装设计</h3><p><strong>题型二：封装设计 / 封装库设计（约 4-5 分）</strong></p>
-<p>为第一题的逻辑符号赋予物理形态。</p>
-<p>具体任务：</p>
-<ul>
-<li>新建 PCB 封装，与第一题原理图符号绑定；</li>
-<li><strong>坐标系</strong>控制，题目会硬性规定原点位置（如“设置引脚1为坐标原点”），必须严格遵守；</li>
-<li><strong>焊盘</strong>参数设置，准确设置焊盘的形状（矩形、长圆形等）、宽度、高度；</li>
-<li><strong>空间几何定位</strong>，根据给定的尺寸图（如中心距 1.90mm、间距 0.95mm 等），利用坐标精确定位每一个焊盘的位置；</li>
-<li><strong>编号对应</strong>，焊盘编号按要求，与第一题符号库引脚序号一一对应。</li>
-</ul>
-<h3 id="原理图设计"><a href="#原理图设计" class="headerlink" title="原理图设计"></a>原理图设计</h3><p><strong>题型三：原理图设计（约 5-8 分）</strong></p>
-<p>使用前两步做好的自制元件、其他元件设计原理图。</p>
-<p>具体任务：</p>
-<ul>
-<li><p>在官方提供的工程文件模板（<code>.eprj</code>）中的指定区域内进行设计。</p>
-</li>
-<li><p>调用并放置刚才做好的器件（如 <code>BCON</code> 或 <code>PDS</code>）。</p>
-</li>
-<li><p>根据题目提供的参考电路图，使用导线和网络标签（Net Label）将新器件与外围电路（电容、电阻、LED、排针等）正确连接。</p>
-</li>
-</ul>
-<p><strong>红线警告：</strong> 题目明确强调“<strong>不可修改已给定元件的位号、名称、网络端口名称等信息</strong>”。不要画蛇添足去重命名现有的网络或器件，只要把空缺的连接补齐即可。最后需要导出网表文件（<code>.enet</code>）。</p>
-<h3 id="PCB设计"><a href="#PCB设计" class="headerlink" title="PCB设计"></a>PCB设计</h3><p><strong>题型四：印制线路板 (PCB) 设计（70 分，绝对大头）</strong></p>
-<p>这个有点复杂，后面单独讲。</p>
-<h2 id="真题练习"><a href="#真题练习" class="headerlink" title="真题练习"></a>真题练习</h2><h3 id="客观题"><a href="#客观题" class="headerlink" title="客观题"></a>客观题</h3><p>背就完了：</p>
-<p><a href="https://blog.csdn.net/m0_74712453/article/details/137293930">蓝桥杯EDA客观题-CSDN博客</a></p>
-<h3 id="元件设计-1"><a href="#元件设计-1" class="headerlink" title="元件设计"></a>元件设计</h3><p>新建一个自己的元件库，在这个元件库里设计自己的元件和封装。</p>
-<p>新建元件的时候可以选择分类。一级分类、二级分类。后面寻找和编辑这些元件封装的时候，打开嘉立创底部面板，在里面找到自己的元件库，就能拿找到对应的元件和封装。</p>
-<p>DIP是直插封装，SOP是贴片封装，SOP8的8代表8个引脚。现在芯片的数据手册上找到引脚信息，封装类型。</p>
-<p>网格距离0.05，画好符号：</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260408202312341.png" width="50%" /></p>
-<p>名称是芯片内部，引脚编号是外部：</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260408203133176.png" alt="image-20260408203133176" style="zoom:50%;" /></p>
-<h4 id="快速操作"><a href="#快速操作" class="headerlink" title="快速操作"></a>快速操作</h4><p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260408203656792.png" alt="image-20260408203656792" style="zoom:33%;" /></p>
-<p>除了手搓，也可以在<strong>左上角向导</strong>里面直接用模板。<strong>注意这个生成模板会清空画布当前存在的所有东西</strong>。</p>
-<p>命名也是，在右上角有一个<strong>魔术棒符号</strong>（高级符号向导）</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260408203952391.png" alt="image-20260408203952391" style="zoom: 50%;" /></p>
-<h3 id="设计封装"><a href="#设计封装" class="headerlink" title="　设计封装"></a>　设计封装</h3><p>在数据手册寻找改元件的封装信息，一般在最下方。这个有点折磨，类似建模，手搓一个实物（芯片）出来。主要结构就是==焊盘+指示框+指示圆圈==。</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260409005024450.png" alt="image-20260409005024450" style="zoom: 33%;" /></p>
-<p>焊盘的属性有：尺寸、图层、间距。</p>
-<ul>
-<li><p>尺寸要根据数据手册自己计算形状、长度和宽度。</p>
-</li>
-<li><p>图层要看封装类型，<span style="color:#FF0000;">SOP为贴片，是单层；DIP是直插，是双层焊盘？</span></p>
-</li>
-<li><p>间距也要计算。可以把网格大小设置为间距，利用网格设定间距。</p>
-</li>
-</ul>
-<p>网格尺寸是显示出来的方格，栅格是实际图形移动的最小距离，这两个可以绑定，也可以取消绑定。</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260409212502242.png" alt="image-20260409212502242"></p>
-<p>然后在左侧库设计，属性，把器件（符号是自己画的）和封装进行绑定。</p>
-<p>封装有两种设计方式，==手搓和向导导入模板==。向导在右边栏中。注意参数的设定。尺寸要看数据手册。范围或者点值。==一般左下为第一引脚==。注意一个元件只能绑定一种封装。</p>
-<blockquote>
-<p>个人感觉使用向导设计封装很效率，就用这个。</p>
-</blockquote>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260410190339449.png" alt="image-20260410190339449" style="zoom: 33%;" /></p>
-<h4 id="重要技巧"><a href="#重要技巧" class="headerlink" title="重要技巧"></a><span style="color:#FF0000;">重要技巧</span></h4><ol>
-<li>焊盘间距利用网格、栅格来间接确定。</li>
-<li>两排焊盘的距离可以用尺寸（右上角的尺子确定）。注意焊盘一般有==四个角+中心==4个位置可以选定测量。</li>
-<li>善于利用对齐。选定几个，对齐，选定参考对象。</li>
-<li>焊盘的编号的序号排列不能错，这个很重要！</li>
-<li>注意中心的矩形框是==提示作用==，在==顶层丝印层==。</li>
-<li><p>关于中心矩形框的设计。先用两点圆弧画一个半圆，再右键矩形，==拆分为独立线条==，把左边的线条删掉。补上两个新的，就画好了。<br><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260410194641102.png" alt="image-20260410194641102" style="zoom:33%;" /></p>
-</li>
-<li><p>比赛的时候需要导出封装文件。在左上角文件 - 另存为 - 本地 - IC.efoo 文件。</p>
-</li>
-</ol>
-<h3 id="原理图设计-1"><a href="#原理图设计-1" class="headerlink" title="原理图设计"></a>原理图设计</h3><p>这个要导入官方的提供的工程文件。</p>
-<p>所有的工程文档都在这里可以找到：<a href="https://oshwhub.com/course-examples">https://oshwhub.com/course-examples</a> ，搜蓝桥杯就有。</p>
-<p>导入工程 Project ，==在开始标签页选择导入专业版==，注意导入的是压缩包，不要解压，直接带导入。</p>
-<blockquote>
-<p>通过嘉立创EDA（专业版）导入试题附件中提供的工程文件（Project.zip）。</p>
-<p>打开原理图，通过给定的元器件，在给定矩形区域内，使用给定的元器件（电阻、电容、稳压二极管（3.3V）等）<span style="color:#FF0000;">完成输入电源电压的检测功能</span>。</p>
-<p>备注：原理图中元器件位号、名称、网络标识符名称及给定的网络连接关系不可以修改。</p>
-</blockquote>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411004539625.png" alt="image-20260411004539625" style="zoom:50%;" /></p>
-<p>命名一般没有要求，默认即可。这个导入的就是一个板子的工程文件。包含原理图和PCB设计图。之前我们设计的是元器件和封装，是自己创建元件库，有相应的库文件，存在里面。要区分开。</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411004909903.png" alt="image-20260411004909903" style="zoom:50%;" /></p>
-<p>可以见到：打开的原理图，大部分以及设计好了，需要我们完成的工作如下，就是题目说的矩形区域：</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411005241114.png" alt="image-20260411005241114" style="zoom:50%;" /></p>
-<p>这个就是电源调理电路，电阻分压，稳压二极管稳压，电容滤波。需要关注这个DC、BAT_AIN 网络标签，Ctrl F查找网络标签。</p>
-<p>可以利用快捷键，点放置，里面有提示。</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411010928410.png" alt="image-20260411010928410" style="zoom:50%;" /></p>
-<h4 id="电路设计知识"><a href="#电路设计知识" class="headerlink" title="　电路设计知识"></a>　<span style="color:#FF0000;">电路设计知识</span></h4><p>这个比较看重电路设计知识，一些常见电路设计知识如下：</p>
-<p><a href="https://blog.csdn.net/m0_74712453/article/details/137630913">蓝桥杯EDA常见电路原理图设计和分析-CSDN博客</a></p>
-<h2 id="PCB设计-1"><a href="#PCB设计-1" class="headerlink" title="　PCB设计"></a>　PCB设计</h2><p>可以分为布局、布线（走线和铺铜等）</p>
-<h3 id="PCB布局"><a href="#PCB布局" class="headerlink" title="PCB布局"></a>PCB布局</h3><p>==现在要导入库，另外一个压缩包。==在嘉立创开始页导入专业版</p>
-<p>库里面是封装，需要我们自己关联封装，选一个元件，点击封装，按照word里的要求进行一一绑定。更新。</p>
-<p>然后在设计中选 转换到PCB。</p>
-<p>==元器件的布局在word里面也有要求==</p>
-<blockquote>
-<p>2024.2</p>
-<p>l 电机接口（CN5）：坐标位置（X=24mm, Y=6mm），旋转角度0°。</p>
-<p>l 电机接口（CN6）：坐标位置（X=36mm, Y=6mm），旋转角度0°。</p>
-<p>l 编码器接口（CN3）：坐标位置（X=56mm, Y=6mm），旋转角度0°。</p>
-<p>l 编码器接口（CN4）：坐标位置（X=80mm, Y=6mm），旋转角度0°。</p>
-<p>l 安装孔TP1-TP4坐标位置：</p>
-<p>TP1: 坐标位置（X=97mm, Y=3mm）</p>
-<p>TP2: 坐标位置（X=3mm, Y=3mm）</p>
-<p>TP3: 坐标位置（X=3mm, Y=67mm）</p>
-<p>TP4: 坐标位置（X=97mm, Y=67mm）</p>
-</blockquote>
-<p>这些布局很简单，==就是在原理图中找到元器件，点击选中，在到PCB里面，对应会高亮，直接修改坐标即可==。从原理图跳转到PCB是==交叉选择==。</p>
-<h4 id="重要技巧-1"><a href="#重要技巧-1" class="headerlink" title="重要技巧"></a>重要技巧</h4><ol>
-<li><p>题目会对部分元件的位置有要求，直接在原理图找到，交叉选择到PCB，输入坐标；</p>
-</li>
-<li><p>其余的==模块化==，选中模块，设计-布局传递。</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411180016075.png" alt="image-20260411180016075" style="zoom:50%;" /></p>
-</li>
-<li><p>可以把飞线打开</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411180809535.png" alt="image-20260411180809535" style="zoom:50%;" /></p>
-<p>同时可以在右边栏设置：可以把飞线中的GND关闭。</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411181029782.png" alt="image-20260411181029782" style="zoom:50%;" /></p>
-</li>
-<li><p>先放主控芯片，放中间；然后放晶振，放旁边；</p>
-</li>
-</ol>
-<p>最后，这是教程的布局：</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411181737876.png" alt="image-20260411181737876" style="zoom: 33%;" /></p>
-<p>这个就是尽量交叉的线少一点：</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411211831845.png" alt="image-20260411211831845" style="zoom: 33%;" /></p>
-<h3 id="PCB布线"><a href="#PCB布线" class="headerlink" title="PCB布线"></a>PCB布线</h3><p>题目会给设计规则，在做上角选设计、设计规则。</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411223005406.png" alt="image-20260411223005406"></p>
-<p>先画信号信号线，再画电源线（这个要粗一点，40mail），GND使用铺铜完成。</p>
-<h4 id="关于铺铜"><a href="#关于铺铜" class="headerlink" title="关于铺铜"></a>关于铺铜</h4><p>在放置-铺铜，注意上下两层的GND可以多打几个过孔，连接上下两层的铺铜。</p>
-<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411224409128.png" alt="image-20260411224409128" style="zoom:50%;" /></p>
-<p>最后检查DRC。</p>
-<p>这里要记住两个快捷键：</p>
-<p>shitf M 隐藏铺铜区域</p>
-<p>shift B 重建铺铜区域</p>
-<p>注意晶振周围禁止铺铜，可以放置-禁止区域-重建铺铜</p>
-<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>工程另存为本地，提交。</p>
-<h1 id="赛后感受"><a href="#赛后感受" class="headerlink" title="赛后感受"></a>赛后感受</h1><p>我参加的是2026届蓝桥杯EDA，在湖北工业大学考试。直观感受就是题量很大，剩下一亿根飞线没连接。具体题型的话，就是选择+封装设计+原理图+PCB。封装设计很常规。原理图不用自己设计，直接照抄他给的。原理图一共有五张（可见量是有多么大）。我在布局的时候，整整五张原理图的元件摆了有一个小时，到最后的运放都摆不下了，只能硬塞。而且一些模块离得太远。这些问题导致布线变得极其操蛋。本来元件就多（往届不会超过100个，都是一张原理图，八九十个元器件都是很出格了，这次元件数量估计在150以上），连线的时间完全不够。</p>
-<p>华科同行去比赛的小伙伴有好多，大多都是在电工基地带过的，暑假一起打过电赛的，电信和集成的同学。 和他们交谈下来，没有一个EDA能画完的。在网上也能刷到很多的吐槽。</p>
-<p>不知道比赛的组委会这么整是何意味，刚刚被工信部除名所以想要提高比赛难度和含金量吗？</p>
 ]]></content>
   </entry>
   <entry>
@@ -957,5 +796,166 @@ Z = \frac{f \cdot B}{d}</script><p>Z 为深度，f 为相机焦距，B 为基线
         <tag>stereo matching</tag>
         <tag>GwcNet</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>蓝桥杯EDA赛道</title>
+    <url>/2026/04/13/6_%E8%93%9D%E6%A1%A5%E6%9D%AFEDA%E8%B5%9B%E9%81%93/</url>
+    <content><![CDATA[<h1 id="蓝桥杯-EDA-省赛"><a href="#蓝桥杯-EDA-省赛" class="headerlink" title="蓝桥杯 EDA 省赛"></a>蓝桥杯 EDA 省赛</h1><hr>
+<p>嘉立创EDA的 Wiki ：<a href="https://wiki.lceda.cn/zh-hans/contest/lq-contests/exam-type.html">考试题型 | 嘉立创EDA教育与开源文档中心</a></p>
+<p>往届赛题资料可以在==嘉立创开源平台==找到：<a href="https://oshwhub.com/course-examples">https://oshwhub.com/course-examples</a></p>
+<p>我认为最有用的是B站账号 嘉立创EDA 的课程，针对每个大题都有讲解，先跟着课程学一遍。</p>
+<p><a href="https://www.bilibili.com/video/BV1jw411u7ib/?spm_id_from=333.337.search-card.all.click&amp;vd_source=8b1e17c295fef3a177cef037b74a5a02">【第十五届蓝桥杯】EDA设计与开发：设计符号与封装库_哔哩哔哩_bilibili</a></p>
+<p>原理图设计：<a href="https://blog.csdn.net/m0_74712453/article/details/137630913">蓝桥杯EDA常见电路原理图设计和分析-CSDN博客</a></p>
+<p>客观题：<a href="https://blog.csdn.net/m0_74712453/article/details/137293930">蓝桥杯EDA客观题-CSDN博客</a></p>
+<h2 id="题型"><a href="#题型" class="headerlink" title="题型"></a>题型</h2><p>选择 15’ + 设计 85‘ 五个小时。论坛说时间紧张，五个小时真的紧张吗？</p>
+<p>选择是10道题，每道题1.5分。</p>
+<p>设计题基本有：</p>
+<p><strong>元件设计、封装设计、原理图设计、PCB设计</strong>，PCB设计占大头</p>
+<h2 id="设计题型分析"><a href="#设计题型分析" class="headerlink" title="设计题型分析"></a>设计题型分析</h2><p>设计题的四个题是一个连贯的、从底层元件构建到搭建系统的工程闭环。</p>
+<h3 id="元件设计"><a href="#元件设计" class="headerlink" title="元件设计"></a>元件设计</h3><p> <strong>题型一：元件设计 / 符号库设计（约 3-5 分）</strong></p>
+<p>为未知芯片创建一个逻辑符号，供后续原理图使用。</p>
+<p>具体任务：</p>
+<ul>
+<li>在库编辑器中新创建一个符号 Symbol ；</li>
+<li>题目给一个参考图，参照图绘制器件边框；</li>
+<li>放置引脚 Pin ，极其严格地设计 <strong>引脚序号</strong>。</li>
+</ul>
+<p>注意<strong>引脚序号和名称</strong>绝对不能错，这关系到后面的原理图与封装的映射关系。</p>
+<h3 id="封装设计"><a href="#封装设计" class="headerlink" title="封装设计"></a>封装设计</h3><p><strong>题型二：封装设计 / 封装库设计（约 4-5 分）</strong></p>
+<p>为第一题的逻辑符号赋予物理形态。</p>
+<p>具体任务：</p>
+<ul>
+<li>新建 PCB 封装，与第一题原理图符号绑定；</li>
+<li><strong>坐标系</strong>控制，题目会硬性规定原点位置（如“设置引脚1为坐标原点”），必须严格遵守；</li>
+<li><strong>焊盘</strong>参数设置，准确设置焊盘的形状（矩形、长圆形等）、宽度、高度；</li>
+<li><strong>空间几何定位</strong>，根据给定的尺寸图（如中心距 1.90mm、间距 0.95mm 等），利用坐标精确定位每一个焊盘的位置；</li>
+<li><strong>编号对应</strong>，焊盘编号按要求，与第一题符号库引脚序号一一对应。</li>
+</ul>
+<h3 id="原理图设计"><a href="#原理图设计" class="headerlink" title="原理图设计"></a>原理图设计</h3><p><strong>题型三：原理图设计（约 5-8 分）</strong></p>
+<p>使用前两步做好的自制元件、其他元件设计原理图。</p>
+<p>具体任务：</p>
+<ul>
+<li><p>在官方提供的工程文件模板（<code>.eprj</code>）中的指定区域内进行设计。</p>
+</li>
+<li><p>调用并放置刚才做好的器件（如 <code>BCON</code> 或 <code>PDS</code>）。</p>
+</li>
+<li><p>根据题目提供的参考电路图，使用导线和网络标签（Net Label）将新器件与外围电路（电容、电阻、LED、排针等）正确连接。</p>
+</li>
+</ul>
+<p><strong>红线警告：</strong> 题目明确强调“<strong>不可修改已给定元件的位号、名称、网络端口名称等信息</strong>”。不要画蛇添足去重命名现有的网络或器件，只要把空缺的连接补齐即可。最后需要导出网表文件（<code>.enet</code>）。</p>
+<h3 id="PCB设计"><a href="#PCB设计" class="headerlink" title="PCB设计"></a>PCB设计</h3><p><strong>题型四：印制线路板 (PCB) 设计（70 分，绝对大头）</strong></p>
+<p>这个有点复杂，后面单独讲。</p>
+<h2 id="真题练习"><a href="#真题练习" class="headerlink" title="真题练习"></a>真题练习</h2><h3 id="客观题"><a href="#客观题" class="headerlink" title="客观题"></a>客观题</h3><p>背就完了：</p>
+<p><a href="https://blog.csdn.net/m0_74712453/article/details/137293930">蓝桥杯EDA客观题-CSDN博客</a></p>
+<h3 id="元件设计-1"><a href="#元件设计-1" class="headerlink" title="元件设计"></a>元件设计</h3><p>新建一个自己的元件库，在这个元件库里设计自己的元件和封装。</p>
+<p>新建元件的时候可以选择分类。一级分类、二级分类。后面寻找和编辑这些元件封装的时候，打开嘉立创底部面板，在里面找到自己的元件库，就能拿找到对应的元件和封装。</p>
+<p>DIP是直插封装，SOP是贴片封装，SOP8的8代表8个引脚。现在芯片的数据手册上找到引脚信息，封装类型。</p>
+<p>网格距离0.05，画好符号：</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260408202312341.png" width="50%" /></p>
+<p>名称是芯片内部，引脚编号是外部：</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260408203133176.png" alt="image-20260408203133176" style="zoom:50%;" /></p>
+<h4 id="快速操作"><a href="#快速操作" class="headerlink" title="快速操作"></a>快速操作</h4><p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260408203656792.png" alt="image-20260408203656792" style="zoom:33%;" /></p>
+<p>除了手搓，也可以在<strong>左上角向导</strong>里面直接用模板。<strong>注意这个生成模板会清空画布当前存在的所有东西</strong>。</p>
+<p>命名也是，在右上角有一个<strong>魔术棒符号</strong>（高级符号向导）</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260408203952391.png" alt="image-20260408203952391" style="zoom: 50%;" /></p>
+<h3 id="设计封装"><a href="#设计封装" class="headerlink" title="　设计封装"></a>　设计封装</h3><p>在数据手册寻找改元件的封装信息，一般在最下方。这个有点折磨，类似建模，手搓一个实物（芯片）出来。主要结构就是==焊盘+指示框+指示圆圈==。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260409005024450.png" alt="image-20260409005024450" style="zoom: 33%;" /></p>
+<p>焊盘的属性有：尺寸、图层、间距。</p>
+<ul>
+<li><p>尺寸要根据数据手册自己计算形状、长度和宽度。</p>
+</li>
+<li><p>图层要看封装类型，<span style="color:#FF0000;">SOP为贴片，是单层；DIP是直插，是双层焊盘？</span></p>
+</li>
+<li><p>间距也要计算。可以把网格大小设置为间距，利用网格设定间距。</p>
+</li>
+</ul>
+<p>网格尺寸是显示出来的方格，栅格是实际图形移动的最小距离，这两个可以绑定，也可以取消绑定。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260409212502242.png" alt="image-20260409212502242"></p>
+<p>然后在左侧库设计，属性，把器件（符号是自己画的）和封装进行绑定。</p>
+<p>封装有两种设计方式，==手搓和向导导入模板==。向导在右边栏中。注意参数的设定。尺寸要看数据手册。范围或者点值。==一般左下为第一引脚==。注意一个元件只能绑定一种封装。</p>
+<blockquote>
+<p>个人感觉使用向导设计封装很效率，就用这个。</p>
+</blockquote>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260410190339449.png" alt="image-20260410190339449" style="zoom: 33%;" /></p>
+<h4 id="重要技巧"><a href="#重要技巧" class="headerlink" title="重要技巧"></a><span style="color:#FF0000;">重要技巧</span></h4><ol>
+<li>焊盘间距利用网格、栅格来间接确定。</li>
+<li>两排焊盘的距离可以用尺寸（右上角的尺子确定）。注意焊盘一般有==四个角+中心==4个位置可以选定测量。</li>
+<li>善于利用对齐。选定几个，对齐，选定参考对象。</li>
+<li>焊盘的编号的序号排列不能错，这个很重要！</li>
+<li>注意中心的矩形框是==提示作用==，在==顶层丝印层==。</li>
+<li><p>关于中心矩形框的设计。先用两点圆弧画一个半圆，再右键矩形，==拆分为独立线条==，把左边的线条删掉。补上两个新的，就画好了。<br><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260410194641102.png" alt="image-20260410194641102" style="zoom:33%;" /></p>
+</li>
+<li><p>比赛的时候需要导出封装文件。在左上角文件 - 另存为 - 本地 - IC.efoo 文件。</p>
+</li>
+</ol>
+<h3 id="原理图设计-1"><a href="#原理图设计-1" class="headerlink" title="原理图设计"></a>原理图设计</h3><p>这个要导入官方的提供的工程文件。</p>
+<p>所有的工程文档都在这里可以找到：<a href="https://oshwhub.com/course-examples">https://oshwhub.com/course-examples</a> ，搜蓝桥杯就有。</p>
+<p>导入工程 Project ，==在开始标签页选择导入专业版==，注意导入的是压缩包，不要解压，直接带导入。</p>
+<blockquote>
+<p>通过嘉立创EDA（专业版）导入试题附件中提供的工程文件（Project.zip）。</p>
+<p>打开原理图，通过给定的元器件，在给定矩形区域内，使用给定的元器件（电阻、电容、稳压二极管（3.3V）等）<span style="color:#FF0000;">完成输入电源电压的检测功能</span>。</p>
+<p>备注：原理图中元器件位号、名称、网络标识符名称及给定的网络连接关系不可以修改。</p>
+</blockquote>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411004539625.png" alt="image-20260411004539625" style="zoom:50%;" /></p>
+<p>命名一般没有要求，默认即可。这个导入的就是一个板子的工程文件。包含原理图和PCB设计图。之前我们设计的是元器件和封装，是自己创建元件库，有相应的库文件，存在里面。要区分开。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411004909903.png" alt="image-20260411004909903" style="zoom:50%;" /></p>
+<p>可以见到：打开的原理图，大部分以及设计好了，需要我们完成的工作如下，就是题目说的矩形区域：</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411005241114.png" alt="image-20260411005241114" style="zoom:50%;" /></p>
+<p>这个就是电源调理电路，电阻分压，稳压二极管稳压，电容滤波。需要关注这个DC、BAT_AIN 网络标签，Ctrl F查找网络标签。</p>
+<p>可以利用快捷键，点放置，里面有提示。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411010928410.png" alt="image-20260411010928410" style="zoom:50%;" /></p>
+<h4 id="电路设计知识"><a href="#电路设计知识" class="headerlink" title="　电路设计知识"></a>　<span style="color:#FF0000;">电路设计知识</span></h4><p>这个比较看重电路设计知识，一些常见电路设计知识如下：</p>
+<p><a href="https://blog.csdn.net/m0_74712453/article/details/137630913">蓝桥杯EDA常见电路原理图设计和分析-CSDN博客</a></p>
+<h2 id="PCB设计-1"><a href="#PCB设计-1" class="headerlink" title="　PCB设计"></a>　PCB设计</h2><p>可以分为布局、布线（走线和铺铜等）</p>
+<h3 id="PCB布局"><a href="#PCB布局" class="headerlink" title="PCB布局"></a>PCB布局</h3><p>==现在要导入库，另外一个压缩包。==在嘉立创开始页导入专业版</p>
+<p>库里面是封装，需要我们自己关联封装，选一个元件，点击封装，按照word里的要求进行一一绑定。更新。</p>
+<p>然后在设计中选 转换到PCB。</p>
+<p>==元器件的布局在word里面也有要求==</p>
+<blockquote>
+<p>2024.2</p>
+<p>l 电机接口（CN5）：坐标位置（X=24mm, Y=6mm），旋转角度0°。</p>
+<p>l 电机接口（CN6）：坐标位置（X=36mm, Y=6mm），旋转角度0°。</p>
+<p>l 编码器接口（CN3）：坐标位置（X=56mm, Y=6mm），旋转角度0°。</p>
+<p>l 编码器接口（CN4）：坐标位置（X=80mm, Y=6mm），旋转角度0°。</p>
+<p>l 安装孔TP1-TP4坐标位置：</p>
+<p>TP1: 坐标位置（X=97mm, Y=3mm）</p>
+<p>TP2: 坐标位置（X=3mm, Y=3mm）</p>
+<p>TP3: 坐标位置（X=3mm, Y=67mm）</p>
+<p>TP4: 坐标位置（X=97mm, Y=67mm）</p>
+</blockquote>
+<p>这些布局很简单，==就是在原理图中找到元器件，点击选中，在到PCB里面，对应会高亮，直接修改坐标即可==。从原理图跳转到PCB是==交叉选择==。</p>
+<h4 id="重要技巧-1"><a href="#重要技巧-1" class="headerlink" title="重要技巧"></a>重要技巧</h4><ol>
+<li><p>题目会对部分元件的位置有要求，直接在原理图找到，交叉选择到PCB，输入坐标；</p>
+</li>
+<li><p>其余的==模块化==，选中模块，设计-布局传递。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411180016075.png" alt="image-20260411180016075" style="zoom:50%;" /></p>
+</li>
+<li><p>可以把飞线打开</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411180809535.png" alt="image-20260411180809535" style="zoom:50%;" /></p>
+<p>同时可以在右边栏设置：可以把飞线中的GND关闭。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411181029782.png" alt="image-20260411181029782" style="zoom:50%;" /></p>
+</li>
+<li><p>先放主控芯片，放中间；然后放晶振，放旁边；</p>
+</li>
+</ol>
+<p>最后，这是教程的布局：</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411181737876.png" alt="image-20260411181737876" style="zoom: 33%;" /></p>
+<p>这个就是尽量交叉的线少一点：</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411211831845.png" alt="image-20260411211831845" style="zoom: 33%;" /></p>
+<h3 id="PCB布线"><a href="#PCB布线" class="headerlink" title="PCB布线"></a>PCB布线</h3><p>题目会给设计规则，在做上角选设计、设计规则。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411223005406.png" alt="image-20260411223005406"></p>
+<p>先画信号信号线，再画电源线（这个要粗一点，40mail），GND使用铺铜完成。</p>
+<h4 id="关于铺铜"><a href="#关于铺铜" class="headerlink" title="关于铺铜"></a>关于铺铜</h4><p>在放置-铺铜，注意上下两层的GND可以多打几个过孔，连接上下两层的铺铜。</p>
+<p><img src="D:\0_CS_work\BLOG\my-blog-butterfly-copy\source\_posts\蓝桥杯EDA赛道.assets\image-20260411224409128.png" alt="image-20260411224409128" style="zoom:50%;" /></p>
+<p>最后检查DRC。</p>
+<p>这里要记住两个快捷键：</p>
+<p>shitf M 隐藏铺铜区域</p>
+<p>shift B 重建铺铜区域</p>
+<p>注意晶振周围禁止铺铜，可以放置-禁止区域-重建铺铜</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>工程另存为本地，提交。</p>
+<h1 id="赛后感受"><a href="#赛后感受" class="headerlink" title="赛后感受"></a>赛后感受</h1><p>我参加的是2026届蓝桥杯EDA，在湖北工业大学考试。直观感受就是题量很大，剩下一亿根飞线没连接。具体题型的话，就是选择+封装设计+原理图+PCB。封装设计很常规。原理图不用自己设计，直接照抄他给的。原理图一共有五张（可见量是有多么大）。我在布局的时候，整整五张原理图的元件摆了有一个小时，到最后的运放都摆不下了，只能硬塞。而且一些模块离得太远。这些问题导致布线变得极其操蛋。本来元件就多（往届不会超过100个，都是一张原理图，八九十个元器件都是很出格了，这次元件数量估计在150以上），连线的时间完全不够。</p>
+<p>华科同行去比赛的小伙伴有好多，大多都是在电工基地带过的，暑假一起打过电赛的，电信和集成的同学。 和他们交谈下来，没有一个EDA能画完的。在网上也能刷到很多的吐槽。</p>
+<p>不知道比赛的组委会这么整是何意味，刚刚被工信部除名所以想要提高比赛难度和含金量吗？</p>
+]]></content>
   </entry>
 </search>

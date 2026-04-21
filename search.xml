@@ -1,18 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/2026/03/02/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+    <title>双目相机立体匹配-stereo matching</title>
+    <url>/2026/03/23/%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/</url>
+    <content><![CDATA[<p>[TOC]</p>
+<h1 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h1><p>最近在学习 CV 相关的双目相机立体匹配 <strong>Stereo Matching</strong>，本文是关于 GwcNet 的一些学习和思考。开始之前，先需要理解几个概念：RGB 像素、特征向量、张量、视差、立体匹配、三维重建、代价体、视差求解的范式、卷积正则化。</p>
+<h2 id="RGB-像素"><a href="#RGB-像素" class="headerlink" title="RGB 像素"></a>RGB 像素</h2><p>图像由像素组成，一张 1920x1080 分辨率的屏幕就代表有 1920x1080 个像素。RGB 代表光的三原色。R = Red，G = Green，B = Blue。这三种颜色通过不同的亮度组合可以形成各种颜色。计算机给每种颜色的亮度划分了 <strong>0 ~ 255</strong> 共 256 个等级。</p>
+<p>可以计算出，三种原色，256 种亮度，可以组合出 $256^3≈1677万$ 中颜色。</p>
+<p>每一个彩色图像的像素点都由红、绿、蓝三个发光的子像素（Sub-pixels，可以理解为三个微型 LED 灯）紧挨着组成的，可以看成：<strong>(R, G, B)</strong>，比如 <code>(255, 0, 0)</code> 代表纯红。这是 <strong>原始像素</strong>。</p>
+<hr>
+<h2 id="特征向量"><a href="#特征向量" class="headerlink" title="特征向量"></a>特征向量</h2><p>像素的高维向量。一个图像有 1024 个像素，理论上特征向量也有 1024 个，一一对应，相当于给每一个像素发一张“高维身份证”。但在工程上，使用 CNN 提取高维特征向量十分消耗显存，如果像素和特征向量 1:1 很容易爆显存。</p>
+<p>所以要 <strong>降采样</strong> : 使用“步长卷积（Stride Convolution）”或“池化（Pooling）”将图像 <strong>缩小（降采样）</strong>。比如在比如 GwcNet 中，特征图的宽和高都被缩小到了原来的 $1/4$。</p>
+<p>假设原本像素为 $32×32$，降采样 1/4 后得到 $8*8=64$ 个特征向量。此时这 64 个特征向量里的每一个，代表的不再是单个像素，而是一小块区域（感受野）的特征汇总。</p>
+<hr>
+<h2 id="张量"><a href="#张量" class="headerlink" title="张量"></a>张量</h2><p>向量-Vector，张量-tensor。数学上，<span style="color:#FF0000;">向量就是一阶张量</span>。但是，<strong>在物理几何体系和计算机工程（深度学习）体系下，它们代表了两种完全不同的“世界观”。</strong></p>
+<h3 id="深度学习视角"><a href="#深度学习视角" class="headerlink" title="深度学习视角"></a>深度学习视角</h3><p>在这个世界里（也就是 PyTorch / TensorFlow 的世界），张量纯粹就是一个 <strong>装载数字的收纳盒（多维数组）</strong>。可以把张量理解为高维数组。</p>
+<ul>
+<li><strong>核心概念：</strong> 张量是 <strong>数据结构</strong>，用来高效存取成千上万个数字。</li>
+<li><strong>什么是“维度”：</strong> 指的是 <strong>嵌套的层级（轴的数量 / Rank）</strong>。<ul>
+<li>1 维张量 (1D Tensor)：一排格子（只有行）。比如 <code>[3, 4]</code>，或者你的 320 维特征 <code>[0.5, 0.1, ..., 0.9]</code>。</li>
+<li>2 维张量 (2D Tensor)：一个表格（有行、有列）。比如一张灰度图片。<br><code>[[1,2,3], [4,5,6], [7,8,9]]</code> 是一个形状（Shape）为 <code>(3, 3)</code> 的二维张量。</li>
+<li>3 维张量 (3D Tensor)：一个魔方（有行、列、深度）。比如彩色图片，或者你刚学的代价体。</li>
+</ul>
+</li>
+<li><strong>什么是“长度/大小”：</strong> 某个轴上有多少个格子（元素个数）。</li>
+<li><strong>关注点：</strong> 程序员和 CV 研究员关心的是，我的显存能不能装下这个多维数组？它的 Shape（形状）能不能和下一个网络层对齐（Broadcasting）？</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th><strong>视角</strong></th>
+<th><strong>这个东西是什么？</strong></th>
+<th><strong>“维度 (Dimension)” 的含义</strong></th>
+<th><strong>“长度 (Length/Size)” 的含义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>几何/数学</strong></td>
+<td>这是一个存在于极高维抽象空间中的 <strong>320 维几何向量</strong>。</td>
+<td>它需要 320 个坐标轴来定位空间位置。</td>
+<td>根据多维勾股定理算出来的极其抽象的空间模长（距离）。</td>
+</tr>
+<tr>
+<td><strong>深度学习/代码</strong></td>
+<td>这是一个存放了 320 个特征属性的 <strong>1 维张量 (1D Tensor)</strong>。</td>
+<td>它的套娃层级只有 1 层（它只有一条轴 / 一个方向）。</td>
+<td>这个数组里装了 320 个具体的数字元素。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="特征向量-1"><a href="#特征向量-1" class="headerlink" title="特征向量"></a>特征向量</h3><p>为什么在深度学习里我们还要管它叫“特征向量”？</p>
+<p>既然它是张量，为什么论文（包括这篇 GwcNet）里还是满篇都在写“Feature Vector（特征向量）”呢？</p>
+<p>因为当我们对这个 <span style="color:#FF0000;">1D 张量</span>进行计算时，我们借用了数学世界的工具。 比如在 GwcNet 中，我们把左图的 8 个数字和右图的 8 个数字拿来做 <strong>内积（Dot Product）</strong>，借此来衡量这两个特征在抽象空间里的“夹角”（相似度）。</p>
+<hr>
+<h2 id="视差"><a href="#视差" class="headerlink" title="视差"></a>视差</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>有一个理想的双目相机系统，两个相机的成像平面是共面和行对齐的，左图中某个点，与对应右图中的匹配点在同一个水平线上。</p>
+<p>如果空间中有一个三维点 $P$，它在左图的像素坐标是 $(u_L, v)$，在右图的对应坐标是 $(u_R, v)$ （注意纵坐标 $v$ 是一样的），那么这个点的视差 $d$ 就是它们在水平方向上的坐标差：</p>
+<script type="math/tex; mode=display">
+d = u_L - u_R</script><p>这就是视差。它是一个 <strong>标量</strong>，单位是 <strong>像素（Pixel）</strong>。</p>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p>视差可以用来求一个像素点的深度（Depth），就是像素点对应的物体实际离相机的距离。具体公式为：</p>
+<script type="math/tex; mode=display">
+Z = \frac{f \cdot B}{d}</script><p>Z 为深度，f 为相机焦距，B 为基线（左右两个相机光心之间的物理距离），d 为视差</p>
+<p><img src="./双目相机匹配-stereo%20matching.assets/image-20260323222726980.png" alt="image-20260323222726980"></p>
+<h3 id="学术"><a href="#学术" class="headerlink" title="学术"></a>学术</h3><p>当前有一些立体匹配网络，基于代价体构建的 GwcNet、IGEV，基于循环迭代的 RAFT-Stereo。这些网络本质都是求视差 d，即为左图的一个像素点，在右图如何寻找最准确的对应点求出视差 $d$。</p>
+<p><em>简而言之，视差是连接 2D 图像特征和 3D 几何物理世界的桥梁。</em></p>
+<hr>
+<h2 id="立体匹配-和-三维重建"><a href="#立体匹配-和-三维重建" class="headerlink" title="立体匹配 和 三维重建"></a>立体匹配 和 三维重建</h2><h3 id="双目相机匹配"><a href="#双目相机匹配" class="headerlink" title="双目相机匹配"></a>双目相机匹配</h3><p>核心任务是：<span style="color:#FF0000;">在左右两张图像中，把显示中同一个物理点的像素点找出来。（<em>寻找同名点</em>）</span></p>
+<p>这里举一个实例</p>
+<blockquote>
+<p>使用双目相机拍摄一个苹果。苹果的果梗在左相机 $(u_L,v)$，在右相机的 $(u_R,v)$。使用人眼很容易根据经验找出两幅图像的相同像素点。但是计算机需要一种算法，当它拿到左图果梗的像素时，能去右图里 <strong>精确地“匹配”到</strong> 对应的那个像素。</p>
+<p>事先要对相机做 <strong>极线校正</strong>，使双目向机成像水平，这样找一点在另一图像中像素点，只需要沿着水平方向滑动搜索。</p>
+</blockquote>
+<h3 id="立体匹配"><a href="#立体匹配" class="headerlink" title="立体匹配"></a>立体匹配</h3><p>Stereo Matching</p>
+<p>核心任务是：<span style="color:#FF0000;">寻找同名点，即像素的同一个物理点，根据视差计算深度。</span></p>
+<h3 id="三维重建"><a href="#三维重建" class="headerlink" title="三维重建"></a>三维重建</h3><p>3D Reconstruction</p>
+<p>核心任务是：<span style="color:#FF0000;">在计算机世界复刻现实物体或场景的3D几何结构和外观。</span>立体匹配是三维重建的前置重要任务。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 定义样式</span><br><span class="line">    %% ==========================================</span><br><span class="line">    classDef dataNode fill:#f9f9f9,stroke:#333,stroke-width:2px;</span><br><span class="line">    classDef algoNode fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;</span><br><span class="line">    classDef task1Node fill:#fff3e0,stroke:#ff9800,stroke-width:3px;</span><br><span class="line">    classDef task2Node fill:#e8f5e9,stroke:#4caf50,stroke-width:3px;</span><br><span class="line"></span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 节点定义</span><br><span class="line">    %% ==========================================</span><br><span class="line">    IMG[/&quot;2D 图像对\n(Left &amp; Right)&quot;/]</span><br><span class="line">    MATCH(&quot;立体匹配算法\n(Stereo Matching)&quot;)</span><br><span class="line">    DISP[/&quot;2.5D 深度/视差图\n(Depth Map)&quot;/]</span><br><span class="line">    PROJ(&quot;空间反投影与融合\n(Projection &amp; Fusion)&quot;)</span><br><span class="line">    PC[/&quot;3D 点云\n(Point Cloud)&quot;/]</span><br><span class="line">    RECON(&quot;表面重建与网格化\n(Surface Reconstruction)&quot;)</span><br><span class="line">    MODEL[/&quot;纯正 3D 模型\n(3D Mesh / Model)&quot;/]</span><br><span class="line"></span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 连线</span><br><span class="line">    %% ==========================================</span><br><span class="line">    IMG --&gt; MATCH</span><br><span class="line">    MATCH --&gt;|&quot;输出&quot;| DISP</span><br><span class="line">    DISP --&gt; PROJ</span><br><span class="line">    PROJ --&gt;|&quot;生成&quot;| PC</span><br><span class="line">    PC --&gt; RECON</span><br><span class="line">    RECON --&gt;|&quot;输出&quot;| MODEL</span><br><span class="line"></span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 框选区域 (使用安全双引号)</span><br><span class="line">    %% ==========================================</span><br><span class="line">    subgraph stereo [&quot;属于立体匹配领域&quot;]</span><br><span class="line">        MATCH</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph recon [&quot;属于三维重建领域&quot;]</span><br><span class="line">        PROJ</span><br><span class="line">        PC</span><br><span class="line">        RECON</span><br><span class="line">        MODEL</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 统一分配样式</span><br><span class="line">    %% ==========================================</span><br><span class="line">    class IMG,DISP,PC,MODEL dataNode;</span><br><span class="line">    class PROJ algoNode;</span><br><span class="line">    class MATCH task1Node;</span><br><span class="line">    class RECON task2Node;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="代价体-Cost-Volume"><a href="#代价体-Cost-Volume" class="headerlink" title="代价体 Cost Volume"></a>代价体 Cost Volume</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>一种为了求解视差定值的数据结构，他是三维张量。</p>
+<p>在刚才的苹果匹配例子中，实际采用的是 <strong>穷举法打分</strong>：对于左图的一个像素点，在右图中把所有可能的视差偏移量（比如 0~192 像素）穷举一遍，每次都计算出左右两个 <em>像素块</em> 的相似度或者差异度（<em>代价</em>）。当这个代价最小，即两个像素块差异最小时，可以认为找到了匹配像素点。</p>
+<p>构建代价体的传统方法：</p>
+<ul>
+<li>传统方法：计算两个像素快的 <em>绝对误差和 SAD</em></li>
+<li>深度学习：提取左右图的高维特征矩阵，计算内积，相似度越高越好</li>
+</ul>
+<p><strong>把左图所有的像素 $(H \times W)$，针对所有可能的视差搜索范围 $(D)$，全部算出一个匹配得分后，把这些得分堆叠在一起，就形成了一个三维的张量（Tensor）—— 这就是代价体（Cost Volume）。</strong></p>
+<p>它的维度通常是：<strong>最大视差数 $(D) \times$ 图像高度 $(H) \times$ 图像宽度 $(W)$</strong>。</p>
+<p><img src="./双目相机匹配-stereo%20matching.assets/image-20260323215538996.png" alt="image-20260323215538996"></p>
+<ul>
+<li><p>关于这个坐标 D ($D$ / Disparity)，被称为通道维度或深度维度，它代表了所有的 <strong>候选视差值</strong>。</p>
+</li>
+<li><p>关于坐标 $(x, y, d)$ 的含义，每一个坐标存放一个数值（打分），这个数值代表了：左图的坐标 $(x, y)$ 这个像素，如果去和右图的坐标 $(x-d, y)$ 这个像素匹配，它们的“差异度（Cost）”或“相似度（Correlation）”有多大。</p>
+</li>
+</ul>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>有了这个存满打分值的三维张量，即可以求视差。</p>
+<p>如果这个数值 $f(x_0, y_0, d_0)$ 是相似度，那么这个数值的最大值 $f_m(x_0, y_0, d_0)$，对应的 $(x_0, y_0, d_0)$ 点，这个 $d_0$ 即为像素 $(x_0, y_0)$ 实际视差。</p>
+<p><strong>为什么要把它做成一个完整的三维张量？</strong> 如果只看单个像素，很容易受噪声干扰（比如一块纯白色的墙，右图哪个位置看起来都很像）。把所有像素的匹配得分整合到一个宏大的 3D 张量中后，现代深度学习模型（比如 3D CNN 或 3D 堆叠沙漏网络）就可以在这个大张量里进行 <strong>空间维度的平滑和上下文信息聚合</strong>。它可以参考周围像素的信息，把原本不明显的极值变得更加突出和准确。</p>
+<hr>
+<h2 id="3D-卷积正则化"><a href="#3D-卷积正则化" class="headerlink" title="3D 卷积正则化"></a>3D 卷积正则化</h2><p>Gwc 这篇论文代表的是 3D 匹配的卷积正则化的范式。在立体匹配和三维重建的语境下，<span style="color:#FF0000;">正则化=代价聚合=空间平滑</span>。严格意义上，代价聚合是目的，卷积正则化是手段。</p>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>在立体匹配的语境下，卷积正则化本质是为了 <strong>去噪</strong> 和 <strong>上下文投票</strong>。当我们构建好代价体后，他是一个堆评分</p>
+<p>Gwc 这篇论文使用 <strong>3D 堆叠沙漏网络</strong> 作为 3D 卷积正则化的工具。</p>
+<hr>
+<h2 id="求视差的基本流程"><a href="#求视差的基本流程" class="headerlink" title="求视差的基本流程"></a>求视差的基本流程</h2><p>一共分为五步，输入像素、提取特征向量、构建代价体、卷积正则化、视差回归。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    %% 定义样式</span><br><span class="line">    classDef inputNode fill:#f9f9f9,stroke:#333,stroke-width:2px;</span><br><span class="line">    classDef processNode fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;</span><br><span class="line">    classDef tensorNode fill:#fff3e0,stroke:#ff9800,stroke-width:2px,stroke-dasharray: 5 5;</span><br><span class="line">    classDef outputNode fill:#e8f5e9,stroke:#4caf50,stroke-width:2px;</span><br><span class="line">    classDef highlightNode fill:#ffebee,stroke:#f44336,stroke-width:3px;</span><br><span class="line"></span><br><span class="line">    subgraph step1 [&quot;Step 1: 输入 (Input)&quot;]</span><br><span class="line">        IL[/&quot;左图 (Left Image)\nTensor: (3, H, W)&quot;/]</span><br><span class="line">        IR[/&quot;右图 (Right Image)\nTensor: (3, H, W)&quot;/]</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph step2 [&quot;Step 2: 特征提取 (Feature Extraction)&quot;]</span><br><span class="line">        CNN(&quot;共享权重 2D CNN\n(如 ResNet 提特征)&quot;)</span><br><span class="line">        FL[/&quot;左图特征 (Left Features)\nTensor: (C, H, W)&quot;/]</span><br><span class="line">        FR[/&quot;右图特征 (Right Features)\nTensor: (C, H, W)&quot;/]</span><br><span class="line"></span><br><span class="line">        IL --&gt; CNN</span><br><span class="line">        IR --&gt; CNN</span><br><span class="line">        CNN --&gt; FL</span><br><span class="line">        CNN --&gt; FR</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph step3 [&quot;Step 3: 代价体构建 (Cost Volume Construction)&quot;]</span><br><span class="line">        GWC&#123;&quot;匹配度计算\n(核心:分组相关)&quot;&#125;</span><br><span class="line">        CV1[/&quot;初始代价体 (Initial Cost Volume)\nTensor: (Groups, D, H, W)&quot;/]</span><br><span class="line"></span><br><span class="line">        FL --&gt;|滑窗搜索| GWC</span><br><span class="line">        FR --&gt;|同源比对| GWC</span><br><span class="line">        GWC --&gt;|&quot;打包匹配得分&quot;| CV1</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph step4 [&quot;Step 4: 代价聚合 (Cost Aggregation)&quot;]</span><br><span class="line">        AGG(&quot;3D 卷积神经网络\n(如 3D Stacked Hourglass)&quot;)</span><br><span class="line">        CV2[/&quot;精炼代价体 (Refined Cost Volume)\nTensor: (1, D, H, W)&quot;/]</span><br><span class="line"></span><br><span class="line">        CV1 --&gt;|&quot;上下文过滤去噪&quot;| AGG</span><br><span class="line">        AGG --&gt;|&quot;输出所有视差概率分布&quot;| CV2</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph step5 [&quot;Step 5: 视差回归 (Disparity Regression)&quot;]</span><br><span class="line">        SARG(&quot;Soft-argmin 操作\n(概率加权求和)&quot;)</span><br><span class="line">        OUT[/&quot;终极输出：视差图 (Disparity Map)\nTensor: (1, H, W)&quot;/]</span><br><span class="line"></span><br><span class="line">        CV2 --&gt;|&quot;将概率转为连续数值&quot;| SARG</span><br><span class="line">        SARG --&gt; OUT</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 统一分配样式 (兼容 Typora 10.9+ 的最安全写法)</span><br><span class="line">    %% ==========================================</span><br><span class="line">    class IL,IR inputNode;</span><br><span class="line">    class CNN,AGG,SARG processNode;</span><br><span class="line">    class FL,FR,CV1,CV2 tensorNode;</span><br><span class="line">    class OUT outputNode;</span><br><span class="line">    class GWC highlightNode;</span><br></pre></td></tr></table></figure>
+<h3 id="关于这个流程"><a href="#关于这个流程" class="headerlink" title="关于这个流程"></a>关于这个流程</h3><p>这个流程本质上是计算机在做信号搜索与解码。</p>
+<h4 id="Step1-RGB像素输入"><a href="#Step1-RGB像素输入" class="headerlink" title="Step1 RGB像素输入"></a>Step1 RGB像素输入</h4><p>系统接收到左右图，为许多 RGB 像素点。但不能直接使用 RGB 原始像素去匹配，因为左右图相同颜色的点可能不止一对，引发歧义。</p>
+<h4 id="Step2-特征提取"><a href="#Step2-特征提取" class="headerlink" title="Step2 特征提取"></a>Step2 特征提取</h4><p>为解决歧义，使用 2D CNN <em>卷积神经网络</em>，将原本单薄的 RGB 像素被编码成了一个高维的 <strong>特征向量</strong>（比如 64 维度），, 然后 Pooling 进行降采样，这个特征向量包含了一个像素点高级征信息（如是否处于边缘、材质），是他的“指纹”。</p>
+<h4 id="Step3-构建代价体"><a href="#Step3-构建代价体" class="headerlink" title="Step3 构建代价体"></a>Step3 构建代价体</h4><p>根据特征向量，在右图的同一行寻找左图像素的对应点，假设最大视差范围是 192 个像素。系统会把左图的特征，与右图平移 0 到 192 个位置的特征分别进行比对（GwcNet 采用了 <strong>分组相关</strong>，按特征子空间分别计算相似度）。</p>
+<p>计算完毕构成了巨大的张亮 — 代价体。</p>
+<blockquote>
+<p>像素提取特征向量，经历了降采样的步骤，这时特征向量数量小于 RGB 像素数量，这时是怎么根据特征向量来构建代价体的？能够根据它直接对比吗？</p>
+<ol>
+<li><p>代价体是由“降采样”后的少量特征向量构成的</p>
+</li>
+<li><p>数学上比较高维向量的手段非常优雅</p>
+<p>在 CV 领域，比较两个高维特征向量（比如左右图都是 320 维的向量）相似度，向量内积。如果两个向量相似度高，方向指向相似，那么内积值会很大。如果积出来是复数或者是 0，那么关系很微弱。</p>
+</li>
+</ol>
+</blockquote>
+<h4 id="Step4-代价聚合"><a href="#Step4-代价聚合" class="headerlink" title="Step4 代价聚合"></a>Step4 代价聚合</h4><p>刚建好的代价体是非常嘈杂的，使用 <em>3D 卷积神经网络 CNN</em> 把代价体进行精炼，使其变成干净的概率分布体。</p>
+<h4 id="Step5-视差回归"><a href="#Step5-视差回归" class="headerlink" title="Step5 视差回归"></a>Step5 视差回归</h4><p>针对左图的某一个像素，我们沿着代价体的视差维度看过去，会得到一条平滑的概率曲线。理论上直接找最高点，即视差。但实际上要构建视差图：不直接取最高点（Argmax），而是使用 <em>Soft-argmin</em> 操作。它会对这条概率曲线进行加权求和（算期望值）。这样不仅能输出连续的、平滑的视差图，还能让整个网络保持“可微”状态，从而支持端到端的反向传播训练。</p>
+<h3 id="GwcNet"><a href="#GwcNet" class="headerlink" title="GwcNet"></a>GwcNet</h3><p>这篇论文的核心贡献在 Step3，提取出图像特征后构建代价体。</p>
+<hr>
+<h1 id="GwcNet-1"><a href="#GwcNet-1" class="headerlink" title="GwcNet"></a>GwcNet</h1><p>Group-wise Correlation Stereo Network (GwcNet)</p>
+<p>这篇论文属于双目立体匹配领域 <em>Stereo Matching</em>，是 2019CVPR 的会议论文。它提出了一种构建 <strong>代价体</strong> 的高效方法（GwcNet），方便求解视差。</p>
+<h2 id="背景-构建代价体的两难"><a href="#背景-构建代价体的两难" class="headerlink" title="背景 - 构建代价体的两难"></a>背景 - 构建代价体的两难</h2><p>极端一：全相关</p>
+<p>极端二：直接拼接</p>
+<p>折中解法：分组相关</p>
+<h2 id="核心贡献"><a href="#核心贡献" class="headerlink" title="核心贡献"></a>核心贡献</h2><h3 id="混合代价体（Combined-Volume）的互补设计"><a href="#混合代价体（Combined-Volume）的互补设计" class="headerlink" title="混合代价体（Combined Volume）的互补设计"></a>混合代价体（Combined Volume）的互补设计</h3><p>该方法将左右图提取的两组特征向量，沿着维度通道 <em>channel dimension</em> 划分成多个组。然后每一组的对应特征之间独立计算相关性。</p>
+<p><img src="./双目相机匹配-stereo%20matching.assets/c723c552-9b39-4627-88f8-957f917c3667.png" alt="c723c552-9b39-4627-88f8-957f917c3667"></p>
+<p>该图左侧（蓝色部分）是特征提取部分，使用 CNN 提取 <em>类似 ResNet</em> 分别对左图 ($I_L$) 和右图 ($I_R$) 提取特征。</p>
+<p>该图中间（橘色部分）为核心，分两路构建两个代价体，最后再合并 <em>Combined Volume</em> 。上面的分支 <em>Concat Volume</em> 把提取的特征压缩后，直接进行拼接；下路 <em>Group-Corr Volume</em> 为 <strong>分组相关代价体</strong>，下面这一路专门用来提供高精度的匹配相似度特征。</p>
+<blockquote>
+<p>需要注意的是并非左图只用 <em>直接拼接</em> , 右图只用 <em>分组相关</em> ，而是把左图和右图的代价体分成两半，一半用直接拼接，一半用分组相关，分别构建两个代价体，再合并起来，这在论文中被称为 <strong>Combined Volume（混合代价体）</strong>。</p>
+<p>这样做可以实现优势互补：</p>
+<ul>
+<li>分支 A（直接拼接代价体）：左右图各自压缩后直接拼接，他保留了绝对完整的上下文语义信息。能为后续的 3D 网络提供丰富的全局感知。</li>
+<li>分支 B（分组相关代价体）：左右图特征进行分组内积，计算精准的相似度得分，减轻 3D 网络推断相似度的负担。</li>
+</ul>
+</blockquote>
+<p>该图右侧，合并出混合代价体（粉色部分），最后通过 Soft-argmin 输出黑白的视差图。</p>
+<h3 id="分组相关-Group-Wise-Correlation"><a href="#分组相关-Group-Wise-Correlation" class="headerlink" title="分组相关 Group Wise Correlation"></a>分组相关 Group Wise Correlation</h3><p>那么分组相关的具体细节是怎么实现的呢？这个主要在论文 <strong>3.2 节 (Group-wise correlation volume)</strong> 中，有严格的数学定义。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 定义全局美观样式 (兼容性极强版)</span><br><span class="line">    %% ==========================================</span><br><span class="line">    classDef inputNode fill:#e8eaf6,stroke:#3f51b5,stroke-width:2px,color:#1a237e;</span><br><span class="line">    classDef splitNode fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#f57f17,stroke-dasharray: 4 4;</span><br><span class="line">    classDef mathNode fill:#ffebee,stroke:#d32f2f,stroke-width:3px,color:#b71c1c;</span><br><span class="line">    classDef loopNode fill:#e0f7fa,stroke:#0097a7,stroke-width:2px,color:#006064;</span><br><span class="line">    classDef outputNode fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#1b5e20;</span><br><span class="line"></span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 阶段 1：提取的单像素高维特征输入</span><br><span class="line">    %% ==========================================</span><br><span class="line">    subgraph Stage1 [&quot;阶段 1: 提取单像素高维特征&quot;]</span><br><span class="line">        P_L[/&quot;左图像素的特征向量\n形状: 长度为 320 的 1D 张量&quot;/]</span><br><span class="line">        P_R[/&quot;右图候选像素的特征向量\n形状: 长度为 320 的 1D 张量&quot;/]</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 阶段 2：通道维度的切分 (核心操作)</span><br><span class="line">    %% ==========================================</span><br><span class="line">    subgraph Stage2 [&quot;阶段 2: 通道分组拆解&quot;]</span><br><span class="line">        SPLIT&#123;&quot;按通道均匀切分\n(总通道 320 / 组数 40)&quot;&#125;</span><br><span class="line">        G_L[/&quot;左图 40 个小组特征\n每组包含 8 个维度的子特征&quot;/]</span><br><span class="line">        G_R[/&quot;右图 40 个小组特征\n每组包含 8 个维度的子特征&quot;/]</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 阶段 3：组内相似度计算 (数学原点)</span><br><span class="line">    %% ==========================================</span><br><span class="line">    subgraph Stage3 [&quot;阶段 3: 组内数学计算 (Dot Product)&quot;]</span><br><span class="line">        MATH(&quot;内积运算\n将 8 维向量对应元素相乘再相加&quot;)</span><br><span class="line">        SCORE[/&quot;标量得分\n提取出 1 个维度的&#x27;组相似度&#x27;&quot;/]</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 阶段 4：遍历收集与视差穷举</span><br><span class="line">    %% ==========================================</span><br><span class="line">    subgraph Stage4 [&quot;阶段 4: 遍历收集与空间滑动&quot;]</span><br><span class="line">        LOOP_G(&quot;循环 1: 遍历 40 个通道组\n(生成 40 个独立的相似度打分)&quot;)</span><br><span class="line">        VEC_40[/&quot;单点匹配度向量\n形状: 长度为 40 的 1D 张量&quot;/]</span><br><span class="line">        </span><br><span class="line">        LOOP_D(&quot;循环 2: 沿着视差层级 d 滑动\n(遍历所有候选匹配位置)&quot;)</span><br><span class="line">        MAT_D[/&quot;该像素的所有视差匹配图\n形状: D/4 x 40 的 2D 张量&quot;/]</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 阶段 5：打包生成最终代价体</span><br><span class="line">    %% ==========================================</span><br><span class="line">    subgraph Stage5 [&quot;阶段 5: 打包生成全局代价体&quot;]</span><br><span class="line">        PACK(&quot;将全图所有像素的匹配图进行空间打包&quot;)</span><br><span class="line">        FINAL_CV[/&quot;终极产出：分组相关代价体\nShape: (40, D/4, H/4, W/4)\n包含 40 种维度的全空间打分表&quot;/]</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 连接流程线</span><br><span class="line">    %% ==========================================</span><br><span class="line">    P_L --&gt; SPLIT</span><br><span class="line">    P_R --&gt; SPLIT</span><br><span class="line">    </span><br><span class="line">    SPLIT --&gt;|&quot;切分左特征&quot;| G_L</span><br><span class="line">    SPLIT --&gt;|&quot;切分右特征&quot;| G_R</span><br><span class="line">    </span><br><span class="line">    G_L --&gt;|&quot;取出第 g 组 (8维)&quot;| MATH</span><br><span class="line">    G_R --&gt;|&quot;取出第 g 组 (8维)&quot;| MATH</span><br><span class="line">    </span><br><span class="line">    MATH --&gt;|&quot;坍缩降维&quot;| SCORE</span><br><span class="line">    </span><br><span class="line">    SCORE --&gt; LOOP_G</span><br><span class="line">    LOOP_G --&gt;|&quot;聚合成一根向量&quot;| VEC_40</span><br><span class="line">    </span><br><span class="line">    VEC_40 --&gt; LOOP_D</span><br><span class="line">    LOOP_D --&gt;|&quot;拼接所有候选视差&quot;| MAT_D</span><br><span class="line">    </span><br><span class="line">    MAT_D --&gt; PACK</span><br><span class="line">    PACK --&gt; FINAL_CV</span><br><span class="line"></span><br><span class="line">    %% ==========================================</span><br><span class="line">    %% 统一分配 CSS 样式</span><br><span class="line">    %% ==========================================</span><br><span class="line">    class P_L,P_R inputNode;</span><br><span class="line">    class SPLIT,G_L,G_R splitNode;</span><br><span class="line">    class MATH,SCORE mathNode;</span><br><span class="line">    class LOOP_G,VEC_40,LOOP_D,MAT_D loopNode;</span><br><span class="line">    class PACK,FINAL_CV outputNode;</span><br></pre></td></tr></table></figure>
+<p>可以用张量流转的思路理解：</p>
+<h3 id="改进的-3D-堆叠沙漏聚合网络"><a href="#改进的-3D-堆叠沙漏聚合网络" class="headerlink" title="改进的 3D 堆叠沙漏聚合网络"></a>改进的 3D 堆叠沙漏聚合网络</h3><p><img src="./双目相机匹配-stereo%20matching.assets/c583c125-535a-420d-8dfd-5cb20ca70c5c.png" alt="c583c125-535a-420d-8dfd-5cb20ca70c5c"></p>
+<p>这是将上一图中 <strong>粉色方块（3D aggregation network）</strong> 的内部结构。主要作痛是代价聚合、空间正则化。</p>
 ]]></content>
+      <categories>
+        <category>科研学习</category>
+      </categories>
+      <tags>
+        <tag>CV</tag>
+        <tag>stereo matching</tag>
+        <tag>GwcNet</tag>
+      </tags>
   </entry>
   <entry>
     <title>降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南</title>
@@ -80,146 +223,161 @@
       </tags>
   </entry>
   <entry>
-    <title>双目相机立体匹配-stereo matching</title>
-    <url>/2026/03/23/%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/</url>
-    <content><![CDATA[<p>[TOC]</p>
-<h1 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h1><p>最近在学习CV相关的双目相机立体匹配<strong>Stereo Matching</strong>，本文是关于GwcNet的一些学习和思考。开始之前，先需要理解几个概念：视差、双目相机匹配、代价体。</p>
-<h2 id="RGB像素"><a href="#RGB像素" class="headerlink" title="RGB像素"></a>RGB像素</h2><p>图像由像素组成，一张 1920x1080 分辨率的屏幕就代表有1920x1080个像素。RGB代表光的三原色。R=Red，G=Green，B=Blue。这三种颜色通过不同的亮度组合可以形成各种颜色。计算机给每种颜色的亮度划分了 <strong>0 ~ 255</strong> 共 256 个等级。</p>
-<p>可以计算出，三种原色，256种亮度，可以组合出$256^3≈1677万$中颜色。</p>
-<p>每一个彩色图像的像素点都由红、绿、蓝三个发光的子像素（Sub-pixels，可以理解为三个微型 LED 灯）紧挨着组成的，可以看成一个三维向量：<strong>(R, G, B)</strong>，比如 <code>(255, 0, 0)</code> 代表纯红。这是<strong>原始像素</strong>。</p>
-<h2 id="像素的高维特征向量"><a href="#像素的高维特征向量" class="headerlink" title="像素的高维特征向量"></a>像素的高维特征向量</h2><p>一个图像有1024个像素，理论上特征向量也有1024个，一一对应，相当于给每一个像素发一张“高维身份证”。但在工程上，使用 CNN 提取高维特征向量十分消耗显存，如果像素和特征向量 1:1 很容易爆显存。</p>
-<p>所以要<em>降采样</em> : 使用“步长卷积（Stride Convolution）”或“池化（Pooling）”将图像<strong>缩小（降采样）</strong>。比如在比如 GwcNet 中，特征图的宽和高都被缩小到了原来的 $1/4$。</p>
-<p>假设原本像素为$32×32$，降采样1/4后得到 $8*8=64$个特征向量。此时这 64 个特征向量里的每一个，代表的不再是单个像素，而是一小块区域（感受野）的特征汇总。</p>
-<h2 id="视差"><a href="#视差" class="headerlink" title="视差"></a>视差</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>有一个理想的双目相机系统，两个相机的成像平面是共面和行对齐的，左图中某个点，与对应右图中的匹配点在同一个水平线上。</p>
-<p>如果空间中有一个三维点 $P$，它在左图的像素坐标是 $(u_L, v)$，在右图的对应坐标是 $(u_R, v)$ （注意纵坐标 $v$ 是一样的），那么这个点的视差 $d$ 就是它们在水平方向上的坐标差：</p>
-<script type="math/tex; mode=display">
-d = u_L - u_R</script><p>这就是视差。它是一个<strong>标量</strong>，单位是<strong>像素（Pixel）</strong>。</p>
-<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p>视差可以用来求一个像素点的深度（Depth），就是像素点对应的物体实际离相机的距离。具体公式为：</p>
-<script type="math/tex; mode=display">
-Z = \frac{f \cdot B}{d}</script><p>Z为深度，f为相机焦距，B为基线（左右两个相机光心之间的物理距离），d为视差</p>
-<p><img src="https://raw.githubusercontent.com/TakamiyaMioo/images/main/2026_3/视差.png" alt="视差"></p>
-<h3 id="学术"><a href="#学术" class="headerlink" title="学术"></a>学术</h3><p>当前有一些立体匹配网络，基于代价体构建的GwcNet、IGEV，基于循环迭代的RAFT-Stereo。这些网络本质都是求视差d，即为左图的一个像素点，在右图如何寻找最准确的对应点求出视差<script type="math/tex">d</script>。</p>
-<p><em>简而言之，视差是连接2D图像特征和3D几何物理世界的桥梁。</em></p>
-<h2 id="双目相机的匹配"><a href="#双目相机的匹配" class="headerlink" title="双目相机的匹配"></a>双目相机的匹配</h2><h3 id="核心任务"><a href="#核心任务" class="headerlink" title="核心任务"></a>核心任务</h3><p>在左右两张图像中，把显示中同一个物理点的像素点找出来。（<em>寻找同名点</em>）</p>
-<p>这里举一个实例</p>
-<blockquote>
-<p>使用双目相机拍摄一个苹果。苹果的果梗在左相机<script type="math/tex">(u_L,v)</script>，在右相机的<script type="math/tex">(u_R,v)</script>。使用人眼很容易根据经验找出两幅图像的相同像素点。但是计算机需要一种算法，当它拿到左图果梗的像素时，能去右图里<strong>精确地“匹配”到</strong>对应的那个像素。</p>
-<p>事先要对相机做<strong>极线校正</strong>，使双目向机成像水平，这样找一点在另一图像中像素点，只需要沿着水平方向滑动搜索。</p>
-</blockquote>
-<h2 id="代价体"><a href="#代价体" class="headerlink" title="代价体"></a>代价体</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>Cost Volume，一种为了求解视差定值的数据结构，他是三维张量。</p>
-<p>在刚才的苹果匹配例子中，实际采用的是<strong>穷举法打分</strong>：对于左图的一个像素点，在右图中把所有可能的视差偏移量（比如0~192像素）穷举一遍，每次都计算出左右两个<em>像素块</em>的相似度或者差异度（<em>代价</em>）。当这个代价最小，即两个像素块差异最小时，可以认为找到了匹配像素点。</p>
-<p>有一些传统方法：</p>
-<ul>
-<li>传统方法：计算两个像素快的<em>绝对误差和 SAD</em></li>
-<li>深度学习：提取左右图的高维特征矩阵，计算内积，相似度越高越好</li>
-</ul>
-<p><strong>把左图所有的像素 $(H \times W)$，针对所有可能的视差搜索范围 $(D)$，全部算出一个匹配得分后，把这些得分堆叠在一起，就形成了一个三维的张量（Tensor）—— 这就是代价体（Cost Volume）。</strong></p>
-<p>它的维度通常是：<strong>最大视差数 $(D) \times$ 图像高度 $(H) \times$ 图像宽度 $(W)$</strong>。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/TakamiyaMioo/images@main/2026_3/代价体.png" alt="代价体"></p>
-<ul>
-<li><p>关于这个坐标D ($D$ / Disparity)，被称为通道维度或深度维度，它代表了所有的<strong>候选视差值</strong>。</p>
-</li>
-<li><p>关于坐标$(x, y, d)$的含义，每一个坐标存放一个数值（打分），这个数值代表了：左图的坐标 $(x, y)$ 这个像素，如果去和右图的坐标 $(x-d, y)$ 这个像素匹配，它们的“差异度（Cost）”或“相似度（Correlation）”有多大。</p>
-</li>
-</ul>
-<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>有了这个存满打分值的三维张量，即可以求视差。</p>
-<p>如果这个数值$f(x_0, y_0, d_0)$是相似度，那么这个数值的最大值$f_m(x_0, y_0, d_0)$，对应的$(x_0, y_0, d_0)$点，这个$d_0$即为像素$(x_0, y_0)$实际视差。</p>
-<p><strong>为什么要把它做成一个完整的三维张量？</strong> 如果只看单个像素，很容易受噪声干扰（比如一块纯白色的墙，右图哪个位置看起来都很像）。把所有像素的匹配得分整合到一个宏大的 3D 张量中后，现代深度学习模型（比如 3D CNN 或 3D 堆叠沙漏网络）就可以在这个大张量里进行<strong>空间维度的平滑和上下文信息聚合</strong>。它可以参考周围像素的信息，把原本不明显的极值变得更加突出和准确。</p>
-<h2 id="求视差的基本流程"><a href="#求视差的基本流程" class="headerlink" title="求视差的基本流程"></a>求视差的基本流程</h2><div class="mermaid-wrap"><pre class="mermaid-src" data-config="{}" hidden>
-    graph TD
-    %% 定义样式
-    classDef inputNode fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef processNode fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;
-    classDef tensorNode fill:#fff3e0,stroke:#ff9800,stroke-width:2px,stroke-dasharray: 5 5;
-    classDef outputNode fill:#e8f5e9,stroke:#4caf50,stroke-width:2px;
-    classDef highlightNode fill:#ffebee,stroke:#f44336,stroke-width:3px;
-
-    subgraph step1 [&quot;Step 1: 输入 (Input)&quot;]
-        IL[&#x2F;&quot;左图 (Left Image)\nTensor: (3, H, W)&quot;&#x2F;]
-        IR[&#x2F;&quot;右图 (Right Image)\nTensor: (3, H, W)&quot;&#x2F;]
-    end
-
-    subgraph step2 [&quot;Step 2: 特征提取 (Feature Extraction)&quot;]
-        CNN(&quot;共享权重 2D CNN\n(如 ResNet 提特征)&quot;)
-        FL[&#x2F;&quot;左图特征 (Left Features)\nTensor: (C, H, W)&quot;&#x2F;]
-        FR[&#x2F;&quot;右图特征 (Right Features)\nTensor: (C, H, W)&quot;&#x2F;]
-
-        IL --&gt; CNN
-        IR --&gt; CNN
-        CNN --&gt; FL
-        CNN --&gt; FR
-    end
-
-    subgraph step3 [&quot;Step 3: 代价体构建 (Cost Volume Construction)&quot;]
-        GWC{&quot;匹配度计算\n(核心:分组相关)&quot;}
-        CV1[&#x2F;&quot;初始代价体 (Initial Cost Volume)\nTensor: (Groups, D, H, W)&quot;&#x2F;]
-
-        FL --&gt;|滑窗搜索| GWC
-        FR --&gt;|同源比对| GWC
-        GWC --&gt;|&quot;打包匹配得分&quot;| CV1
-    end
-
-    subgraph step4 [&quot;Step 4: 代价聚合 (Cost Aggregation)&quot;]
-        AGG(&quot;3D 卷积神经网络\n(如 3D Stacked Hourglass)&quot;)
-        CV2[&#x2F;&quot;精炼代价体 (Refined Cost Volume)\nTensor: (1, D, H, W)&quot;&#x2F;]
-
-        CV1 --&gt;|&quot;上下文过滤去噪&quot;| AGG
-        AGG --&gt;|&quot;输出所有视差概率分布&quot;| CV2
-    end
-
-    subgraph step5 [&quot;Step 5: 视差回归 (Disparity Regression)&quot;]
-        SARG(&quot;Soft-argmin 操作\n(概率加权求和)&quot;)
-        OUT[&#x2F;&quot;终极输出：视差图 (Disparity Map)\nTensor: (1, H, W)&quot;&#x2F;]
-
-        CV2 --&gt;|&quot;将概率转为连续数值&quot;| SARG
-        SARG --&gt; OUT
-    end
-
-    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
-    %% 统一分配样式 (兼容 Typora 10.9+ 的最安全写法)
-    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
-    class IL,IR inputNode;
-    class CNN,AGG,SARG processNode;
-    class FL,FR,CV1,CV2 tensorNode;
-    class OUT outputNode;
-    class GWC highlightNode;
-  </pre></div>
-<h3 id="关于这个流程"><a href="#关于这个流程" class="headerlink" title="关于这个流程"></a>关于这个流程</h3><p>这个流程本质上是计算机在做信号搜索与解码。</p>
-<h4 id="Step1-RGB像素输入"><a href="#Step1-RGB像素输入" class="headerlink" title="Step1 RGB像素输入"></a>Step1 RGB像素输入</h4><p>系统接收到左右图，为许多RGB像素点。但不能直接使用RGB原始像素去匹配，因为左右图相同颜色的点可能不止一对，引发歧义。</p>
-<h4 id="Step2-特征提取"><a href="#Step2-特征提取" class="headerlink" title="Step2 特征提取"></a>Step2 特征提取</h4><p>为解决歧义，使用2D CNN<em>卷积神经网络</em>，将原本单薄的 RGB 像素被编码成了一个高维的<strong>特征向量</strong>（比如64维度），,然后Pooling进行降采样，这个特征向量包含了一个像素点高级征信息（如是否处于边缘、材质），是他的“指纹”。</p>
-<h4 id="Step3-构建Cost-Volume"><a href="#Step3-构建Cost-Volume" class="headerlink" title="Step3 构建Cost Volume"></a>Step3 构建Cost Volume</h4><p>根据特征向量，在右图的同一行寻找左图像素的对应点，假设最大视差范围是 192 个像素。系统会把左图的特征，与右图平移 0 到 192 个位置的特征分别进行比对（GwcNet 采用了<strong>分组相关</strong>，按特征子空间分别计算相似度）。</p>
-<p>计算完毕构成了巨大的张亮 — 代价体。</p>
-<blockquote>
-<p>像素提取特征向量，经历了降采样的步骤，这时特征向量数量小于RGB像素数量，这时是怎么根据特征向量来构建代价体的？能够根据它直接对比吗？</p>
+    <title>Hello World</title>
+    <url>/2026/03/02/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流</title>
+    <url>/2026/03/18/%E7%A7%91%E7%A0%94%E5%88%A9%E5%99%A8%EF%BC%9A%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7-Zotero-%E8%BF%9B%E9%98%B6%E6%8A%98%E8%85%BE%E6%8C%87%E5%8D%97%E4%B8%8E-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/</url>
+    <content><![CDATA[<p>市面上文献管理工具不少，EndNote 老牌但 UI 极其复古且收费，Mendeley 经常同步抽风。折腾了一圈，最终让我把几十篇文献和笔记托付出去的，只有 <strong>Zotero</strong>。</p>
+<p>特别是在 Zotero 7 更新后，底层的重构让它的顺滑度有了质的飞跃。今天不讲废话，直接聊聊怎么把这个开源工具打造成武装到牙齿的科研外脑。</p>
+<h2 id="一、-为什么是-Zotero？"><a href="#一、-为什么是-Zotero？" class="headerlink" title="一、 为什么是 Zotero？"></a>一、 为什么是 Zotero？</h2><p>Zotero 最戳中技术极客的点在于：<strong>完全开源、数据掌握在自己手里、生态无敌。</strong></p>
+<p>它的基础工作流极其优雅：</p>
 <ol>
-<li><p>代价体是由“降采样”后的少量特征向量构成的</p>
-</li>
-<li><p>数学上比较高维向量的手段非常优雅</p>
-<p>在CV领域，比较两个高维特征向量（比如左右图都是320维的向量）相似度，向量内积。如果两个向量相似度高，方向指向相似，那么内积值会很大。如果积出来是复数或者是0，那么关系很微弱。</p>
-</li>
+<li><strong>一键抓取</strong>：装上浏览器插件 <code>Zotero Connector</code>。逛 IEEE 或 arXiv 看到好文章，点一下浏览器右上角，PDF 原文、作者、年份、期刊 Metadata 直接进库。</li>
+<li><strong>多端同步</strong>：别用它自带的那点可怜的免费空间。直接在设置里通过 WebDAV 挂载坚果云或者你自己的服务器，实现文献库的无缝同步。</li>
+<li><strong>沉浸阅读</strong>：Zotero 7 内置的阅读器已经完全够用了，高亮、截图、划线，还能自动把标注提取成 Markdown 笔记。</li>
 </ol>
+<blockquote>
+<p><strong>吐槽一下</strong>：很多新手连 Metadata（元数据）都不抓，直接把 PDF 拖进软件里，文件名全是一串乱码。拜托，文献管理的本质是构建数据库，没有干净的元数据，后期检索和引用就是一场灾难。</p>
 </blockquote>
-<h4 id="Step4-代价聚合"><a href="#Step4-代价聚合" class="headerlink" title="　Step4 代价聚合"></a>　Step4 代价聚合</h4><p>刚建好的代价体是非常嘈杂的，使用<em>3D卷积神经网络CNN</em>把代价体进行精炼，使其变成干净的概率分布体。</p>
-<h4 id="Step5-视差回归"><a href="#Step5-视差回归" class="headerlink" title="Step5 视差回归"></a>Step5 视差回归</h4><p>针对左图的某一个像素，我们沿着代价体的视差维度看过去，会得到一条平滑的概率曲线。理论上直接找最高点，即视差。但实际上要构建视差图：<em>不直接取最高点（Argmax），而是使用 <strong>Soft-argmin</strong> 操作。它会对这条概率曲线进行加权求和（算期望值）。这样不仅能输出连续的、平滑的视差图，还能让整个网络保持“可微”状态，从而支持端到端的反向传播训练。</em></p>
-<h3 id="GwcNet"><a href="#GwcNet" class="headerlink" title="GwcNet"></a>GwcNet</h3><p>这篇论文的核心贡献在Step3，提取出图像特征后构建代价体。</p>
-<hr>
-<h1 id="GwcNet-1"><a href="#GwcNet-1" class="headerlink" title="GwcNet"></a>GwcNet</h1><p>Group-wise Correlation Stereo Network (GwcNet)</p>
-<p>这篇论文属于双目立体匹配领域<em>Stereo Matching</em>，是2019CVPR的会议论文。它提出了一种构建<strong>代价体</strong>的高效方法（GwcNet），方便求解视差。</p>
-<h2 id="背景-构建代价体的两难"><a href="#背景-构建代价体的两难" class="headerlink" title="背景 - 构建代价体的两难"></a>背景 - 构建代价体的两难</h2><p>极端一：全相关</p>
-<p>极端二：直接拼接</p>
-<p>折中解法：分组相关</p>
-<h2 id="核心贡献"><a href="#核心贡献" class="headerlink" title="核心贡献"></a>核心贡献</h2><h3 id="分组相关-Group-Wise-Correlation"><a href="#分组相关-Group-Wise-Correlation" class="headerlink" title="分组相关 Group Wise Correlation"></a>分组相关 Group Wise Correlation</h3><p>该方法将左右图提取的两组特征向量，沿着维度通道<em>channel dimension</em> 划分成多个组。然后每一组的对应特征之间独立计算相关性。</p>
-<p><img src="D:\Typora\picture\c723c552-9b39-4627-88f8-957f917c3667.png" alt="c723c552-9b39-4627-88f8-957f917c3667"></p>
-<h3 id="改进的-3D-堆叠沙漏聚合网络"><a href="#改进的-3D-堆叠沙漏聚合网络" class="headerlink" title="改进的 3D 堆叠沙漏聚合网络"></a>改进的 3D 堆叠沙漏聚合网络</h3><p><img src="D:\Typora\picture\c583c125-535a-420d-8dfd-5cb20ca70c5c.png" alt="c583c125-535a-420d-8dfd-5cb20ca70c5c"></p>
-<h3 id="混合代价体（Combined-Volume）的互补设计"><a href="#混合代价体（Combined-Volume）的互补设计" class="headerlink" title="混合代价体（Combined Volume）的互补设计"></a>混合代价体（Combined Volume）的互补设计</h3>]]></content>
+<h2 id="二、-核心插件：把生产力拉满"><a href="#二、-核心插件：把生产力拉满" class="headerlink" title="二、 核心插件：把生产力拉满"></a>二、 核心插件：把生产力拉满</h2><p>Zotero 就是一个毛坯房，真正的精装修全靠社区那群用爱发电的开发者。</p>
+<p><em>【图片位置 2：放一张 Zotero 附加组件（Add-ons）管理界面的截图，展示你安装的几个核心插件列表。】</em></p>
+<h3 id="1-翻译与阅读辅助：Zotero-PDF-Translate"><a href="#1-翻译与阅读辅助：Zotero-PDF-Translate" class="headerlink" title="1. 翻译与阅读辅助：Zotero PDF Translate"></a>1. 翻译与阅读辅助：Zotero PDF Translate</h3><p>啃外文文献，尤其是那种通篇长难句的硬核论文，翻译插件是刚需。它可以实现 PDF 划词翻译，并且在文献列表里直接把标题和摘要翻译成中文。支持 DeepL 和 Google 引擎，翻译质量非常能打。</p>
+<h3 id="2-个性化与进度管理：Zotero-Style"><a href="#2-个性化与进度管理：Zotero-Style" class="headerlink" title="2. 个性化与进度管理：Zotero Style"></a>2. 个性化与进度管理：Zotero Style</h3><p>默认的列表太素了。装上它，你可以给不同的标签设置显眼的颜色。最戳我痛点的是它的<strong>阅读进度条</strong>功能。哪篇看了一半，哪篇完全没动，列表里一目了然，专治各种“屯论文不看”的拖延症。</p>
+<h3 id="3-学术写作的终极浪漫：Better-BibTeX-BBT"><a href="#3-学术写作的终极浪漫：Better-BibTeX-BBT" class="headerlink" title="3. 学术写作的终极浪漫：Better BibTeX (BBT)"></a>3. 学术写作的终极浪漫：Better BibTeX (BBT)</h3><p>这玩意儿是我强推 Zotero 的核心原因。平时写 Report 或者跑论文，如果不用 LaTeX + VS Code，那排版简直是反人类。<br>BBT 可以自动为你的每一篇文献生成独一无二的 Citation Key（引用键），并且能<strong>实时静默同步</strong> <code>.bib</code> 文件到你的本地项目里。你在 Zotero 里刚抓了一篇新论文，切到 VS Code 里马上就能 <code>\cite{}</code> 出来，丝滑得让人感动。</p>
+<h2 id="三、-重头戏：接入大语言模型-AIdea-插件配置"><a href="#三、-重头戏：接入大语言模型-AIdea-插件配置" class="headerlink" title="三、 重头戏：接入大语言模型 (AIdea 插件配置)"></a>三、 重头戏：接入大语言模型 (AIdea 插件配置)</h2><p>AIGC 时代，看论文不带个 AI 助手，就像蒙着眼睛走路。我试过很多所谓的“AI 读论文”插件，很多都要自己配 API Key，稍微问多点，几十万 Token 跑没，钱包就在滴血。</p>
+<p>目前我最推荐、也是我主力在用的是 <strong>AIdea</strong>。</p>
+<p><em>【图片位置 3：放一张你正在阅读某篇论文（例如之前看的那篇 Group-wise Correlation 相关的视觉论文），右侧开着 AIdea 侧边栏，正在让大模型总结文章核心贡献的截图。】</em></p>
+<h3 id="1-为什么选-AIdea？（白嫖的快乐）"><a href="#1-为什么选-AIdea？（白嫖的快乐）" class="headerlink" title="1. 为什么选 AIdea？（白嫖的快乐）"></a>1. 为什么选 AIdea？（白嫖的快乐）</h3><p>它最大的亮点是支持 <strong>OAuth 授权登录</strong>，直接绕开了繁琐的 API 密钥配置。<br>如果你有通过了学生认证的 GitHub 账号，强烈建议直接在插件里走 GitHub Copilot 授权。这就相当于你可以接近无限量、免费地在侧边栏调用 GPT-4 级别的模型。一边看复杂的网络架构图，一边让 AI 帮你拆解算法逻辑，效率翻倍。</p>
+<h3 id="2-避坑指南：模型别乱选"><a href="#2-避坑指南：模型别乱选" class="headerlink" title="2. 避坑指南：模型别乱选"></a>2. 避坑指南：模型别乱选</h3><p>这里分享一个刚踩过的坑。很多同学在插件里配好了环境，一发问就报错：<code>System message must be at the beginning</code>。</p>
+<p>这通常是因为<strong>选错了模型接口</strong>。比如你想让 AI 总结全文，却在底下的下拉菜单里手滑选了 <code>vision-model</code>（专门用来识别图像的视觉模型），或者选了代码补全的 <code>coder-model</code>。接口数据格式对不上，服务器直接无情拒绝。</p>
+<p><strong>正确的姿势</strong>：<br>日常做全文总结、解释数学公式、提炼创新点，老老实实在模型列表里选择纯文本的巨头——比如 <code>claude-opus</code> 系列，或者你本地配好 CLI 的 <code>gemini-pro</code>，再或者是 Copilot 里的常规模型。把专业的活儿交给对的模型。</p>
+<h2 id="四、-总结"><a href="#四、-总结" class="headerlink" title="四、 总结"></a>四、 总结</h2><p>工具永远只是手段，真正的科研还是得靠自己掉头发。但一套配置调优的 Zotero + BBT 自动化引用 + AIdea 侧边栏，至少能让你在跟各种前沿论文死磕时，手里的兵器稍微锋利一点。</p>
+<p>别折腾了，赶紧去看论文吧。</p>
+]]></content>
       <categories>
-        <category>科研学习</category>
+        <category>折腾笔记</category>
       </categories>
       <tags>
-        <tag>CV</tag>
-        <tag>stereo matching</tag>
-        <tag>GwcNet</tag>
+        <tag>科研工具</tag>
+        <tag>Zotero</tag>
+        <tag>AIGC</tag>
+        <tag>效率</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>让 Agent 自动发博客 &amp; github一些常见网络问题</title>
+    <url>/2026/03/17/%E8%AE%A9-AI-Agent-%E8%87%AA%E5%8A%A8%E5%8F%91%E5%8D%9A%E5%AE%A2%EF%BC%9F%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%9B%B2%E6%8A%98%E7%9A%84-Debug-%E5%AE%9E%E5%BD%95/</url>
+    <content><![CDATA[<p>我在平时开发、学习时非常讨厌一些网络问题，这些网络问题大多是GFW导致的。其实在这之外，Github的联网也有一些问题。</p>
+<p>最近在本地终端折腾 OpenAI Codex。既然它能直接操作本地文件，我就在尝试：<strong>能直接用一句话命令它，帮我在本地生成一篇 Hexo 博客的 Markdown 文件，然后自动执行部署命令推送到我的 GitHub Pages 上？</strong></p>
+<p>预期中的剧本很简单：创建文件 -&gt; 补充 Front-matter -&gt; 执行 <code>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code> -&gt; 完美收工。</p>
+<p>但这终究只是预期。当这个自动化链路真正在 Windows 纯命令行环境下跑起来时，现实并不顺利。短短几分钟里，我精准踩中了从网络协议、进程交互到环境变量的各种底层大坑。</p>
+<p>以下是这次翻车与填坑的完整记录。如果你也在尝试把 AI Agent 接入本地工作流，这篇避坑指南应该能帮你省下大半天的 Debug 时间。</p>
+<h2 id="1-刚出门就撞墙，WebSocket-报错-10061"><a href="#1-刚出门就撞墙，WebSocket-报错-10061" class="headerlink" title="1. 刚出门就撞墙，WebSocket 报错 10061"></a>1. 刚出门就撞墙，WebSocket 报错 10061</h2><p>当指示 Agent 在本地执行脚手架命令 <code>hexo new post &quot;codex测试&quot;</code> 时，终端直接甩给我一行红字：<br><code>Falling back from WebSockets to HTTPS transport... (os error 10061)</code></p>
+<p><strong>排查与解决：</strong><br>这其实是个经典的网络代理问题。现在的终端 Agent 为了响应快，默认优先尝试建立 WebSocket 长连接。但在咱们的网络环境下，如果终端代理没配好，这个长连接请求就会被系统直接拒绝（10061 就是典型的 <code>WSAECONNREFUSED</code> 报错）。</p>
+<p>好在 Agent 比较聪明，握手失败后会自动降级到普通的 HTTPS 去拉取数据，不影响它继续干活。但为了避免每次都浪费时间重试，最根本的解决办法还是老老实实在终端里把环境变量挂上：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 确保当前终端走本地的代理端口</span></span><br><span class="line"><span class="variable">$env:HTTPS_PROXY</span>=<span class="string">&quot;[http://127.0.0.1](http://127.0.0.1):YOUR_PORT&quot;</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-静默执行遇上密码弹窗，进程直接卡死"><a href="#2-静默执行遇上密码弹窗，进程直接卡死" class="headerlink" title="2. 静默执行遇上密码弹窗，进程直接卡死"></a>2. 静默执行遇上密码弹窗，进程直接卡死</h2><p>Agent 成功写好了 Markdown 原稿，接着进入最后一步，准备调用 <code>hexo d</code> 把生成的静态页面推送到 GitHub。结果进程直接崩溃了：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Error: Spawn failed... (无法读取用户名/密码，/dev/tty 不可用)</span><br></pre></td></tr></table></figure>
+<p><strong>排查与解决：</strong></p>
+<p>这纯属是“无头环境”（Headless）引发的问题。</p>
+<p>我之前推送代码走的是 HTTPS 协议，平时手动敲 <code>hexo d</code> 时，Git 会弹出一个凭据窗口让我授权或者输入密码。但现在是 Agent 在后台子进程里敲命令，它是一个没有显示器也没有键盘的“幽灵”，根本接不住这个弹窗，找不到可用的 <code>/dev/tty</code>（终端输入设备），于是进程当场假死。</p>
+<p>加上 GitHub 早就禁用了密码推送，所以这里的唯一解法，就是<strong>彻底放弃 HTTPS，给本地配置 SSH 密钥免密登录。</strong></p>
+<h2 id="3-配好-SSH-却-Timeout，校园网-内网的常规操作"><a href="#3-配好-SSH-却-Timeout，校园网-内网的常规操作" class="headerlink" title="3. 配好 SSH 却 Timeout，校园网/内网的常规操作"></a>3. 配好 SSH 却 Timeout，校园网/内网的常规操作</h2><p>为了解决上一个问题，我生成了 Ed25519 密钥对，把公钥贴到了 GitHub 上。结果在终端一测连通性（<code>ssh -T git@github.com</code>），直接给我来个：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh: connect to host github.com port 22: Connection timed out</span><br></pre></td></tr></table></figure>
+<p><strong>排查与解决：</strong></p>
+<p>如果是平时在学校或者公司的网络环境，看到 <code>port 22</code> 和 <code>Timeout</code> 连在一起，基本就可以破案了：网关防火墙把 SSH 默认的出站 22 端口给封了。</p>
+<p>GitHub 官方留了个后门，允许我们通过 443（HTTPS端口）来走 SSH 流量。对于 Hexo 部署来说，去改本地的 <code>~/.ssh/config</code> 有时候还会被忽略，最简单暴力的做法是直接改 Hexo 根目录的 <code>_config.yml</code>，把地址换成绝对 SSH URI，强行让 Git 走 443：</p>
+<p>YAML</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  # 换掉原来的 HTTPS 地址，强行指定 ssh.github.com 和 443 端口</span><br><span class="line">  repo: ssh://git@ssh.github.com:443/TakamiyaMioo/TakamiyaMioo.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
+<h2 id="4-权限依然拒绝？Windows-与-Git-的“分裂”"><a href="#4-权限依然拒绝？Windows-与-Git-的“分裂”" class="headerlink" title="4. 权限依然拒绝？Windows 与 Git 的“分裂”"></a>4. 权限依然拒绝？Windows 与 Git 的“分裂”</h2><p>这是最搞心态的一个坑。</p>
+<p>我在 PowerShell 里手动执行 <code>ssh -T -p 443 git@ssh.github.com</code>，明明已经看到了成功的欢迎语（<code>Hi TakamiyaMioo! You&#39;ve successfully authenticated</code>）。</p>
+<p>回头让终端去执行 <code>hexo d</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git@ssh.github.com: Permission denied (publickey).</span><br></pre></td></tr></table></figure>
+<p><strong>排查与解决：</strong></p>
+<p>排查了半天才反应过来，Windows 环境下通常有两个互不干涉的 SSH 客户端！</p>
+<p>刚才测试成功的，是 Windows System32 目录自带的原生 OpenSSH（它正确读取了我的私钥）；而 <code>hexo d</code> 唤起的 Git，用的是 Git 安装目录里捆绑的那个精简版 SSH。这两个客户端完全隔离，Git 拿着一把“空钥匙”去开门，当然被拒绝。</p>
+<p>解决方法很简单，给 Git 加上一行全局配置，强行统一使用 Windows 系统的 SSH 客户端：</p>
+<p>Bash</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global core.sshCommand &quot;C:/Windows/System32/OpenSSH/ssh.exe&quot;</span><br></pre></td></tr></table></figure>
+<p>执行完这句后，再次部署，全程 0 弹窗、0 报错，文章终于被 AI 顺滑地推到了云端。</p>
+<hr>
+<h2 id="总结与启发：别让你的-Agent-乱烧-Token"><a href="#总结与启发：别让你的-Agent-乱烧-Token" class="headerlink" title="总结与启发：别让你的 Agent 乱烧 Token"></a>总结与启发：别让你的 Agent 乱烧 Token</h2><p>扫清了上面的基础设施障碍，AI Agent 才算真正接入了本地工作流。但经过这次折腾，我也发现了终端 AI 的一个极其费钱的陷阱：<strong>如果不加约束，它每次都会去扫全盘文件，疯狂消耗 Token。</strong></p>
+<p>想要高效、便宜地使唤这些智能体，得记住两点：</p>
+<ol>
+<li><strong>给项目加上 Git 灵魂</strong>：就算只是个纯文本的博客目录，也一定要 <code>git init</code>！现代的终端 Agent 极其依赖 Git，有了 Git 记录，它每次启动只需读取 <code>git status</code>，只把有改动的文件塞进上下文，能省下 90% 以上的无意义开销。</li>
+<li><strong>拒绝模糊指令，使用绝对路径</strong>：别跟 Agent 说“帮我改下昨天写的那篇测试文章”，直接下达精确指令：“分析 <code>source/_posts/codex测试.md</code>，在文末加一行署名”。精准投喂，效率最高。</li>
+</ol>
+<p>想要让 AI 顺畅接管工作，底层环境（特别是网络与 Git 权限）的稳定是第一步。基础打好了，上层玩起 AIGC 自动化才能真正起飞。</p>
+]]></content>
+      <categories>
+        <category>技术折腾</category>
+      </categories>
+      <tags>
+        <tag>AIGC</tag>
+        <tag>AI Agent</tag>
+        <tag>Hexo</tag>
+        <tag>Git</tag>
+        <tag>SSH</tag>
+        <tag>Windows</tag>
+        <tag>Codex</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>迭代构建代价体</title>
+    <url>/2026/03/24/%E8%BF%AD%E4%BB%A3%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93/</url>
+    <content><![CDATA[<p>[TOC]</p>
+<h1 id="流程范式对比"><a href="#流程范式对比" class="headerlink" title="流程范式对比"></a>流程范式对比</h1><p>以下是 <strong>GwcNet</strong> 和 <strong>RAFT-Stereo</strong> 的流程范式对比。通过两章流程图，直观的对比“传统 3D 卷积正则化”到“现在循环迭代优化”的架构跃迁。</p>
+<h2 id="GwcNet-流程范式：3D-卷积正则化的巅峰"><a href="#GwcNet-流程范式：3D-卷积正则化的巅峰" class="headerlink" title="GwcNet 流程范式：3D 卷积正则化的巅峰"></a>GwcNet 流程范式：3D 卷积正则化的巅峰</h2><p>GwcNet 代表了典型的静态前馈网络（Feed-forward Network）架构，核心思想是“构建极其精细的特征代价体，再用重型 3D 卷积去慢慢过滤噪声”。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    classDef data fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;</span><br><span class="line">    classDef extract fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;</span><br><span class="line">    classDef cost fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;</span><br><span class="line">    classDef regular fill:#fce4ec,stroke:#880e4f,stroke-width:2px,color:#000;</span><br><span class="line"></span><br><span class="line">    subgraph &quot;第一阶段：特征提取 (2D CNN)&quot;</span><br><span class="line">        L[左图 Left Image]:::data</span><br><span class="line">        R[右图 Right Image]:::data</span><br><span class="line">        CNN1[共享权重 ResNet/UNet]:::extract</span><br><span class="line">        CNN2[共享权重 ResNet/UNet]:::extract</span><br><span class="line">        L --&gt; CNN1 --&gt; F_L[左视图特征]:::data</span><br><span class="line">        R --&gt; CNN2 --&gt; F_R[右视图特征]:::data</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph &quot;第二阶段：双重代价体构建 (Cost Volume)&quot;</span><br><span class="line">        F_L --&gt; GC[Group-wise Correlation\n分组相关计算]:::cost</span><br><span class="line">        F_R --&gt; GC</span><br><span class="line">        F_L --&gt; CC[Concatenation\n特征直接拼接]:::cost</span><br><span class="line">        F_R --&gt; CC</span><br><span class="line">        GC --&gt; CV[融合 4D 代价体 \n Disparity x C x H x W]:::data</span><br><span class="line">        CC --&gt; CV</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph &quot;第三阶段：3D 卷积正则化 (重计算区)&quot;</span><br><span class="line">        CV --&gt; H1[3D Hourglass 网络 1\n下采样聚合全局上下文]:::regular</span><br><span class="line">        H1 --&gt; H2[3D Hourglass 网络 2\n平滑视差维度]:::regular</span><br><span class="line">        H2 --&gt; H3[3D Hourglass 网络 3\n输出高精度代价体]:::regular</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph &quot;第四阶段：视差回归&quot;</span><br><span class="line">        H3 --&gt; SA[Soft Argmin 操作\n期望值计算]:::extract</span><br><span class="line">        SA --&gt; D[最终视差图 Final Disparity]:::data</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
+<h2 id="RAFT-Stereo-流程范式：基于全对相关场的迭代优化"><a href="#RAFT-Stereo-流程范式：基于全对相关场的迭代优化" class="headerlink" title="RAFT-Stereo 流程范式：基于全对相关场的迭代优化"></a>RAFT-Stereo 流程范式：基于全对相关场的迭代优化</h2><p>RAFT-Stereo 完全抛弃了 3D 卷积 。它通过计算全局的相关性金字塔，并利用多级 GRU 网络不断查询该金字塔，一步步（迭代）地修正初始视差 。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    classDef data fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;</span><br><span class="line">    classDef extract fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;</span><br><span class="line">    classDef cost fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;</span><br><span class="line">    classDef gru fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000;</span><br><span class="line"></span><br><span class="line">    subgraph &quot;第一阶段：双路特征提取&quot;</span><br><span class="line">        L[左图 I_L]:::data</span><br><span class="line">        R[右图 I_R]:::data</span><br><span class="line">        FE_L[Feature Encoder\n特征编码器]:::extract</span><br><span class="line">        FE_R[Feature Encoder\n特征编码器]:::extract</span><br><span class="line">        CE[Context Encoder\n上下文编码器]:::extract</span><br><span class="line"></span><br><span class="line">        L --&gt; FE_L --&gt; FL[左特征图]:::data</span><br><span class="line">        R --&gt; FE_R --&gt; FR[右特征图]:::data</span><br><span class="line">        L --&gt; CE --&gt; Ctx[上下文特征 &amp; 初始隐藏状态]:::data</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph &quot;第二阶段：全局 3D 相关金字塔 (轻量化代价体)&quot;</span><br><span class="line">        FL --&gt; Dot[极线上像素点积计算]:::cost</span><br><span class="line">        FR --&gt; Dot</span><br><span class="line">        Dot --&gt; P1[相关体 C1]:::data</span><br><span class="line">        P1 --&gt;|1D Pool| P2[相关体 C2]:::data</span><br><span class="line">        P2 --&gt;|1D Pool| P3[相关体 C3]:::data</span><br><span class="line">        P3 --&gt;|1D Pool| P4[相关体 C4]:::data</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph &quot;第三阶段：多级 GRU 迭代优化 (循环 N 次)&quot;</span><br><span class="line">        InitD[初始视差 d=0]:::data</span><br><span class="line">        InitD --&gt; Lookup[Correlation Lookup\n基于当前 d 采样相关特征]:::gru</span><br><span class="line">        P1 -.-&gt; Lookup</span><br><span class="line">        P2 -.-&gt; Lookup</span><br><span class="line">        P3 -.-&gt; Lookup</span><br><span class="line">        P4 -.-&gt; Lookup</span><br><span class="line"></span><br><span class="line">        Lookup --&gt; FeatComb[拼接: 相关特征 + 视差特征 + 上下文]:::gru</span><br><span class="line">        Ctx -.-&gt; FeatComb</span><br><span class="line"></span><br><span class="line">        FeatComb --&gt; MGRU[多分辨率卷积 GRU\n更新隐藏状态]:::gru</span><br><span class="line">        MGRU --&gt; Delta[预测视差增量 Δd]:::gru</span><br><span class="line">        Delta --&gt; UpdateD[更新视差: d = d + Δd]:::data</span><br><span class="line">        UpdateD --&gt;|下一次迭代| Lookup</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph &quot;第四阶段：上采样输出&quot;</span><br><span class="line">        UpdateD --&gt;|最终低分辨率视差| Up[Convex Upsampling\n凸组合上采样]:::extract</span><br><span class="line">        Up --&gt; FinalD[高分辨率视差图]:::data</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="核心区别直观对比"><a href="#核心区别直观对比" class="headerlink" title="核心区别直观对比"></a>核心区别直观对比</h3><ul>
+<li><p><strong>代价体的形态与计算</strong>：</p>
+<ul>
+<li><p><strong>GwcNet</strong>：费尽心机构建一个庞大且信息丰富的 4D 融合代价体（包含了特征拼接和分组相关）。这个代价体本身占用极大显存。</p>
+</li>
+<li><p><strong>RAFT-Stereo</strong>：化繁为简。直接对同行像素的特征向量做内积（点乘），生成轻量级的 3D 相关体 ，并通过在视差维度做 1D 池化构建金字塔（Correlation Pyramid） 。它不提前做复杂的拼接。</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><strong>正则化/优化的手段（核心差异）</strong>：</p>
+<ul>
+<li><strong>GwcNet</strong>：是一次性推断。数据流过串联的 3D Hourglass 网络（非常耗时耗显存），一次性输出结果。</li>
+<li><strong>RAFT-Stereo</strong>：是循环迭代（RNN 的逻辑）。抛弃了 3D 卷积 。网络维护一个起始为 0 的视差场，每次循环时，网络拿着 <strong>当前的视差估计</strong> 去“查找（Lookup）”金字塔里的匹配度 ，加上左图的上下文特征 ，送入多级卷积 GRU 中计算出一个“视差修正值（$\Delta d$）” ，不断叠加逼近真实视差。</li>
+</ul>
+</li>
+<li><p><strong>工作分辨率</strong>：</p>
+<ul>
+<li><p><strong>GwcNet</strong>：由于 3D 卷积的限制，通常需要在较低分辨率下运行，对百万像素级图片处理困难。</p>
+</li>
+<li><p><strong>RAFT-Stereo</strong>：由于只使用 2D 卷积和轻量级代价体，可以直接处理高分辨率图像 。预测过程在低分辨率（$1/8$ 或 $1/4$）进行，最后通过凸上采样（Convex Upsampling）还原出全分辨率的高精度边缘 。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="RAFT-Stereo"><a href="#RAFT-Stereo" class="headerlink" title="RAFT-Stereo"></a>RAFT-Stereo</h1><h2 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h2><p>这篇论文开启了立体匹配的新范式，主要创新点是：轻量化 3D 相关体、多级卷积 GRU 迭代。</p>
+<h2 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h2><h3 id="GRU"><a href="#GRU" class="headerlink" title="GRU"></a>GRU</h3><p>门控循环单元 Gated Recurrent Unit。</p>
+<p>是 RNN 循环卷积网络 的变体。传统的 RNN 处理长序列数据时，存在 <strong>梯度消失问题</strong>（后面节点记不住前面的信息），于是有了 LSTM（长短期记忆网络），但 LSTM 内部复杂，参数复杂。于是有了 GRU，是 LSTM 的轻量优化版。它引入了 Gate <em>门</em> 的机制来控制信息的流动。</p>
+<h4 id="数学原理"><a href="#数学原理" class="headerlink" title="数学原理"></a>数学原理</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    classDef input fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000;</span><br><span class="line">    classDef gate fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;</span><br><span class="line">    classDef calc fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000;</span><br><span class="line">    classDef output fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000;</span><br><span class="line">    classDef op fill:#eceff1,stroke:#607d8b,stroke-width:2px,shape:circle,color:#000;</span><br><span class="line"></span><br><span class="line">    %% 输入源</span><br><span class="line">    X[&quot;当前输入&lt;br&gt;(x&lt;sub&gt;t&lt;/sub&gt;)&quot;]:::input</span><br><span class="line">    H_prev[&quot;上一时刻记忆&lt;br&gt;(h&lt;sub&gt;t-1&lt;/sub&gt;)&quot;]:::input</span><br><span class="line"></span><br><span class="line">    %% 门控机制计算</span><br><span class="line">    subgraph step1 [&quot;第一步：门控计算 (计算阀门开度 0~1)&quot;]</span><br><span class="line">        R_gate[&quot;重置门 (r&lt;sub&gt;t&lt;/sub&gt;)&lt;br&gt;决定遗忘多少旧记忆&lt;br&gt;σ(W&lt;sub&gt;r&lt;/sub&gt;·x&lt;sub&gt;t&lt;/sub&gt; + U&lt;sub&gt;r&lt;/sub&gt;·h&lt;sub&gt;t-1&lt;/sub&gt;)&quot;]:::gate</span><br><span class="line">        Z_gate[&quot;更新门 (z&lt;sub&gt;t&lt;/sub&gt;)&lt;br&gt;决定新旧记忆的融合比例&lt;br&gt;σ(W&lt;sub&gt;z&lt;/sub&gt;·x&lt;sub&gt;t&lt;/sub&gt; + U&lt;sub&gt;z&lt;/sub&gt;·h&lt;sub&gt;t-1&lt;/sub&gt;)&quot;]:::gate</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    X --&gt; R_gate</span><br><span class="line">    H_prev --&gt; R_gate</span><br><span class="line">    X --&gt; Z_gate</span><br><span class="line">    H_prev --&gt; Z_gate</span><br><span class="line"></span><br><span class="line">    %% 候选记忆生成</span><br><span class="line">    subgraph step2 [&quot;第二步：生成候选新记忆&quot;]</span><br><span class="line">        Mult1((&quot;×&quot;)):::op</span><br><span class="line">        R_gate --&gt;|控制流出| Mult1</span><br><span class="line">        H_prev --&gt;|原始旧记忆| Mult1</span><br><span class="line">        </span><br><span class="line">        Cand[&quot;候选新记忆 (h̃&lt;sub&gt;t&lt;/sub&gt;)&lt;br&gt;结合了输入和被过滤的旧记忆&lt;br&gt;tanh(W&lt;sub&gt;h&lt;/sub&gt;·x&lt;sub&gt;t&lt;/sub&gt; + U&lt;sub&gt;h&lt;/sub&gt;·(r&lt;sub&gt;t&lt;/sub&gt; × h&lt;sub&gt;t-1&lt;/sub&gt;))&quot;]:::calc</span><br><span class="line">        X --&gt; Cand</span><br><span class="line">        Mult1 --&gt;|被重置门过滤后的旧记忆| Cand</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% 最终状态融合</span><br><span class="line">    subgraph step3 [&quot;第三步：新旧记忆加权融合&quot;]</span><br><span class="line">        OneMinusZ[&quot;(1 - z&lt;sub&gt;t&lt;/sub&gt;)&quot;]:::calc</span><br><span class="line">        Z_gate --&gt;|取反| OneMinusZ</span><br><span class="line"></span><br><span class="line">        Mult2((&quot;×&quot;)):::op</span><br><span class="line">        Mult3((&quot;×&quot;)):::op</span><br><span class="line">        Add((&quot;＋&quot;)):::op</span><br><span class="line"></span><br><span class="line">        OneMinusZ --&gt;|决定保留多少| Mult2</span><br><span class="line">        H_prev --&gt;|原始旧记忆| Mult2</span><br><span class="line"></span><br><span class="line">        Z_gate --&gt;|决定采纳多少| Mult3</span><br><span class="line">        Cand --&gt;|候选新记忆| Mult3</span><br><span class="line"></span><br><span class="line">        Mult2 --&gt;|真正保留的旧记忆| Add</span><br><span class="line">        Mult3 --&gt;|真正采纳的新记忆| Add</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    Add --&gt; H_next[&quot;当前时刻新记忆&lt;br&gt;(h&lt;sub&gt;t&lt;/sub&gt;)&quot;]:::output</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>虽然 Mermaid 不支持原生 LaTeX，但它 <strong>完全支持基础的 HTML 标签</strong>。你可以使用 <code>&lt;sub&gt;</code>（下标）和 <code>&lt;sup&gt;</code>（上标）来手动把公式“撑”起来。</p>
+</blockquote>
+]]></content>
   </entry>
   <entry>
     <title>蓝桥杯EDA赛道</title>
@@ -382,108 +540,5 @@ Z = \frac{f \cdot B}{d}</script><p>Z为深度，f为相机焦距，B为基线（
 <p>华科同行去比赛的小伙伴有好多，大多都是在电工基地带过的，暑假一起打过电赛的，电信和集成的同学，我基本都认识。 和他们交谈下来，没有一个EDA能画完的。就离谱，出题人你整这么大？</p>
 <p>总之，蓝桥杯就是一圈钱的比赛，没什么分量，写在简历上无人在意。画300块钱，浪费几天来备考，还要毁掉你的周末，坐牢五小时。简直就是弟中之弟。有这个钱不如去吃几顿疯狂星期四。如果不是实在缺这点保研加分，建议还是别碰这坨大份。</p>
 ]]></content>
-  </entry>
-  <entry>
-    <title>科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流</title>
-    <url>/2026/03/18/%E7%A7%91%E7%A0%94%E5%88%A9%E5%99%A8%EF%BC%9A%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7-Zotero-%E8%BF%9B%E9%98%B6%E6%8A%98%E8%85%BE%E6%8C%87%E5%8D%97%E4%B8%8E-AI-%E5%B7%A5%E4%BD%9C%E6%B5%81/</url>
-    <content><![CDATA[<p>市面上文献管理工具不少，EndNote 老牌但 UI 极其复古且收费，Mendeley 经常同步抽风。折腾了一圈，最终让我把几十篇文献和笔记托付出去的，只有 <strong>Zotero</strong>。</p>
-<p>特别是在 Zotero 7 更新后，底层的重构让它的顺滑度有了质的飞跃。今天不讲废话，直接聊聊怎么把这个开源工具打造成武装到牙齿的科研外脑。</p>
-<h2 id="一、-为什么是-Zotero？"><a href="#一、-为什么是-Zotero？" class="headerlink" title="一、 为什么是 Zotero？"></a>一、 为什么是 Zotero？</h2><p>Zotero 最戳中技术极客的点在于：<strong>完全开源、数据掌握在自己手里、生态无敌。</strong></p>
-<p>它的基础工作流极其优雅：</p>
-<ol>
-<li><strong>一键抓取</strong>：装上浏览器插件 <code>Zotero Connector</code>。逛 IEEE 或 arXiv 看到好文章，点一下浏览器右上角，PDF 原文、作者、年份、期刊 Metadata 直接进库。</li>
-<li><strong>多端同步</strong>：别用它自带的那点可怜的免费空间。直接在设置里通过 WebDAV 挂载坚果云或者你自己的服务器，实现文献库的无缝同步。</li>
-<li><strong>沉浸阅读</strong>：Zotero 7 内置的阅读器已经完全够用了，高亮、截图、划线，还能自动把标注提取成 Markdown 笔记。</li>
-</ol>
-<blockquote>
-<p><strong>吐槽一下</strong>：很多新手连 Metadata（元数据）都不抓，直接把 PDF 拖进软件里，文件名全是一串乱码。拜托，文献管理的本质是构建数据库，没有干净的元数据，后期检索和引用就是一场灾难。</p>
-</blockquote>
-<h2 id="二、-核心插件：把生产力拉满"><a href="#二、-核心插件：把生产力拉满" class="headerlink" title="二、 核心插件：把生产力拉满"></a>二、 核心插件：把生产力拉满</h2><p>Zotero 就是一个毛坯房，真正的精装修全靠社区那群用爱发电的开发者。</p>
-<p><em>【图片位置 2：放一张 Zotero 附加组件（Add-ons）管理界面的截图，展示你安装的几个核心插件列表。】</em></p>
-<h3 id="1-翻译与阅读辅助：Zotero-PDF-Translate"><a href="#1-翻译与阅读辅助：Zotero-PDF-Translate" class="headerlink" title="1. 翻译与阅读辅助：Zotero PDF Translate"></a>1. 翻译与阅读辅助：Zotero PDF Translate</h3><p>啃外文文献，尤其是那种通篇长难句的硬核论文，翻译插件是刚需。它可以实现 PDF 划词翻译，并且在文献列表里直接把标题和摘要翻译成中文。支持 DeepL 和 Google 引擎，翻译质量非常能打。</p>
-<h3 id="2-个性化与进度管理：Zotero-Style"><a href="#2-个性化与进度管理：Zotero-Style" class="headerlink" title="2. 个性化与进度管理：Zotero Style"></a>2. 个性化与进度管理：Zotero Style</h3><p>默认的列表太素了。装上它，你可以给不同的标签设置显眼的颜色。最戳我痛点的是它的<strong>阅读进度条</strong>功能。哪篇看了一半，哪篇完全没动，列表里一目了然，专治各种“屯论文不看”的拖延症。</p>
-<h3 id="3-学术写作的终极浪漫：Better-BibTeX-BBT"><a href="#3-学术写作的终极浪漫：Better-BibTeX-BBT" class="headerlink" title="3. 学术写作的终极浪漫：Better BibTeX (BBT)"></a>3. 学术写作的终极浪漫：Better BibTeX (BBT)</h3><p>这玩意儿是我强推 Zotero 的核心原因。平时写 Report 或者跑论文，如果不用 LaTeX + VS Code，那排版简直是反人类。<br>BBT 可以自动为你的每一篇文献生成独一无二的 Citation Key（引用键），并且能<strong>实时静默同步</strong> <code>.bib</code> 文件到你的本地项目里。你在 Zotero 里刚抓了一篇新论文，切到 VS Code 里马上就能 <code>\cite{}</code> 出来，丝滑得让人感动。</p>
-<h2 id="三、-重头戏：接入大语言模型-AIdea-插件配置"><a href="#三、-重头戏：接入大语言模型-AIdea-插件配置" class="headerlink" title="三、 重头戏：接入大语言模型 (AIdea 插件配置)"></a>三、 重头戏：接入大语言模型 (AIdea 插件配置)</h2><p>AIGC 时代，看论文不带个 AI 助手，就像蒙着眼睛走路。我试过很多所谓的“AI 读论文”插件，很多都要自己配 API Key，稍微问多点，几十万 Token 跑没，钱包就在滴血。</p>
-<p>目前我最推荐、也是我主力在用的是 <strong>AIdea</strong>。</p>
-<p><em>【图片位置 3：放一张你正在阅读某篇论文（例如之前看的那篇 Group-wise Correlation 相关的视觉论文），右侧开着 AIdea 侧边栏，正在让大模型总结文章核心贡献的截图。】</em></p>
-<h3 id="1-为什么选-AIdea？（白嫖的快乐）"><a href="#1-为什么选-AIdea？（白嫖的快乐）" class="headerlink" title="1. 为什么选 AIdea？（白嫖的快乐）"></a>1. 为什么选 AIdea？（白嫖的快乐）</h3><p>它最大的亮点是支持 <strong>OAuth 授权登录</strong>，直接绕开了繁琐的 API 密钥配置。<br>如果你有通过了学生认证的 GitHub 账号，强烈建议直接在插件里走 GitHub Copilot 授权。这就相当于你可以接近无限量、免费地在侧边栏调用 GPT-4 级别的模型。一边看复杂的网络架构图，一边让 AI 帮你拆解算法逻辑，效率翻倍。</p>
-<h3 id="2-避坑指南：模型别乱选"><a href="#2-避坑指南：模型别乱选" class="headerlink" title="2. 避坑指南：模型别乱选"></a>2. 避坑指南：模型别乱选</h3><p>这里分享一个刚踩过的坑。很多同学在插件里配好了环境，一发问就报错：<code>System message must be at the beginning</code>。</p>
-<p>这通常是因为<strong>选错了模型接口</strong>。比如你想让 AI 总结全文，却在底下的下拉菜单里手滑选了 <code>vision-model</code>（专门用来识别图像的视觉模型），或者选了代码补全的 <code>coder-model</code>。接口数据格式对不上，服务器直接无情拒绝。</p>
-<p><strong>正确的姿势</strong>：<br>日常做全文总结、解释数学公式、提炼创新点，老老实实在模型列表里选择纯文本的巨头——比如 <code>claude-opus</code> 系列，或者你本地配好 CLI 的 <code>gemini-pro</code>，再或者是 Copilot 里的常规模型。把专业的活儿交给对的模型。</p>
-<h2 id="四、-总结"><a href="#四、-总结" class="headerlink" title="四、 总结"></a>四、 总结</h2><p>工具永远只是手段，真正的科研还是得靠自己掉头发。但一套配置调优的 Zotero + BBT 自动化引用 + AIdea 侧边栏，至少能让你在跟各种前沿论文死磕时，手里的兵器稍微锋利一点。</p>
-<p>别折腾了，赶紧去看论文吧。</p>
-]]></content>
-      <categories>
-        <category>折腾笔记</category>
-      </categories>
-      <tags>
-        <tag>科研工具</tag>
-        <tag>Zotero</tag>
-        <tag>AIGC</tag>
-        <tag>效率</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>让 Agent 自动发博客 &amp; github一些常见网络问题</title>
-    <url>/2026/03/17/%E8%AE%A9-AI-Agent-%E8%87%AA%E5%8A%A8%E5%8F%91%E5%8D%9A%E5%AE%A2%EF%BC%9F%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%9B%B2%E6%8A%98%E7%9A%84-Debug-%E5%AE%9E%E5%BD%95/</url>
-    <content><![CDATA[<p>我在平时开发、学习时非常讨厌一些网络问题，这些网络问题大多是GFW导致的。其实在这之外，Github的联网也有一些问题。</p>
-<p>最近在本地终端折腾 OpenAI Codex。既然它能直接操作本地文件，我就在尝试：<strong>能直接用一句话命令它，帮我在本地生成一篇 Hexo 博客的 Markdown 文件，然后自动执行部署命令推送到我的 GitHub Pages 上？</strong></p>
-<p>预期中的剧本很简单：创建文件 -&gt; 补充 Front-matter -&gt; 执行 <code>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code> -&gt; 完美收工。</p>
-<p>但这终究只是预期。当这个自动化链路真正在 Windows 纯命令行环境下跑起来时，现实并不顺利。短短几分钟里，我精准踩中了从网络协议、进程交互到环境变量的各种底层大坑。</p>
-<p>以下是这次翻车与填坑的完整记录。如果你也在尝试把 AI Agent 接入本地工作流，这篇避坑指南应该能帮你省下大半天的 Debug 时间。</p>
-<h2 id="1-刚出门就撞墙，WebSocket-报错-10061"><a href="#1-刚出门就撞墙，WebSocket-报错-10061" class="headerlink" title="1. 刚出门就撞墙，WebSocket 报错 10061"></a>1. 刚出门就撞墙，WebSocket 报错 10061</h2><p>当指示 Agent 在本地执行脚手架命令 <code>hexo new post &quot;codex测试&quot;</code> 时，终端直接甩给我一行红字：<br><code>Falling back from WebSockets to HTTPS transport... (os error 10061)</code></p>
-<p><strong>排查与解决：</strong><br>这其实是个经典的网络代理问题。现在的终端 Agent 为了响应快，默认优先尝试建立 WebSocket 长连接。但在咱们的网络环境下，如果终端代理没配好，这个长连接请求就会被系统直接拒绝（10061 就是典型的 <code>WSAECONNREFUSED</code> 报错）。</p>
-<p>好在 Agent 比较聪明，握手失败后会自动降级到普通的 HTTPS 去拉取数据，不影响它继续干活。但为了避免每次都浪费时间重试，最根本的解决办法还是老老实实在终端里把环境变量挂上：</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 确保当前终端走本地的代理端口</span></span><br><span class="line"><span class="variable">$env:HTTPS_PROXY</span>=<span class="string">&quot;[http://127.0.0.1](http://127.0.0.1):YOUR_PORT&quot;</span></span><br></pre></td></tr></table></figure>
-<h2 id="2-静默执行遇上密码弹窗，进程直接卡死"><a href="#2-静默执行遇上密码弹窗，进程直接卡死" class="headerlink" title="2. 静默执行遇上密码弹窗，进程直接卡死"></a>2. 静默执行遇上密码弹窗，进程直接卡死</h2><p>Agent 成功写好了 Markdown 原稿，接着进入最后一步，准备调用 <code>hexo d</code> 把生成的静态页面推送到 GitHub。结果进程直接崩溃了：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Error: Spawn failed... (无法读取用户名/密码，/dev/tty 不可用)</span><br></pre></td></tr></table></figure>
-<p><strong>排查与解决：</strong></p>
-<p>这纯属是“无头环境”（Headless）引发的问题。</p>
-<p>我之前推送代码走的是 HTTPS 协议，平时手动敲 <code>hexo d</code> 时，Git 会弹出一个凭据窗口让我授权或者输入密码。但现在是 Agent 在后台子进程里敲命令，它是一个没有显示器也没有键盘的“幽灵”，根本接不住这个弹窗，找不到可用的 <code>/dev/tty</code>（终端输入设备），于是进程当场假死。</p>
-<p>加上 GitHub 早就禁用了密码推送，所以这里的唯一解法，就是<strong>彻底放弃 HTTPS，给本地配置 SSH 密钥免密登录。</strong></p>
-<h2 id="3-配好-SSH-却-Timeout，校园网-内网的常规操作"><a href="#3-配好-SSH-却-Timeout，校园网-内网的常规操作" class="headerlink" title="3. 配好 SSH 却 Timeout，校园网/内网的常规操作"></a>3. 配好 SSH 却 Timeout，校园网/内网的常规操作</h2><p>为了解决上一个问题，我生成了 Ed25519 密钥对，把公钥贴到了 GitHub 上。结果在终端一测连通性（<code>ssh -T git@github.com</code>），直接给我来个：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh: connect to host github.com port 22: Connection timed out</span><br></pre></td></tr></table></figure>
-<p><strong>排查与解决：</strong></p>
-<p>如果是平时在学校或者公司的网络环境，看到 <code>port 22</code> 和 <code>Timeout</code> 连在一起，基本就可以破案了：网关防火墙把 SSH 默认的出站 22 端口给封了。</p>
-<p>GitHub 官方留了个后门，允许我们通过 443（HTTPS端口）来走 SSH 流量。对于 Hexo 部署来说，去改本地的 <code>~/.ssh/config</code> 有时候还会被忽略，最简单暴力的做法是直接改 Hexo 根目录的 <code>_config.yml</code>，把地址换成绝对 SSH URI，强行让 Git 走 443：</p>
-<p>YAML</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  # 换掉原来的 HTTPS 地址，强行指定 ssh.github.com 和 443 端口</span><br><span class="line">  repo: ssh://git@ssh.github.com:443/TakamiyaMioo/TakamiyaMioo.github.io.git</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
-<h2 id="4-权限依然拒绝？Windows-与-Git-的“分裂”"><a href="#4-权限依然拒绝？Windows-与-Git-的“分裂”" class="headerlink" title="4. 权限依然拒绝？Windows 与 Git 的“分裂”"></a>4. 权限依然拒绝？Windows 与 Git 的“分裂”</h2><p>这是最搞心态的一个坑。</p>
-<p>我在 PowerShell 里手动执行 <code>ssh -T -p 443 git@ssh.github.com</code>，明明已经看到了成功的欢迎语（<code>Hi TakamiyaMioo! You&#39;ve successfully authenticated</code>）。</p>
-<p>回头让终端去执行 <code>hexo d</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git@ssh.github.com: Permission denied (publickey).</span><br></pre></td></tr></table></figure>
-<p><strong>排查与解决：</strong></p>
-<p>排查了半天才反应过来，Windows 环境下通常有两个互不干涉的 SSH 客户端！</p>
-<p>刚才测试成功的，是 Windows System32 目录自带的原生 OpenSSH（它正确读取了我的私钥）；而 <code>hexo d</code> 唤起的 Git，用的是 Git 安装目录里捆绑的那个精简版 SSH。这两个客户端完全隔离，Git 拿着一把“空钥匙”去开门，当然被拒绝。</p>
-<p>解决方法很简单，给 Git 加上一行全局配置，强行统一使用 Windows 系统的 SSH 客户端：</p>
-<p>Bash</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global core.sshCommand &quot;C:/Windows/System32/OpenSSH/ssh.exe&quot;</span><br></pre></td></tr></table></figure>
-<p>执行完这句后，再次部署，全程 0 弹窗、0 报错，文章终于被 AI 顺滑地推到了云端。</p>
-<hr>
-<h2 id="总结与启发：别让你的-Agent-乱烧-Token"><a href="#总结与启发：别让你的-Agent-乱烧-Token" class="headerlink" title="总结与启发：别让你的 Agent 乱烧 Token"></a>总结与启发：别让你的 Agent 乱烧 Token</h2><p>扫清了上面的基础设施障碍，AI Agent 才算真正接入了本地工作流。但经过这次折腾，我也发现了终端 AI 的一个极其费钱的陷阱：<strong>如果不加约束，它每次都会去扫全盘文件，疯狂消耗 Token。</strong></p>
-<p>想要高效、便宜地使唤这些智能体，得记住两点：</p>
-<ol>
-<li><strong>给项目加上 Git 灵魂</strong>：就算只是个纯文本的博客目录，也一定要 <code>git init</code>！现代的终端 Agent 极其依赖 Git，有了 Git 记录，它每次启动只需读取 <code>git status</code>，只把有改动的文件塞进上下文，能省下 90% 以上的无意义开销。</li>
-<li><strong>拒绝模糊指令，使用绝对路径</strong>：别跟 Agent 说“帮我改下昨天写的那篇测试文章”，直接下达精确指令：“分析 <code>source/_posts/codex测试.md</code>，在文末加一行署名”。精准投喂，效率最高。</li>
-</ol>
-<p>想要让 AI 顺畅接管工作，底层环境（特别是网络与 Git 权限）的稳定是第一步。基础打好了，上层玩起 AIGC 自动化才能真正起飞。</p>
-]]></content>
-      <categories>
-        <category>技术折腾</category>
-      </categories>
-      <tags>
-        <tag>AIGC</tag>
-        <tag>AI Agent</tag>
-        <tag>Hexo</tag>
-        <tag>Git</tag>
-        <tag>SSH</tag>
-        <tag>Windows</tag>
-        <tag>Codex</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>迭代构建代价体</title>
-    <url>/2026/03/24/%E8%BF%AD%E4%BB%A3%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93/</url>
-    <content><![CDATA[]]></content>
   </entry>
 </search>

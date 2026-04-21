@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://haoyu123.top/img/avatar.png">
 <meta property="article:published_time" content="2026-03-23T08:08:35.000Z">
-<meta property="article:modified_time" content="2026-04-21T13:38:47.185Z">
+<meta property="article:modified_time" content="2026-04-21T14:21:13.739Z">
 <meta property="article:author" content="TakamiyaMioo     (Zhao Haoyu)">
 <meta property="article:tag" content="CV">
 <meta property="article:tag" content="GwcNet">
@@ -20,7 +20,7 @@
   "url": "https://haoyu123.top/2026/03/23/4_%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/",
   "image": "https://haoyu123.top/img/avatar.png",
   "datePublished": "2026-03-23T08:08:35.000Z",
-  "dateModified": "2026-04-21T13:38:47.185Z",
+  "dateModified": "2026-04-21T14:21:13.739Z",
   "author": [
     {
       "@type": "Person",
@@ -191,7 +191,7 @@
     btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
     btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
   }
-})()</script><div class="bg-animation" id="web_bg" style="background-image: url(/img/banner.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-mode"><i class="fa-fw fas fa-adjust"></i><span> 模式</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-layout"><i class="fa-fw fas fa-arrows-alt-h"></i><span> 布局</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">TakamiyaMioo's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">双目相机立体匹配-stereo matching</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-mode"><i class="fa-fw fas fa-adjust"></i><span> 模式</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-layout"><i class="fa-fw fas fa-arrows-alt-h"></i><span> 布局</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">双目相机立体匹配-stereo matching</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-23T08:08:35.000Z" title="发表于 2026-03-23 16:08:35">2026-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-21T13:38:47.185Z" title="更新于 2026-04-21 21:38:47">2026-04-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A7%91%E7%A0%94%E5%AD%A6%E4%B9%A0/">科研学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h1><p>最近在学习 CV 相关的双目相机立体匹配 <strong>Stereo Matching</strong>，本文是关于 GwcNet 的一些学习和思考。开始之前，先需要理解几个概念：RGB 像素、特征向量、张量、视差、立体匹配、三维重建、代价体、视差求解的范式、卷积正则化。</p>
+})()</script><div class="bg-animation" id="web_bg" style="background-image: url(/img/banner.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-mode"><i class="fa-fw fas fa-adjust"></i><span> 模式</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-layout"><i class="fa-fw fas fa-arrows-alt-h"></i><span> 布局</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">TakamiyaMioo's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">双目相机立体匹配-stereo matching</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-mode"><i class="fa-fw fas fa-adjust"></i><span> 模式</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-layout"><i class="fa-fw fas fa-arrows-alt-h"></i><span> 布局</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">双目相机立体匹配-stereo matching</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-23T08:08:35.000Z" title="发表于 2026-03-23 16:08:35">2026-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-21T14:21:13.739Z" title="更新于 2026-04-21 22:21:13">2026-04-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A7%91%E7%A0%94%E5%AD%A6%E4%B9%A0/">科研学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h1><p>最近在学习 CV 相关的双目相机立体匹配 <strong>Stereo Matching</strong>，本文是关于 GwcNet 的一些学习和思考。开始之前，先需要理解几个概念：RGB 像素、特征向量、张量、视差、立体匹配、三维重建、代价体、视差求解的范式、卷积正则化。</p>
 <h2 id="RGB-像素"><a href="#RGB-像素" class="headerlink" title="RGB 像素"></a>RGB 像素</h2><p>图像由像素组成，一张 1920x1080 分辨率的屏幕就代表有 1920x1080 个像素。RGB 代表光的三原色。R = Red，G = Green，B = Blue。这三种颜色通过不同的亮度组合可以形成各种颜色。计算机给每种颜色的亮度划分了 <strong>0 ~ 255</strong> 共 256 个等级。</p>
 <p>可以计算出，三种原色，256 种亮度，可以组合出 $256^3≈1677万$ 中颜色。</p>
 <p>每一个彩色图像的像素点都由红、绿、蓝三个发光的子像素（Sub-pixels，可以理解为三个微型 LED 灯）紧挨着组成的，可以看成：<strong>(R, G, B)</strong>，比如 <code>(255, 0, 0)</code> 代表纯红。这是 <strong>原始像素</strong>。</p>
@@ -264,58 +264,59 @@ Z = \frac{f \cdot B}{d}</script><p>Z 为深度，f 为相机焦距，B 为基线
 <p>核心任务是：<span style="color:#FF0000;">寻找同名点，即像素的同一个物理点，根据视差计算深度。</span></p>
 <h3 id="三维重建"><a href="#三维重建" class="headerlink" title="三维重建"></a>三维重建</h3><p>3D Reconstruction</p>
 <p>核心任务是：<span style="color:#FF0000;">在计算机世界复刻现实物体或场景的3D几何结构和外观。</span>立体匹配是三维重建的前置重要任务。</p>
-<pre class="mermaid">graph LR
-    %% ==========================================
+<div class="mermaid-wrap"><pre class="mermaid-src" data-config="{}" hidden>
+    graph LR
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     %% 定义样式
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     classDef dataNode fill:#f9f9f9,stroke:#333,stroke-width:2px;
     classDef algoNode fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;
     classDef task1Node fill:#fff3e0,stroke:#ff9800,stroke-width:3px;
     classDef task2Node fill:#e8f5e9,stroke:#4caf50,stroke-width:3px;
 
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     %% 节点定义
-    %% ==========================================
-    IMG[/"2D 图像对\n(Left & Right)"/]
-    MATCH("立体匹配算法\n(Stereo Matching)")
-    DISP[/"2.5D 深度/视差图\n(Depth Map)"/]
-    PROJ("空间反投影与融合\n(Projection & Fusion)")
-    PC[/"3D 点云\n(Point Cloud)"/]
-    RECON("表面重建与网格化\n(Surface Reconstruction)")
-    MODEL[/"纯正 3D 模型\n(3D Mesh / Model)"/]
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+    IMG[&#x2F;&quot;2D 图像对\n(Left &amp; Right)&quot;&#x2F;]
+    MATCH(&quot;立体匹配算法\n(Stereo Matching)&quot;)
+    DISP[&#x2F;&quot;2.5D 深度&#x2F;视差图\n(Depth Map)&quot;&#x2F;]
+    PROJ(&quot;空间反投影与融合\n(Projection &amp; Fusion)&quot;)
+    PC[&#x2F;&quot;3D 点云\n(Point Cloud)&quot;&#x2F;]
+    RECON(&quot;表面重建与网格化\n(Surface Reconstruction)&quot;)
+    MODEL[&#x2F;&quot;纯正 3D 模型\n(3D Mesh &#x2F; Model)&quot;&#x2F;]
 
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     %% 连线
-    %% ==========================================
-    IMG --> MATCH
-    MATCH -->|"输出"| DISP
-    DISP --> PROJ
-    PROJ -->|"生成"| PC
-    PC --> RECON
-    RECON -->|"输出"| MODEL
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+    IMG --&gt; MATCH
+    MATCH --&gt;|&quot;输出&quot;| DISP
+    DISP --&gt; PROJ
+    PROJ --&gt;|&quot;生成&quot;| PC
+    PC --&gt; RECON
+    RECON --&gt;|&quot;输出&quot;| MODEL
 
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     %% 框选区域 (使用安全双引号)
-    %% ==========================================
-    subgraph stereo ["属于立体匹配领域"]
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+    subgraph stereo [&quot;属于立体匹配领域&quot;]
         MATCH
     end
 
-    subgraph recon ["属于三维重建领域"]
+    subgraph recon [&quot;属于三维重建领域&quot;]
         PROJ
         PC
         RECON
         MODEL
     end
 
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     %% 统一分配样式
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     class IMG,DISP,PC,MODEL dataNode;
     class PROJ algoNode;
     class MATCH task1Node;
-    class RECON task2Node;</pre>
-
+    class RECON task2Node;
+  </pre></div>
 <hr>
 <h2 id="代价体-Cost-Volume"><a href="#代价体-Cost-Volume" class="headerlink" title="代价体 Cost Volume"></a>代价体 Cost Volume</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>一种为了求解视差定值的数据结构，他是三维张量。</p>
 <p>在刚才的苹果匹配例子中，实际采用的是 <strong>穷举法打分</strong>：对于左图的一个像素点，在右图中把所有可能的视差偏移量（比如 0~192 像素）穷举一遍，每次都计算出左右两个 <em>像素块</em> 的相似度或者差异度（<em>代价</em>）。当这个代价最小，即两个像素块差异最小时，可以认为找到了匹配像素点。</p>
@@ -342,7 +343,8 @@ Z = \frac{f \cdot B}{d}</script><p>Z 为深度，f 为相机焦距，B 为基线
 <p>Gwc 这篇论文使用 <strong>3D 堆叠沙漏网络</strong> 作为 3D 卷积正则化的工具。</p>
 <hr>
 <h2 id="求视差的基本流程"><a href="#求视差的基本流程" class="headerlink" title="求视差的基本流程"></a>求视差的基本流程</h2><p>一共分为五步，输入像素、提取特征向量、构建代价体、卷积正则化、视差回归。</p>
-<pre class="mermaid">graph TD
+<div class="mermaid-wrap"><pre class="mermaid-src" data-config="{}" hidden>
+    graph TD
     %% 定义样式
     classDef inputNode fill:#f9f9f9,stroke:#333,stroke-width:2px;
     classDef processNode fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;
@@ -350,56 +352,56 @@ Z = \frac{f \cdot B}{d}</script><p>Z 为深度，f 为相机焦距，B 为基线
     classDef outputNode fill:#e8f5e9,stroke:#4caf50,stroke-width:2px;
     classDef highlightNode fill:#ffebee,stroke:#f44336,stroke-width:3px;
 
-    subgraph step1 ["Step 1: 输入 (Input)"]
-        IL[/"左图 (Left Image)\nTensor: (3, H, W)"/]
-        IR[/"右图 (Right Image)\nTensor: (3, H, W)"/]
+    subgraph step1 [&quot;Step 1: 输入 (Input)&quot;]
+        IL[&#x2F;&quot;左图 (Left Image)\nTensor: (3, H, W)&quot;&#x2F;]
+        IR[&#x2F;&quot;右图 (Right Image)\nTensor: (3, H, W)&quot;&#x2F;]
     end
 
-    subgraph step2 ["Step 2: 特征提取 (Feature Extraction)"]
-        CNN("共享权重 2D CNN\n(如 ResNet 提特征)")
-        FL[/"左图特征 (Left Features)\nTensor: (C, H, W)"/]
-        FR[/"右图特征 (Right Features)\nTensor: (C, H, W)"/]
+    subgraph step2 [&quot;Step 2: 特征提取 (Feature Extraction)&quot;]
+        CNN(&quot;共享权重 2D CNN\n(如 ResNet 提特征)&quot;)
+        FL[&#x2F;&quot;左图特征 (Left Features)\nTensor: (C, H, W)&quot;&#x2F;]
+        FR[&#x2F;&quot;右图特征 (Right Features)\nTensor: (C, H, W)&quot;&#x2F;]
 
-        IL --> CNN
-        IR --> CNN
-        CNN --> FL
-        CNN --> FR
+        IL --&gt; CNN
+        IR --&gt; CNN
+        CNN --&gt; FL
+        CNN --&gt; FR
     end
 
-    subgraph step3 ["Step 3: 代价体构建 (Cost Volume Construction)"]
-        GWC{"匹配度计算\n(核心:分组相关)"}
-        CV1[/"初始代价体 (Initial Cost Volume)\nTensor: (Groups, D, H, W)"/]
+    subgraph step3 [&quot;Step 3: 代价体构建 (Cost Volume Construction)&quot;]
+        GWC{&quot;匹配度计算\n(核心:分组相关)&quot;}
+        CV1[&#x2F;&quot;初始代价体 (Initial Cost Volume)\nTensor: (Groups, D, H, W)&quot;&#x2F;]
 
-        FL -->|滑窗搜索| GWC
-        FR -->|同源比对| GWC
-        GWC -->|"打包匹配得分"| CV1
+        FL --&gt;|滑窗搜索| GWC
+        FR --&gt;|同源比对| GWC
+        GWC --&gt;|&quot;打包匹配得分&quot;| CV1
     end
 
-    subgraph step4 ["Step 4: 代价聚合 (Cost Aggregation)"]
-        AGG("3D 卷积神经网络\n(如 3D Stacked Hourglass)")
-        CV2[/"精炼代价体 (Refined Cost Volume)\nTensor: (1, D, H, W)"/]
+    subgraph step4 [&quot;Step 4: 代价聚合 (Cost Aggregation)&quot;]
+        AGG(&quot;3D 卷积神经网络\n(如 3D Stacked Hourglass)&quot;)
+        CV2[&#x2F;&quot;精炼代价体 (Refined Cost Volume)\nTensor: (1, D, H, W)&quot;&#x2F;]
 
-        CV1 -->|"上下文过滤去噪"| AGG
-        AGG -->|"输出所有视差概率分布"| CV2
+        CV1 --&gt;|&quot;上下文过滤去噪&quot;| AGG
+        AGG --&gt;|&quot;输出所有视差概率分布&quot;| CV2
     end
 
-    subgraph step5 ["Step 5: 视差回归 (Disparity Regression)"]
-        SARG("Soft-argmin 操作\n(概率加权求和)")
-        OUT[/"终极输出：视差图 (Disparity Map)\nTensor: (1, H, W)"/]
+    subgraph step5 [&quot;Step 5: 视差回归 (Disparity Regression)&quot;]
+        SARG(&quot;Soft-argmin 操作\n(概率加权求和)&quot;)
+        OUT[&#x2F;&quot;终极输出：视差图 (Disparity Map)\nTensor: (1, H, W)&quot;&#x2F;]
 
-        CV2 -->|"将概率转为连续数值"| SARG
-        SARG --> OUT
+        CV2 --&gt;|&quot;将概率转为连续数值&quot;| SARG
+        SARG --&gt; OUT
     end
 
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     %% 统一分配样式 (兼容 Typora 10.9+ 的最安全写法)
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     class IL,IR inputNode;
     class CNN,AGG,SARG processNode;
     class FL,FR,CV1,CV2 tensorNode;
     class OUT outputNode;
-    class GWC highlightNode;</pre>
-
+    class GWC highlightNode;
+  </pre></div>
 <h3 id="关于这个流程"><a href="#关于这个流程" class="headerlink" title="关于这个流程"></a>关于这个流程</h3><p>这个流程本质上是计算机在做信号搜索与解码。</p>
 <h4 id="Step1-RGB像素输入"><a href="#Step1-RGB像素输入" class="headerlink" title="Step1 RGB像素输入"></a>Step1 RGB像素输入</h4><p>系统接收到左右图，为许多 RGB 像素点。但不能直接使用 RGB 原始像素去匹配，因为左右图相同颜色的点可能不止一对，引发歧义。</p>
 <h4 id="Step2-特征提取"><a href="#Step2-特征提取" class="headerlink" title="Step2 特征提取"></a>Step2 特征提取</h4><p>为解决歧义，使用 2D CNN <em>卷积神经网络</em>，将原本单薄的 RGB 像素被编码成了一个高维的 <strong>特征向量</strong>（比如 64 维度），, 然后 Pooling 进行降采样，这个特征向量包含了一个像素点高级征信息（如是否处于边缘、材质），是他的“指纹”。</p>
@@ -438,96 +440,97 @@ Z = \frac{f \cdot B}{d}</script><p>Z 为深度，f 为相机焦距，B 为基线
 </blockquote>
 <p>该图右侧，合并出混合代价体（粉色部分），最后通过 Soft-argmin 输出黑白的视差图。</p>
 <h3 id="分组相关-Group-Wise-Correlation"><a href="#分组相关-Group-Wise-Correlation" class="headerlink" title="分组相关 Group Wise Correlation"></a>分组相关 Group Wise Correlation</h3><p>那么分组相关的具体细节是怎么实现的呢？这个主要在论文 <strong>3.2 节 (Group-wise correlation volume)</strong> 中，有严格的数学定义。</p>
-<pre class="mermaid">graph TD
-    %% ==========================================
+<div class="mermaid-wrap"><pre class="mermaid-src" data-config="{}" hidden>
+    graph TD
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     %% 定义全局美观样式 (兼容性极强版)
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     classDef inputNode fill:#e8eaf6,stroke:#3f51b5,stroke-width:2px,color:#1a237e;
     classDef splitNode fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#f57f17,stroke-dasharray: 4 4;
     classDef mathNode fill:#ffebee,stroke:#d32f2f,stroke-width:3px,color:#b71c1c;
     classDef loopNode fill:#e0f7fa,stroke:#0097a7,stroke-width:2px,color:#006064;
     classDef outputNode fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#1b5e20;
 
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     %% 阶段 1：提取的单像素高维特征输入
-    %% ==========================================
-    subgraph Stage1 ["阶段 1: 提取单像素高维特征"]
-        P_L[/"左图像素的特征向量\n形状: 长度为 320 的 1D 张量"/]
-        P_R[/"右图候选像素的特征向量\n形状: 长度为 320 的 1D 张量"/]
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+    subgraph Stage1 [&quot;阶段 1: 提取单像素高维特征&quot;]
+        P_L[&#x2F;&quot;左图像素的特征向量\n形状: 长度为 320 的 1D 张量&quot;&#x2F;]
+        P_R[&#x2F;&quot;右图候选像素的特征向量\n形状: 长度为 320 的 1D 张量&quot;&#x2F;]
     end
 
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     %% 阶段 2：通道维度的切分 (核心操作)
-    %% ==========================================
-    subgraph Stage2 ["阶段 2: 通道分组拆解"]
-        SPLIT{"按通道均匀切分\n(总通道 320 / 组数 40)"}
-        G_L[/"左图 40 个小组特征\n每组包含 8 个维度的子特征"/]
-        G_R[/"右图 40 个小组特征\n每组包含 8 个维度的子特征"/]
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+    subgraph Stage2 [&quot;阶段 2: 通道分组拆解&quot;]
+        SPLIT{&quot;按通道均匀切分\n(总通道 320 &#x2F; 组数 40)&quot;}
+        G_L[&#x2F;&quot;左图 40 个小组特征\n每组包含 8 个维度的子特征&quot;&#x2F;]
+        G_R[&#x2F;&quot;右图 40 个小组特征\n每组包含 8 个维度的子特征&quot;&#x2F;]
     end
 
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     %% 阶段 3：组内相似度计算 (数学原点)
-    %% ==========================================
-    subgraph Stage3 ["阶段 3: 组内数学计算 (Dot Product)"]
-        MATH("内积运算\n将 8 维向量对应元素相乘再相加")
-        SCORE[/"标量得分\n提取出 1 个维度的'组相似度'"/]
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+    subgraph Stage3 [&quot;阶段 3: 组内数学计算 (Dot Product)&quot;]
+        MATH(&quot;内积运算\n将 8 维向量对应元素相乘再相加&quot;)
+        SCORE[&#x2F;&quot;标量得分\n提取出 1 个维度的&#39;组相似度&#39;&quot;&#x2F;]
     end
 
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     %% 阶段 4：遍历收集与视差穷举
-    %% ==========================================
-    subgraph Stage4 ["阶段 4: 遍历收集与空间滑动"]
-        LOOP_G("循环 1: 遍历 40 个通道组\n(生成 40 个独立的相似度打分)")
-        VEC_40[/"单点匹配度向量\n形状: 长度为 40 的 1D 张量"/]
-
-        LOOP_D("循环 2: 沿着视差层级 d 滑动\n(遍历所有候选匹配位置)")
-        MAT_D[/"该像素的所有视差匹配图\n形状: D/4 x 40 的 2D 张量"/]
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+    subgraph Stage4 [&quot;阶段 4: 遍历收集与空间滑动&quot;]
+        LOOP_G(&quot;循环 1: 遍历 40 个通道组\n(生成 40 个独立的相似度打分)&quot;)
+        VEC_40[&#x2F;&quot;单点匹配度向量\n形状: 长度为 40 的 1D 张量&quot;&#x2F;]
+        
+        LOOP_D(&quot;循环 2: 沿着视差层级 d 滑动\n(遍历所有候选匹配位置)&quot;)
+        MAT_D[&#x2F;&quot;该像素的所有视差匹配图\n形状: D&#x2F;4 x 40 的 2D 张量&quot;&#x2F;]
     end
 
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     %% 阶段 5：打包生成最终代价体
-    %% ==========================================
-    subgraph Stage5 ["阶段 5: 打包生成全局代价体"]
-        PACK("将全图所有像素的匹配图进行空间打包")
-        FINAL_CV[/"终极产出：分组相关代价体\nShape: (40, D/4, H/4, W/4)\n包含 40 种维度的全空间打分表"/]
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+    subgraph Stage5 [&quot;阶段 5: 打包生成全局代价体&quot;]
+        PACK(&quot;将全图所有像素的匹配图进行空间打包&quot;)
+        FINAL_CV[&#x2F;&quot;终极产出：分组相关代价体\nShape: (40, D&#x2F;4, H&#x2F;4, W&#x2F;4)\n包含 40 种维度的全空间打分表&quot;&#x2F;]
     end
 
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     %% 连接流程线
-    %% ==========================================
-    P_L --> SPLIT
-    P_R --> SPLIT
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+    P_L --&gt; SPLIT
+    P_R --&gt; SPLIT
+    
+    SPLIT --&gt;|&quot;切分左特征&quot;| G_L
+    SPLIT --&gt;|&quot;切分右特征&quot;| G_R
+    
+    G_L --&gt;|&quot;取出第 g 组 (8维)&quot;| MATH
+    G_R --&gt;|&quot;取出第 g 组 (8维)&quot;| MATH
+    
+    MATH --&gt;|&quot;坍缩降维&quot;| SCORE
+    
+    SCORE --&gt; LOOP_G
+    LOOP_G --&gt;|&quot;聚合成一根向量&quot;| VEC_40
+    
+    VEC_40 --&gt; LOOP_D
+    LOOP_D --&gt;|&quot;拼接所有候选视差&quot;| MAT_D
+    
+    MAT_D --&gt; PACK
+    PACK --&gt; FINAL_CV
 
-    SPLIT -->|"切分左特征"| G_L
-    SPLIT -->|"切分右特征"| G_R
-
-    G_L -->|"取出第 g 组 (8维)"| MATH
-    G_R -->|"取出第 g 组 (8维)"| MATH
-
-    MATH -->|"坍缩降维"| SCORE
-
-    SCORE --> LOOP_G
-    LOOP_G -->|"聚合成一根向量"| VEC_40
-
-    VEC_40 --> LOOP_D
-    LOOP_D -->|"拼接所有候选视差"| MAT_D
-
-    MAT_D --> PACK
-    PACK --> FINAL_CV
-
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     %% 统一分配 CSS 样式
-    %% ==========================================
+    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
     class P_L,P_R inputNode;
     class SPLIT,G_L,G_R splitNode;
     class MATH,SCORE mathNode;
     class LOOP_G,VEC_40,LOOP_D,MAT_D loopNode;
-    class PACK,FINAL_CV outputNode;</pre>
-
+    class PACK,FINAL_CV outputNode;
+  </pre></div>
 <p>可以用张量流转的思路理解：</p>
 <h3 id="改进的-3D-堆叠沙漏聚合网络"><a href="#改进的-3D-堆叠沙漏聚合网络" class="headerlink" title="改进的 3D 堆叠沙漏聚合网络"></a>改进的 3D 堆叠沙漏聚合网络</h3><p><img src="./双目相机匹配-stereo%20matching.assets/c583c125-535a-420d-8dfd-5cb20ca70c5c.png" alt="c583c125-535a-420d-8dfd-5cb20ca70c5c"></p>
 <p>这是将上一图中 <strong>粉色方块（3D aggregation network）</strong> 的内部结构。主要作痛是代价聚合、空间正则化。</p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://haoyu123.top">TakamiyaMioo     (Zhao Haoyu)</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://haoyu123.top/2026/03/23/4_%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/">https://haoyu123.top/2026/03/23/4_%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://haoyu123.top" target="_blank">TakamiyaMioo's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/CV/">CV</a><a class="post-meta__tags" href="/tags/stereo-matching/">stereo matching</a><a class="post-meta__tags" href="/tags/GwcNet/">GwcNet</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/03/24/5_%E8%BF%AD%E4%BB%A3%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93/" title="迭代构建代价体"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">迭代构建代价体</div></div><div class="info-2"><div class="info-item-1">流程范式对比以下是 GwcNet 和 RAFT-Stereo 的流程范式对比。通过两章流程图，直观的对比“传统 3D 卷积正则化”到“现在循环迭代优化”的架构跃迁。 GwcNet 流程范式：3D 卷积正则化的巅峰GwcNet 代表了典型的静态前馈网络（Feed-forward Network）架构，核心思想是“构建极其精细的特征代价体，再用重型 3D 卷积去慢慢过滤噪声”。 graph TD     classDef data fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;     classDef extract fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;     classDef cost fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;     classDef regular fill:#fce4ec,stroke:#880e4f,stroke-width:2px,color...</div></div></div></a><a class="pagination-related" href="/2026/03/21/3_%E7%94%A8%E7%8E%B0%E4%BB%A3-Ubuntu-%E7%BC%96%E8%AF%91%E4%B8%8A%E5%8F%A4-GCC-4-9-4-%E7%9A%84%E6%8E%92%E5%9D%91%E6%8C%87%E5%8D%97/" title="降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南</div></div><div class="info-2"><div class="info-item-1">最近在推进嵌入式 Linux 相关的实验任务时，需要在 WSL (Ubuntu) 环境下使用 crosstool-NG 1.24.0 编译一套目标架构为 ARM 的旧版交叉编译工具链 Gcc 4.9.4 Binutils 2.26.1 Linux 3.4.113 Glibc 2.12.1 在正式开始吐槽之前，先给刚接触底层的同学科普一个前提：为什么我们非要折腾“交叉编译”？我们最终的程序是要跑在 ARM 开发板上的，那里的 CPU 架构和我们电脑的 x86 完全不同，且开发板通常内存小、算力弱，根本带不动一个完整的编译环境。所以，我们必须在性能强大的 x86 宿主机（也就是你的电脑）上，利用一套特殊的编译器，直接生成 ARM 架构的可执行文件，然后再扔到板子上去跑。这就是交叉编译。 然而，在这个过程中，底层的环境配置往往比写代码本身还要折磨人。用 2026 年的现代 Ubuntu 系统去编译十几年前老古董代码的行动，引发了一连串的版本“代沟”和编译问题。  坑一：WSL2 的网络隔离与代理“薛定谔状态”一切灾难始于第一步：下载源码包疯狂 Timeout。 我开始在 Windows...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">TakamiyaMioo     (Zhao Haoyu)</div><div class="author-info-description">HUST EIC</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/TakamiyaMioo"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86"><span class="toc-number">1.</span> <span class="toc-text">预备知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RGB-%E5%83%8F%E7%B4%A0"><span class="toc-number">1.1.</span> <span class="toc-text">RGB 像素</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E5%BE%81%E5%90%91%E9%87%8F"><span class="toc-number">1.2.</span> <span class="toc-text">特征向量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%A0%E9%87%8F"><span class="toc-number">1.3.</span> <span class="toc-text">张量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%A7%86%E8%A7%92"><span class="toc-number">1.3.1.</span> <span class="toc-text">深度学习视角</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E5%BE%81%E5%90%91%E9%87%8F-1"><span class="toc-number">1.3.2.</span> <span class="toc-text">特征向量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%86%E5%B7%AE"><span class="toc-number">1.4.</span> <span class="toc-text">视差</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">1.4.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8"><span class="toc-number">1.4.2.</span> <span class="toc-text">应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%A6%E6%9C%AF"><span class="toc-number">1.4.3.</span> <span class="toc-text">学术</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%8B%E4%BD%93%E5%8C%B9%E9%85%8D-%E5%92%8C-%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA"><span class="toc-number">1.5.</span> <span class="toc-text">立体匹配 和 三维重建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D"><span class="toc-number">1.5.1.</span> <span class="toc-text">双目相机匹配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%8B%E4%BD%93%E5%8C%B9%E9%85%8D"><span class="toc-number">1.5.2.</span> <span class="toc-text">立体匹配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA"><span class="toc-number">1.5.3.</span> <span class="toc-text">三维重建</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E4%BB%B7%E4%BD%93-Cost-Volume"><span class="toc-number">1.6.</span> <span class="toc-text">代价体 Cost Volume</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.6.1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8"><span class="toc-number">1.6.2.</span> <span class="toc-text">作用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3D-%E5%8D%B7%E7%A7%AF%E6%AD%A3%E5%88%99%E5%8C%96"><span class="toc-number">1.7.</span> <span class="toc-text">3D 卷积正则化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.7.1.</span> <span class="toc-text">概述</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B1%82%E8%A7%86%E5%B7%AE%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">1.8.</span> <span class="toc-text">求视差的基本流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E8%BF%99%E4%B8%AA%E6%B5%81%E7%A8%8B"><span class="toc-number">1.8.1.</span> <span class="toc-text">关于这个流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Step1-RGB%E5%83%8F%E7%B4%A0%E8%BE%93%E5%85%A5"><span class="toc-number">1.8.1.1.</span> <span class="toc-text">Step1 RGB像素输入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Step2-%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96"><span class="toc-number">1.8.1.2.</span> <span class="toc-text">Step2 特征提取</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Step3-%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93"><span class="toc-number">1.8.1.3.</span> <span class="toc-text">Step3 构建代价体</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Step4-%E4%BB%A3%E4%BB%B7%E8%81%9A%E5%90%88"><span class="toc-number">1.8.1.4.</span> <span class="toc-text">Step4 代价聚合</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Step5-%E8%A7%86%E5%B7%AE%E5%9B%9E%E5%BD%92"><span class="toc-number">1.8.1.5.</span> <span class="toc-text">Step5 视差回归</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GwcNet"><span class="toc-number">1.8.2.</span> <span class="toc-text">GwcNet</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GwcNet-1"><span class="toc-number">2.</span> <span class="toc-text">GwcNet</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF-%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93%E7%9A%84%E4%B8%A4%E9%9A%BE"><span class="toc-number">2.1.</span> <span class="toc-text">背景 - 构建代价体的两难</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E8%B4%A1%E7%8C%AE"><span class="toc-number">2.2.</span> <span class="toc-text">核心贡献</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B7%E5%90%88%E4%BB%A3%E4%BB%B7%E4%BD%93%EF%BC%88Combined-Volume%EF%BC%89%E7%9A%84%E4%BA%92%E8%A1%A5%E8%AE%BE%E8%AE%A1"><span class="toc-number">2.2.1.</span> <span class="toc-text">混合代价体（Combined Volume）的互补设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E7%BB%84%E7%9B%B8%E5%85%B3-Group-Wise-Correlation"><span class="toc-number">2.2.2.</span> <span class="toc-text">分组相关 Group Wise Correlation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%B9%E8%BF%9B%E7%9A%84-3D-%E5%A0%86%E5%8F%A0%E6%B2%99%E6%BC%8F%E8%81%9A%E5%90%88%E7%BD%91%E7%BB%9C"><span class="toc-number">2.2.3.</span> <span class="toc-text">改进的 3D 堆叠沙漏聚合网络</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/13/6_%E8%93%9D%E6%A1%A5%E6%9D%AFEDA%E8%B5%9B%E9%81%93/" title="蓝桥杯EDA赛道">蓝桥杯EDA赛道</a><time datetime="2026-04-13T07:52:19.000Z" title="发表于 2026-04-13 15:52:19">2026-04-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/24/5_%E8%BF%AD%E4%BB%A3%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93/" title="迭代构建代价体">迭代构建代价体</a><time datetime="2026-03-24T00:05:59.000Z" title="发表于 2026-03-24 08:05:59">2026-03-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/23/4_%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/" title="双目相机立体匹配-stereo matching">双目相机立体匹配-stereo matching</a><time datetime="2026-03-23T08:08:35.000Z" title="发表于 2026-03-23 16:08:35">2026-03-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/21/3_%E7%94%A8%E7%8E%B0%E4%BB%A3-Ubuntu-%E7%BC%96%E8%AF%91%E4%B8%8A%E5%8F%A4-GCC-4-9-4-%E7%9A%84%E6%8E%92%E5%9D%91%E6%8C%87%E5%8D%97/" title="降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南">降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南</a><time datetime="2026-03-21T12:06:12.000Z" title="发表于 2026-03-21 20:06:12">2026-03-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/18/2_%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7Zotero%E8%BF%9B%E9%98%B6%E6%8A%98%E8%85%BE%E6%8C%87%E5%8D%97%E4%B8%8EAI%E5%B7%A5%E4%BD%9C%E6%B5%81/" title="科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流">科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流</a><time datetime="2026-03-18T12:30:00.000Z" title="发表于 2026-03-18 20:30:00">2026-03-18</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text"><div class="footer-container">
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://haoyu123.top">TakamiyaMioo     (Zhao Haoyu)</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://haoyu123.top/2026/03/23/4_%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/">https://haoyu123.top/2026/03/23/4_%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://haoyu123.top" target="_blank">TakamiyaMioo's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/CV/">CV</a><a class="post-meta__tags" href="/tags/stereo-matching/">stereo matching</a><a class="post-meta__tags" href="/tags/GwcNet/">GwcNet</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/03/24/5_%E8%BF%AD%E4%BB%A3%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93/" title="迭代构建代价体"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">迭代构建代价体</div></div><div class="info-2"><div class="info-item-1">流程范式对比以下是 GwcNet 和 RAFT-Stereo 的流程范式对比。通过两章流程图，直观的对比“传统 3D 卷积正则化”到“现在循环迭代优化”的架构跃迁。 GwcNet 流程范式：3D 卷积正则化的巅峰GwcNet 代表了典型的静态前馈网络（Feed-forward Network）架构，核心思想是“构建极其精细的特征代价体，再用重型 3D 卷积去慢慢过滤噪声”。      graph TD     classDef data fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000;     classDef extract fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000;     classDef cost fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000;     classDef regular fill:#fce4ec,stroke:#880e4f,stroke-width:2px,...</div></div></div></a><a class="pagination-related" href="/2026/03/21/3_%E7%94%A8%E7%8E%B0%E4%BB%A3-Ubuntu-%E7%BC%96%E8%AF%91%E4%B8%8A%E5%8F%A4-GCC-4-9-4-%E7%9A%84%E6%8E%92%E5%9D%91%E6%8C%87%E5%8D%97/" title="降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南</div></div><div class="info-2"><div class="info-item-1">最近在推进嵌入式 Linux 相关的实验任务时，需要在 WSL (Ubuntu) 环境下使用 crosstool-NG 1.24.0 编译一套目标架构为 ARM 的旧版交叉编译工具链 Gcc 4.9.4 Binutils 2.26.1 Linux 3.4.113 Glibc 2.12.1 在正式开始吐槽之前，先给刚接触底层的同学科普一个前提：为什么我们非要折腾“交叉编译”？我们最终的程序是要跑在 ARM 开发板上的，那里的 CPU 架构和我们电脑的 x86 完全不同，且开发板通常内存小、算力弱，根本带不动一个完整的编译环境。所以，我们必须在性能强大的 x86 宿主机（也就是你的电脑）上，利用一套特殊的编译器，直接生成 ARM 架构的可执行文件，然后再扔到板子上去跑。这就是交叉编译。 然而，在这个过程中，底层的环境配置往往比写代码本身还要折磨人。用 2026 年的现代 Ubuntu 系统去编译十几年前老古董代码的行动，引发了一连串的版本“代沟”和编译问题。  坑一：WSL2 的网络隔离与代理“薛定谔状态”一切灾难始于第一步：下载源码包疯狂 Timeout。 我开始在 Windows...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">TakamiyaMioo     (Zhao Haoyu)</div><div class="author-info-description">HUST EIC</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/TakamiyaMioo"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86"><span class="toc-number">1.</span> <span class="toc-text">预备知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RGB-%E5%83%8F%E7%B4%A0"><span class="toc-number">1.1.</span> <span class="toc-text">RGB 像素</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E5%BE%81%E5%90%91%E9%87%8F"><span class="toc-number">1.2.</span> <span class="toc-text">特征向量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%A0%E9%87%8F"><span class="toc-number">1.3.</span> <span class="toc-text">张量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%A7%86%E8%A7%92"><span class="toc-number">1.3.1.</span> <span class="toc-text">深度学习视角</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E5%BE%81%E5%90%91%E9%87%8F-1"><span class="toc-number">1.3.2.</span> <span class="toc-text">特征向量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%86%E5%B7%AE"><span class="toc-number">1.4.</span> <span class="toc-text">视差</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">1.4.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8"><span class="toc-number">1.4.2.</span> <span class="toc-text">应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%A6%E6%9C%AF"><span class="toc-number">1.4.3.</span> <span class="toc-text">学术</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%8B%E4%BD%93%E5%8C%B9%E9%85%8D-%E5%92%8C-%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA"><span class="toc-number">1.5.</span> <span class="toc-text">立体匹配 和 三维重建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D"><span class="toc-number">1.5.1.</span> <span class="toc-text">双目相机匹配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%8B%E4%BD%93%E5%8C%B9%E9%85%8D"><span class="toc-number">1.5.2.</span> <span class="toc-text">立体匹配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA"><span class="toc-number">1.5.3.</span> <span class="toc-text">三维重建</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E4%BB%B7%E4%BD%93-Cost-Volume"><span class="toc-number">1.6.</span> <span class="toc-text">代价体 Cost Volume</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.6.1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8"><span class="toc-number">1.6.2.</span> <span class="toc-text">作用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3D-%E5%8D%B7%E7%A7%AF%E6%AD%A3%E5%88%99%E5%8C%96"><span class="toc-number">1.7.</span> <span class="toc-text">3D 卷积正则化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.7.1.</span> <span class="toc-text">概述</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B1%82%E8%A7%86%E5%B7%AE%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">1.8.</span> <span class="toc-text">求视差的基本流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E8%BF%99%E4%B8%AA%E6%B5%81%E7%A8%8B"><span class="toc-number">1.8.1.</span> <span class="toc-text">关于这个流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Step1-RGB%E5%83%8F%E7%B4%A0%E8%BE%93%E5%85%A5"><span class="toc-number">1.8.1.1.</span> <span class="toc-text">Step1 RGB像素输入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Step2-%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96"><span class="toc-number">1.8.1.2.</span> <span class="toc-text">Step2 特征提取</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Step3-%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93"><span class="toc-number">1.8.1.3.</span> <span class="toc-text">Step3 构建代价体</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Step4-%E4%BB%A3%E4%BB%B7%E8%81%9A%E5%90%88"><span class="toc-number">1.8.1.4.</span> <span class="toc-text">Step4 代价聚合</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Step5-%E8%A7%86%E5%B7%AE%E5%9B%9E%E5%BD%92"><span class="toc-number">1.8.1.5.</span> <span class="toc-text">Step5 视差回归</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GwcNet"><span class="toc-number">1.8.2.</span> <span class="toc-text">GwcNet</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GwcNet-1"><span class="toc-number">2.</span> <span class="toc-text">GwcNet</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF-%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93%E7%9A%84%E4%B8%A4%E9%9A%BE"><span class="toc-number">2.1.</span> <span class="toc-text">背景 - 构建代价体的两难</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E8%B4%A1%E7%8C%AE"><span class="toc-number">2.2.</span> <span class="toc-text">核心贡献</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B7%E5%90%88%E4%BB%A3%E4%BB%B7%E4%BD%93%EF%BC%88Combined-Volume%EF%BC%89%E7%9A%84%E4%BA%92%E8%A1%A5%E8%AE%BE%E8%AE%A1"><span class="toc-number">2.2.1.</span> <span class="toc-text">混合代价体（Combined Volume）的互补设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E7%BB%84%E7%9B%B8%E5%85%B3-Group-Wise-Correlation"><span class="toc-number">2.2.2.</span> <span class="toc-text">分组相关 Group Wise Correlation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%B9%E8%BF%9B%E7%9A%84-3D-%E5%A0%86%E5%8F%A0%E6%B2%99%E6%BC%8F%E8%81%9A%E5%90%88%E7%BD%91%E7%BB%9C"><span class="toc-number">2.2.3.</span> <span class="toc-text">改进的 3D 堆叠沙漏聚合网络</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/13/6_%E8%93%9D%E6%A1%A5%E6%9D%AFEDA%E8%B5%9B%E9%81%93/" title="蓝桥杯EDA赛道">蓝桥杯EDA赛道</a><time datetime="2026-04-13T07:52:19.000Z" title="发表于 2026-04-13 15:52:19">2026-04-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/24/5_%E8%BF%AD%E4%BB%A3%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93/" title="迭代构建代价体">迭代构建代价体</a><time datetime="2026-03-24T00:05:59.000Z" title="发表于 2026-03-24 08:05:59">2026-03-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/23/4_%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/" title="双目相机立体匹配-stereo matching">双目相机立体匹配-stereo matching</a><time datetime="2026-03-23T08:08:35.000Z" title="发表于 2026-03-23 16:08:35">2026-03-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/21/3_%E7%94%A8%E7%8E%B0%E4%BB%A3-Ubuntu-%E7%BC%96%E8%AF%91%E4%B8%8A%E5%8F%A4-GCC-4-9-4-%E7%9A%84%E6%8E%92%E5%9D%91%E6%8C%87%E5%8D%97/" title="降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南">降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南</a><time datetime="2026-03-21T12:06:12.000Z" title="发表于 2026-03-21 20:06:12">2026-03-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/18/2_%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7Zotero%E8%BF%9B%E9%98%B6%E6%8A%98%E8%85%BE%E6%8C%87%E5%8D%97%E4%B8%8EAI%E5%B7%A5%E4%BD%9C%E6%B5%81/" title="科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流">科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流</a><time datetime="2026-03-18T12:30:00.000Z" title="发表于 2026-03-18 20:30:00">2026-03-18</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text"><div class="footer-container">
   <div class="footer-group footer-left">
     <span>✨ Code for Life, Code for Fun.</span>
   </div>

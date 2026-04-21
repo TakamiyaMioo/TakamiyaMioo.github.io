@@ -1,0 +1,433 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>2025电赛记录 | TakamiyaMioo's Blog</title><meta name="author" content="TakamiyaMioo     (Zhao Haoyu)"><meta name="copyright" content="TakamiyaMioo     (Zhao Haoyu)"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="2025电赛记录序言全国大学生电子设计竞赛，电子信息类学生应该都听说过这个比赛。这个比赛以难度大、含金量高而闻名。2025年的暑假，我参加了国赛。 2025电赛，我们组选做的是D题“简易以太网双绞线测试仪”，这个题看起来和2023B有几分相似，笔者却认为是2023B的究极加强版。做这个题我们当时遇到的突出的困难有两个，一个是找不到合适的测长方案；一个是由于网线内部有八根线，进行各个项目的测量工作量">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2025电赛记录">
+<meta property="og:url" content="https://haoyu123.top/2025/09/30/0_2025%E7%94%B5%E8%B5%9B%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="TakamiyaMioo&#39;s Blog">
+<meta property="og:description" content="2025电赛记录序言全国大学生电子设计竞赛，电子信息类学生应该都听说过这个比赛。这个比赛以难度大、含金量高而闻名。2025年的暑假，我参加了国赛。 2025电赛，我们组选做的是D题“简易以太网双绞线测试仪”，这个题看起来和2023B有几分相似，笔者却认为是2023B的究极加强版。做这个题我们当时遇到的突出的困难有两个，一个是找不到合适的测长方案；一个是由于网线内部有八根线，进行各个项目的测量工作量">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://haoyu123.top/img/avatar.png">
+<meta property="article:published_time" content="2025-09-29T16:17:35.000Z">
+<meta property="article:modified_time" content="2026-04-21T13:46:59.486Z">
+<meta property="article:author" content="TakamiyaMioo     (Zhao Haoyu)">
+<meta property="article:tag" content="STM32">
+<meta property="article:tag" content="vlog">
+<meta property="article:tag" content="以太网双绞线">
+<meta property="article:tag" content="电赛">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://haoyu123.top/img/avatar.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "2025电赛记录",
+  "url": "https://haoyu123.top/2025/09/30/0_2025%E7%94%B5%E8%B5%9B%E8%AE%B0%E5%BD%95/",
+  "image": "https://haoyu123.top/img/avatar.png",
+  "datePublished": "2025-09-29T16:17:35.000Z",
+  "dateModified": "2026-04-21T13:46:59.486Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "TakamiyaMioo     (Zhao Haoyu)",
+      "url": "https://haoyu123.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/my-favicon.png"><link rel="canonical" href="https://haoyu123.top/2025/09/30/0_2025%E7%94%B5%E8%B5%9B%E8%AE%B0%E5%BD%95/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.3"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '2025电赛记录',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div class="bg-animation" id="web_bg" style="background-image: url(/img/banner.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-mode"><i class="fa-fw fas fa-adjust"></i><span> 模式</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-layout"><i class="fa-fw fas fa-arrows-alt-h"></i><span> 布局</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">TakamiyaMioo's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">2025电赛记录</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-mode"><i class="fa-fw fas fa-adjust"></i><span> 模式</span></a></div><div class="menus_item"><a class="site-page" href="/#switch-layout"><i class="fa-fw fas fa-arrows-alt-h"></i><span> 布局</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">2025电赛记录</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-09-29T16:17:35.000Z" title="发表于 2025-09-30 00:17:35">2025-09-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-21T13:46:59.486Z" title="更新于 2026-04-21 21:46:59">2026-04-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E6%9C%AF%E6%8A%98%E8%85%BE/">技术折腾</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="2025电赛记录"><a href="#2025电赛记录" class="headerlink" title="2025电赛记录"></a>2025电赛记录</h1><h2 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h2><p>全国大学生电子设计竞赛，电子信息类学生应该都听说过这个比赛。这个比赛以难度大、含金量高而闻名。2025年的暑假，我参加了国赛。</p>
+<p>2025电赛，我们组选做的是D题“简易以太网双绞线测试仪”，这个题看起来和2023B有几分相似，笔者却认为是2023B的究极加强版。做这个题我们当时遇到的突出的困难有两个，一个是找不到合适的测长方案；一个是由于网线内部有八根线，进行各个项目的测量工作量十分大。</p>
+<h2 id="四天三夜"><a href="#四天三夜" class="headerlink" title="四天三夜"></a>四天三夜</h2><h3 id="7月30日"><a href="#7月30日" class="headerlink" title="7月30日"></a>7月30日</h3><p><span style="font-weight:bold;">时间来到2025年7月30日早上</span></p>
+<p>前一天夜晚，我躺在床上辗转反侧 ，难以入眠，一直到五点半才入睡。第二天为了能第一时间看到题目，我拖着困倦的身体在七点半来到了工位，在启明楼的电梯上，我从室友的手机上见到了题目。和信号有关的题目有三个：</p>
+<p>D，网线，属于精密测量，这个题我提前做好了网线的转接板。</p>
+<p>F，高频通信，和信号调制与解调有关，之前从来没有接触过这个方向，通信原理也没有学习，而且我们不会FPGA，不善于处理高频信号。</p>
+<p>G，这个题属于2023H的究级加强版本，题目里的 “两分钟时间自主学习建模”、”稳定同频显示” 等字眼第一眼看起来有些唬人，尤其是同频显示，勾起了我们之前做2023H的不好回忆。</p>
+<p>在一开始，我在D和G之间摇摆，后来问了一些学长和朋友，他们都认为G题32做不了提高部分，于是我告诉队友我们只能梭哈网线了。</p>
+<p><span style="font-style:italic;">（其实后来证实G题用32也可以，甚至有一组用纯32去综测了，他们三个都是大一的。基地做G题的29个队最后有4个队伍去了综测，做G题的绝大多数用的都是ZYNQ，助教给的方案很复杂，似乎是IIR、FIR数字滤波器，再或者就是高精度DDS重建，这是后话）</span></p>
+<p>现在来看一看D题：</p>
+<p><img src="D:\Typora\picture\b17f395d-929b-47fe-99a8-2189a3bb345e.png" alt="b17f395d-929b-47fe-99a8-2189a3bb345e"></p>
+<p><img src="D:\Typora\picture\image-20250809123234600.png" alt="image-20250809123234600"></p>
+<p>确定了选题之后，当时我们手上有几个方案：测电阻就用恒流源，我们负责硬件的同学去做恒流源了；至于测长，有驻波法、矢量网络分析、TDR、电容NE555这几个方案，我们一开始认为网线的电容和长度线性度可能不够好，所以NE555方案的优先级放在最后 ，最先尝试的是驻波法。当天中午我赶回寝室，翻出了大学物理，分析了驻波的理论，认为在理论上驻波方案是可行的：</p>
+<p>当信号的频率在1~50MHz时，入射信号与反射信号形成的驻波波长刚好就是 1~50m，所以使用DDS进行大范围的1-50MHz扫频，可以在网线入射端观察到明显的信号幅值变化，这就是网线中形成的驻波，峰峰最大对应的是波峰，峰峰值最小对应的是波谷，在示波器上我们明显观察到了驻波的现象。于是我们开始实现这个方案，至此，我们也陷入了这个方案的困境：扫频不是问题，我们手上当时有AD9959驱动已经调通了，我们也使用9959进行过扫频，产生1-50MHz的扫频信号对于9959来说也不是难事，但是1-50MHz的扫频范围实在太大，32的板载ADC根本读不了频率这么高的信号，于是我们使用功率检波<span style="font-style:italic;">（AD8361）</span>读取幅值信息，可是在1-50MHz的大范围扫频下就连高带宽的8361也会出现频率响应，读出的幅值在随频率变化而变化<span style="font-style:italic;">（扫频的步进是500KHz，这么大的步进下出现明显的频响也正常）</span>，不过这个变化较为为弱，对极值点的寻找有影响但不大。但是我们最终还是放弃了这个方案，直接原因是，由于信号在网线中反射的次数不止一次，所以在网线中形成了不止一种驻波，想要通过算法找到正确的第一个极值点对我们来说很困难；而且，就算我们手动找到极值点，使用用一个速度计算出来的网线长度误差很大，换句话说，不同网线中的光速v是差别很大的<span style="font-style:italic;">（在使用这个方法时）</span>导致计算结果误差很大。</p>
+<p>在7.30号，我们手上还没有功率检波，我只是手动使用信号发生器进行扫频，手动计算，在第一天我就怀疑这个驻波方案的合理性，但是手上没有功率检波，无法在实现层面推翻。晚上，恒流源做了出来，但是一直不可用，无法带负载，一接入一个小电阻，电流电压就急剧衰减到0。第一天就这样了了结束，主要是确定了选题并商讨了几个方案，方案的实现上没有什么进展。</p>
+<p>回去睡了一觉，第一天睡了6个小时。</p>
+<h3 id="7月31日"><a href="#7月31日" class="headerlink" title="7月31日"></a>7月31日</h3><p>在这一天上午我们首先调通了恒流源，前一天晚上的问题找到，是我们使用的电源模块无法带动这个恒流源，更换了电源，能够正常测量电阻。此外，我们拿到了功率检波证实了驻波方案的不可行性。</p>
+<p>在下午，我们完成了线序、类型检测的功能。这两个测量项目没什么好说的，主要是要提前做好网线的转接板 RJ45转SMA、排针，SMA用于输入交流信号，测量长度、交流衰减，排针用于输入直流信号，检测通断。</p>
+<p>这里我想吐槽一下我们学校的培训组织<span style="font-style:italic;">（华中科技大学电工电子科技创新中心 或称电工基地，下文用基地代称）</span>，基地准备的网口是HR911105A RJ45，结构如下</p>
+<p><img src="D:\Typora\picture\image-20250809140421075.png" alt="image-20250809140421075"></p>
+<p>可以明显看到，里面是带有变压器线圈的，这种网口很明显不能用来测试通断，甚至不能通入高频信号，基地的采购人员似乎并没有发现这一点，第一批购入了这种网口，更幽默的是后来又补充了一堆<span style="text-decoration:line-through;">就难绷，需要的器件都研究不明白</span></p>
+<p>我早在开赛之前就意识到了这个问题，并自己购买了直通式的网口，并制作了转接板。这个题，如果不能正确对网线的四对双绞线进行转接，什么工作都开展不下去。</p>
+<p>我们自己制作的转接板如下：</p>
+<p><img src="D:\Typora\picture\image-20250809141104381.png" alt="image-20250809141104381"></p>
+<p>晚上，我们开始尝试第二种方案—矢量网络分析方案。</p>
+<p>这个方案的思路也是研究反射信号，对入射信号和网线的反射信号进行峰值检波和相位检波，进行IFFT，即可以得到网线的长度。由于 我们只需要得知网线的长度，即信号的相位信息，因此可以对IFFT进行简化，只需要检测相位差和频率的变化率即可得到网线长度。</p>
+<p>确定了大致方案后我们进行实现。首先为了观察到反射信号，需要只做一个定向耦合器，但是有一个前提是阻抗匹配，一开始我们的耦合器并没有和网线接头阻抗匹配，导致信号提前反射，观察不到移相。为了调通这个耦合器，我们弄到凌晨四点半，在终于观察到反射信号后，回寝室睡觉。</p>
+<p>第二晚睡了3个小时。</p>
+<h3 id="8月1日"><a href="#8月1日" class="headerlink" title="8月1日"></a>8月1日</h3><p>此时时间已经过了一大半，测长度对我们来说是遥遥无期。</p>
+<p>这天早上，我们手上已经有调好的定向耦合器，也有校准过的AD8302用于鉴相。我们分析好了这个方案的原理和编程实现后，开始着手于写代码。在计算得到相位差和频率的关系曲线后，问题又来了。就是这个变化率和长度的线性度不好，甚至同一个长度下不同段相位的斜线的变化率也有很大差别。</p>
+<p>开始我们怀疑相位差为160°-200°反射信号急剧衰减至小于30mv，而AD8302只能读取幅值为30mv-300mv大概范围内的信号，超过这个范围就会读不准，我们怀疑是信号衰减过小导致读取相位有误差，于是尝试了在定向耦合器的反射端口加VCA821程控放大器，试图稳住反射信号，但这个方案以失败告终；又在反射端加高速运放制成的同相放大，也失败了。总之就是相位-频率关系紊乱，无法可靠地得出长度。</p>
+<p>证明这个方法也失败后，已经是深夜。眼睁睁的看着时间就剩一天，我们测长度连方案都没有，更别说系统联调，已经有些绝望。</p>
+<p>这个夜晚我们一觉没睡。</p>
+<h3 id="8月2日"><a href="#8月2日" class="headerlink" title="8月2日"></a>8月2日</h3><p>从前一天半夜到这一天早上，除了证明矢量网络分析不行之外，我们还做了交流衰减测量，我们的思路就是用AD9959产生反相的30MHz差分信号输入网线的一对双绞线，再用功率检波读取即可。</p>
+<p>早上，我们还是不能测长度，要知道这道题主要就是测长度，分值占比极重。此时我们已经心态濒临崩溃，因为三天的尝试都未找到合适的测长方案，不如最后再试试NE555测电容法？</p>
+<p>于是我们开始尝试这个一开始我最不看好的方案。但是恰恰这个方法就是可行，我们赶快大量的校准数据，把整根50m的网线2米2米地剪短，测数据，打表，拟合。。。一直干到晚上六点，这个时候我们都已经36小时未合眼，但是八点封箱交作品，还不能休息。</p>
+<p>这个题中一个关键点是现场提供1mSFTP和50mUTP网线供参赛队伍校准，要知道现场校准对于测量方向的题目是至关重要的，因为测量物品的材质网往往不同，便会影响测量精度。我们的校准方案是：我们使用的串口屏有存储功能，掉电不丢失，于是我们在串口屏上设置了校准程序，分为两个：UTP校准和SFTP校准，校准时更改长度-方波频率拟合式中的一个参数，把这个参数通过串口传输给主控芯片。</p>
+<p>校准完长度，我们又发现电阻测量又测不准了，于是赶快急急忙忙的校准电阻，校准了几个数据后，又急急忙忙地封箱。</p>
+<p>四天三夜的电赛就这样草草结束。</p>
+<h2 id="可能正确的思路？"><a href="#可能正确的思路？" class="headerlink" title="可能正确的思路？"></a>可能正确的思路？</h2><p>再一一仔细回看这几个测量项目：</p>
+<p>题目只允许有两个模式：单端模式和双端模式。</p>
+<h3 id="双端模式同时测量："><a href="#双端模式同时测量：" class="headerlink" title="双端模式同时测量："></a><span style="font-weight:bold;">双端模式</span>同时测量：</h3><ol>
+<li><p>网线线序</p>
+<p>这个需要你对网线有充分的了解。在工程上，网线接头的线序一般只有两种——568A和568B线序，这两种线序的区别是13、26的线互换，刚好和题目中给出的交叉情况相同，而两端同为568A或568B为<span style="font-weight:bold;">直连线序</span>，一端为568A另一端为568B叫做<span style="font-weight:bold;">交叉线序</span>，在这个基础上，想要检测线序就变得容易了起来，只需要检测变动的一根线的通断即可。</p>
+<p><img src="D:\Typora\picture\image-20250812234306382.png" alt="image-20250812234306382"></p>
+<p><img src="D:\Typora\picture\image-20250812234323310.png" alt="image-20250812234323310"></p>
+<p>我看网上有很多人是的每一根线对应的线序都一一检测，这样不是不行，但是会大量占用主控芯片的GPIO资源，同时电路连接十分繁琐，大量增加了工作量。</p>
+</li>
+<li><p>网线类型 UTP/SFTP</p>
+<p>这两种的区别是UTP没有屏蔽层，SFTP有屏蔽层。我在制作转接板时特地把屏蔽层的引脚SH没有接地而单独引出来，这样就可以通过SH的通断判断类型。</p>
+</li>
+<li><p>电阻</p>
+<p>这个使用恒流源即可。需要注意的是最好使用开关电路，只有测量电阻时再把恒流源接入网线的其中一根线上，否则一是恒流源会影响其他功能的测量，而是恒流源自身会发热，长时间带载会影响输出电流的稳定性。</p>
+</li>
+<li><p>交流衰减</p>
+<p>这个比较迷。我们的做法是用AD9959产生两路相位差180°的差分30M正弦信号输入网线的一个差分对，利用峰值检波读取网线两端的幅值，计算衰减。因为我们也不能确定网线的交流衰减应该是多少，上网上查到的数据也感觉不可靠，所以没有校准。只是记得最后测评时测量的衰减是10dB左右。</p>
+</li>
+</ol>
+<h3 id="单端模式同时测量："><a href="#单端模式同时测量：" class="headerlink" title="单端模式同时测量："></a><span style="font-weight:bold;">单端模式</span>同时测量：</h3><ol>
+<li><p>线缆长度</p>
+<p>赛后，我们几个队伍交流下来，认为TDR应该是比较合适的方法。可是几乎没有队伍做出来，都是最后改的电容法。</p>
+</li>
+<li><p>是否短路</p>
+<p>问答中官方指出只会短路线对，而网线接头线序只有568A、568B两种，他们都是12、36、45、78一对，所以检测一对之间是否通路就行。</p>
+</li>
+<li><p>短路位置</p>
+<p>我们一开始就放弃了这一项。我们以为这个就是测长度——网线接入端和短路点之间的长度。问题是哪个线对短路是不确定的，需要先用开关电路将长度测量电路接到对应线对上，而继电器和模拟开关都过不了高频信号，于是我们就直接放弃了</p>
+<p>赛后回看，其实可以另辟蹊径：利用电阻法。将恒流源打到线对上，而直流信号是完全可以过继电器的，可以用电阻反推长度。只是我认为这样很难校准，测得的短路位置不一定准。</p>
+</li>
+</ol>
+<h2 id="最终使用的硬件"><a href="#最终使用的硬件" class="headerlink" title="最终使用的硬件"></a>最终使用的硬件</h2><ol>
+<li>主控芯片是STM32H743，以及一个扩展板；</li>
+<li>ADC：AD7606，用它来读交流衰减、线缆分压。驱动是网上找的；</li>
+<li>DDS：AD9959，产生30M信号。驱动是移植基地的祖传代码；</li>
+<li>功率检波：AD8361*2；</li>
+<li>恒流源电路模块：具体是运放＋三极管；</li>
+<li>差分放大电路模块：用于测电阻时的线缆分压测量；</li>
+<li>网口转接板：将8路RJ45与一路屏蔽层转接为9路排针与9路SMA；</li>
+<li>NE555测电容电路：之前用电容法做过2023B，就直接把NE555部分拿过来用了；</li>
+<li>继电器开关电路模块：网上买的。</li>
+</ol>
+<h2 id="感受-amp-总结"><a href="#感受-amp-总结" class="headerlink" title="感受&amp;总结"></a>感受&amp;总结</h2><p>这个题最折磨人的地方一个是八根网线带来的巨大工作量，一个是长度方案一直无法确定。</p>
+<p>基地做这个题的其他队伍的处境和我们类似：也是一开始尝试了各种方案，都测不出来长度，最后不得已使用NE555电容法。最后晋级国赛的队伍用的也是这个方案。</p>
+<p>总的来说，这种类似精密测量类的题目做起来真的十分折磨，要想各种办法提高测量精度，差一点就是这道题，连可行的方案都找不出来。甚至这种题也看一点运气：如果一开始碰巧尝试的是正确的方案，那么会有大量的时间校准数据、提高精度、打磨作品，而像我们，最后一天才找到可行方案的，时间完全不够用。</p>
+<p>最后，我还是想感谢我的队友：我的两位队友都很好，技术、性格、品格、实力各方面都是无可挑剔，能遇到这样优秀的队友我感到十分幸运，和他们一起渡过的一个月的备赛时光与艰苦的四天三夜是我的宝贵回忆。</p>
+<p>此文写于2025.8.11</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://haoyu123.top">TakamiyaMioo     (Zhao Haoyu)</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://haoyu123.top/2025/09/30/0_2025%E7%94%B5%E8%B5%9B%E8%AE%B0%E5%BD%95/">https://haoyu123.top/2025/09/30/0_2025%E7%94%B5%E8%B5%9B%E8%AE%B0%E5%BD%95/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://haoyu123.top" target="_blank">TakamiyaMioo's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%94%B5%E8%B5%9B/">电赛</a><a class="post-meta__tags" href="/tags/STM32/">STM32</a><a class="post-meta__tags" href="/tags/vlog/">vlog</a><a class="post-meta__tags" href="/tags/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%8F%8C%E7%BB%9E%E7%BA%BF/">以太网双绞线</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/03/17/1_%E8%AE%A9-AI-Agent-%E8%87%AA%E5%8A%A8%E5%8F%91%E5%8D%9A%E5%AE%A2%EF%BC%9F%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%9B%B2%E6%8A%98%E7%9A%84-Debug-%E5%AE%9E%E5%BD%95/" title="让 Agent 自动发博客 &amp; github一些常见网络问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">让 Agent 自动发博客 & github一些常见网络问题</div></div><div class="info-2"><div class="info-item-1">我在平时开发、学习时非常讨厌一些网络问题，这些网络问题大多是GFW导致的。其实在这之外，Github的联网也有一些问题。 最近在本地终端折腾 OpenAI Codex。既然它能直接操作本地文件，我就在尝试：能直接用一句话命令它，帮我在本地生成一篇 Hexo 博客的 Markdown 文件，然后自动执行部署命令推送到我的 GitHub Pages 上？ 预期中的剧本很简单：创建文件 -&gt; 补充 Front-matter -&gt; 执行 hexo clean &amp;&amp; hexo g &amp;&amp; hexo d -&gt; 完美收工。 但这终究只是预期。当这个自动化链路真正在 Windows 纯命令行环境下跑起来时，现实并不顺利。短短几分钟里，我精准踩中了从网络协议、进程交互到环境变量的各种底层大坑。 以下是这次翻车与填坑的完整记录。如果你也在尝试把 AI Agent 接入本地工作流，这篇避坑指南应该能帮你省下大半天的 Debug 时间。 1. 刚出门就撞墙，WebSocket 报错 10061当指示 Agent 在本地执行脚手架命令 hexo new po...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">TakamiyaMioo     (Zhao Haoyu)</div><div class="author-info-description">HUST EIC</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/TakamiyaMioo"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2025%E7%94%B5%E8%B5%9B%E8%AE%B0%E5%BD%95"><span class="toc-number">1.</span> <span class="toc-text">2025电赛记录</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%8F%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">序言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E5%A4%A9%E4%B8%89%E5%A4%9C"><span class="toc-number">1.2.</span> <span class="toc-text">四天三夜</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7%E6%9C%8830%E6%97%A5"><span class="toc-number">1.2.1.</span> <span class="toc-text">7月30日</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7%E6%9C%8831%E6%97%A5"><span class="toc-number">1.2.2.</span> <span class="toc-text">7月31日</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8%E6%9C%881%E6%97%A5"><span class="toc-number">1.2.3.</span> <span class="toc-text">8月1日</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8%E6%9C%882%E6%97%A5"><span class="toc-number">1.2.4.</span> <span class="toc-text">8月2日</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E8%83%BD%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%80%9D%E8%B7%AF%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">可能正确的思路？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E7%AB%AF%E6%A8%A1%E5%BC%8F%E5%90%8C%E6%97%B6%E6%B5%8B%E9%87%8F%EF%BC%9A"><span class="toc-number">1.3.1.</span> <span class="toc-text">双端模式同时测量：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E7%AB%AF%E6%A8%A1%E5%BC%8F%E5%90%8C%E6%97%B6%E6%B5%8B%E9%87%8F%EF%BC%9A"><span class="toc-number">1.3.2.</span> <span class="toc-text">单端模式同时测量：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E7%BB%88%E4%BD%BF%E7%94%A8%E7%9A%84%E7%A1%AC%E4%BB%B6"><span class="toc-number">1.4.</span> <span class="toc-text">最终使用的硬件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%84%9F%E5%8F%97-amp-%E6%80%BB%E7%BB%93"><span class="toc-number">1.5.</span> <span class="toc-text">感受&amp;总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/13/6_%E8%93%9D%E6%A1%A5%E6%9D%AFEDA%E8%B5%9B%E9%81%93/" title="蓝桥杯EDA赛道">蓝桥杯EDA赛道</a><time datetime="2026-04-13T07:52:19.000Z" title="发表于 2026-04-13 15:52:19">2026-04-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/24/5_%E8%BF%AD%E4%BB%A3%E6%9E%84%E5%BB%BA%E4%BB%A3%E4%BB%B7%E4%BD%93/" title="迭代构建代价体">迭代构建代价体</a><time datetime="2026-03-24T00:05:59.000Z" title="发表于 2026-03-24 08:05:59">2026-03-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/23/4_%E5%8F%8C%E7%9B%AE%E7%9B%B8%E6%9C%BA%E5%8C%B9%E9%85%8D-stereo%20matching/" title="双目相机立体匹配-stereo matching">双目相机立体匹配-stereo matching</a><time datetime="2026-03-23T08:08:35.000Z" title="发表于 2026-03-23 16:08:35">2026-03-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/21/3_%E7%94%A8%E7%8E%B0%E4%BB%A3-Ubuntu-%E7%BC%96%E8%AF%91%E4%B8%8A%E5%8F%A4-GCC-4-9-4-%E7%9A%84%E6%8E%92%E5%9D%91%E6%8C%87%E5%8D%97/" title="降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南">降维打击失败录：用现代 Ubuntu 编译上古 GCC 4.9.4 的排坑指南</a><time datetime="2026-03-21T12:06:12.000Z" title="发表于 2026-03-21 20:06:12">2026-03-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/18/2_%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7Zotero%E8%BF%9B%E9%98%B6%E6%8A%98%E8%85%BE%E6%8C%87%E5%8D%97%E4%B8%8EAI%E5%B7%A5%E4%BD%9C%E6%B5%81/" title="科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流">科研利器：文献管理工具 Zotero 进阶折腾指南与 AI 工作流</a><time datetime="2026-03-18T12:30:00.000Z" title="发表于 2026-03-18 20:30:00">2026-03-18</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text"><div class="footer-container">
+  <div class="footer-group footer-left">
+    <span>✨ Code for Life, Code for Fun.</span>
+  </div>
+  <div class="footer-group footer-center">
+    <div class="copyright">&copy; 2025 - 2026 <i class="fas fa-heart" style="color:#ff7e67"></i> TakamiyaMioo</div>
+    <div class="runtime">本站已运行 <span id="days_text">0</span> 天</div>
+  </div>
+  <div class="footer-group footer-right">
+    <span id="busuanzi_container_site_uv" title="总访客数">
+      <i class="fas fa-user"></i> <span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span class="separator">|</span>
+    <span id="busuanzi_container_site_pv" title="总访问量">
+      <i class="fas fa-eye"></i> <span id="busuanzi_value_site_pv"></span>
+    </span>
+  </div>
+</div>
+<script>
+  var start_date = new Date("2026-01-20");
+  var now_date = new Date();
+  var days = Math.floor((now_date - start_date) / (24 * 3600 * 1000));
+  var days_span = document.getElementById("days_text");
+  if(days_span) days_span.innerHTML = days;
+</script>
+</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        loader: {
+          load: [
+            // Four font extension packages (optional)
+            //- '[tex]/bbm',
+            //- '[tex]/bboldx',
+            //- '[tex]/dsfont',
+            '[tex]/mhchem'
+          ],
+          paths: {
+            'mathjax-newcm': '[mathjax]/../@mathjax/mathjax-newcm-font',
+
+            //- // Four font extension packages (optional)
+            //- 'mathjax-bbm-extension': '[mathjax]/../@mathjax/mathjax-bbm-font-extension',
+            //- 'mathjax-bboldx-extension': '[mathjax]/../@mathjax/mathjax-bboldx-font-extension',
+            //- 'mathjax-dsfont-extension': '[mathjax]/../@mathjax/mathjax-dsfont-font-extension',
+            'mathjax-mhchem-extension': '[mathjax]/../@mathjax/mathjax-mhchem-font-extension'
+          }
+        },
+        output: {
+          font: 'mathjax-newcm',
+        },
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'none',
+          packages: {
+            '[+]': [
+              'mhchem'
+            ]
+          }
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          enableMenu: true,
+          menuOptions: {
+            settings: {
+              enrich: false  // Turn off Braille and voice narration text automatic generation
+            }
+          },
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script><script>(() => {
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const config = mermaidSrc.dataset.config ? JSON.parse(mermaidSrc.dataset.config) : {}
+      if (!config.theme) {
+        config.theme = theme
+      }
+      const mermaidThemeConfig = `%%{init: ${JSON.stringify(config)}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (true) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@11.12.2/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script src="/js/custom_nav.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.3"></script></div></div></body></html>

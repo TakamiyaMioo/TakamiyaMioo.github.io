@@ -1,0 +1,63 @@
+{
+  "hero": {
+    "actions": [
+      {
+        "text": "开始阅读",
+        "href": "/archives/",
+        "icon": "fas fa-book-open"
+      },
+      {
+        "text": "学习路线",
+        "href": "/roadmap/",
+        "icon": "fas fa-route"
+      },
+      {
+        "text": "项目作品",
+        "href": "/projects/",
+        "icon": "fas fa-code-branch"
+      }
+    ]
+  },
+  "intro": {
+    "kicker": "About this archive",
+    "title": "计算机视觉科研学习档案",
+    "text": "计算机视觉方向学习者，主要关注双目匹配、多视图立体视觉、单目与视频深度估计。这里记录论文阅读、模型实验、代码复现和科研成长。"
+  },
+  "directions": [
+    {
+      "title": "Stereo Matching",
+      "icon": "fas fa-cubes",
+      "description": "双目匹配、代价体、3D CNN、迭代优化",
+      "href": "/tags/stereo-matching/"
+    },
+    {
+      "title": "Multi-View Stereo",
+      "icon": "fas fa-project-diagram",
+      "description": "多视图几何、Warp、深度假设、特征聚合",
+      "href": "/roadmap/"
+    },
+    {
+      "title": "Monocular & Video Depth",
+      "icon": "fas fa-video",
+      "description": "单目先验、时序建模、Transformer、几何融合",
+      "href": "/roadmap/"
+    }
+  ],
+  "featured": [
+    {
+      "title": "双目相机立体匹配-stereo matching",
+      "note": "GwcNet 与 Stereo Matching 入门记录",
+      "href": "/2026/03/23/4_双目相机匹配-stereo%20matching/"
+    },
+    {
+      "title": "迭代构建代价体",
+      "note": "从 3D 卷积正则化到循环迭代优化",
+      "href": "/2026/03/24/5_迭代构建代价体/"
+    },
+    {
+      "title": "科研利器：文献管理工具 Zotero 进阶指南与 AI 工作流",
+      "note": "科研工具与知识管理实践",
+      "href": "/2026/03/18/2_文献管理工具Zotero进阶折腾指南与AI工作流/"
+    }
+  ]
+}

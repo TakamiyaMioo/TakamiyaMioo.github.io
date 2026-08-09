@@ -1,176 +1,269 @@
-// source/js/custom_nav.js
+/* Homepage modules, navigation helpers and data-driven pages. */
+(function () {
+  'use strict';
 
-/**
- * 1. 修改侧边栏作者名字的函数
- * 将 "TakamiyaMioo(Zhao Haoyu)" 分割为两行显示，并优化第二行的样式
- */
-function customizeAuthor() {
-    // 获取侧边栏作者名的 DOM 元素
-    const authorNameElement = document.querySelector('.author-info__name');
-    
-    // 只有当元素存在且内容包含我们想要修改的文本时才执行，防止重复修改
-    if (authorNameElement) {
-        // 这里的 innerHTML 会覆盖 _config.yml 里的纯文本配置
-        // 第一行是网名，<br>换行，第二行用 span 包裹真名，字体调小、透明度降低
-        authorNameElement.innerHTML = "TakamiyaMioo<br><span style='font-size: 0.8em; opacity: 0.8; font-weight: normal;'>(Zhao Haoyu)</span>";
+  var blog = window.TakamiyaBlog = window.TakamiyaBlog || {};
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function safeHref(value) {
+    var href = String(value || '');
+    return href.indexOf('/') === 0 || href.indexOf('https://') === 0 ? href : '#';
+  }
+
+  function bindOnce(element, key, handler) {
+    if (!element || element.dataset[key]) return;
+    element.dataset[key] = 'true';
+    element.addEventListener('click', handler);
+  }
+
+  function customizeAuthor() {
+    var author = document.querySelector('.author-info-name');
+    if (!author || author.dataset.takamiyaAuthor) return;
+    author.dataset.takamiyaAuthor = 'true';
+    author.innerHTML = 'TakamiyaMioo<br><span class="author-real-name">(Zhao Haoyu)</span>';
+  }
+
+  function ensureVisitorFallback() {
+    var visitor = document.getElementById('busuanzi_value_site_uv');
+    if (!visitor || visitor.dataset.takamiyaVisitorFallback) return;
+    visitor.dataset.takamiyaVisitorFallback = 'true';
+
+    window.setTimeout(function () {
+      if (visitor.querySelector('.fa-spin') || !visitor.textContent.trim()) {
+        visitor.textContent = '0';
+      }
+    }, 12000);
+  }
+
+  function numberArticleHeadings() {
+    var container = document.querySelector('#article-container.post-content');
+    if (!container) return;
+
+    var counters = [0, 0, 0, 0, 0, 0];
+    container.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(function (heading) {
+      var level = Number(heading.tagName.slice(1));
+      var oldNumber = heading.firstElementChild;
+      if (oldNumber && oldNumber.classList.contains('article-heading-number')) {
+        oldNumber.remove();
+      }
+
+      counters[level - 1] += 1;
+      for (var index = level; index < counters.length; index += 1) {
+        counters[index] = 0;
+      }
+
+      var number = document.createElement('span');
+      number.className = 'article-heading-number';
+      number.setAttribute('aria-hidden', 'true');
+      number.textContent = counters.slice(0, level).join('.') + ' ';
+      heading.insertBefore(number, heading.firstChild);
+    });
+  }
+
+  function initNavButtons() {
+    document.querySelectorAll('a[href$="#switch-mode"]').forEach(function (button) {
+      bindOnce(button, 'takamiyaModeBound', function (event) {
+        event.preventDefault();
+        var darkmodeButton = document.getElementById('darkmode');
+        if (darkmodeButton) {
+          darkmodeButton.click();
+        }
+      });
+    });
+
+    document.querySelectorAll('a[href$="#switch-layout"]').forEach(function (button) {
+      bindOnce(button, 'takamiyaLayoutBound', function (event) {
+        event.preventDefault();
+        var hideAsideButton = document.getElementById('hide-aside-btn');
+        if (hideAsideButton) {
+          hideAsideButton.click();
+        }
+      });
+    });
+  }
+
+  function ensureHeroActions() {
+    var siteInfo = document.querySelector('#page-header.full_page #site-info');
+    if (!siteInfo || siteInfo.querySelector('.home-hero-actions')) return;
+
+    var actions = [
+      ['开始阅读', '/archives/', 'fas fa-book-open'],
+      ['学习路线', '/roadmap/', 'fas fa-route'],
+      ['项目作品', '/projects/', 'fas fa-code-branch']
+    ];
+    var wrapper = document.createElement('div');
+    wrapper.className = 'home-hero-actions';
+    wrapper.innerHTML = actions.map(function (item) {
+      return '<a class="home-hero-action" href="' + safeHref(item[1]) + '"><i class="' + item[2] + '"></i><span>' + item[0] + '</span></a>';
+    }).join('');
+    siteInfo.appendChild(wrapper);
+  }
+
+  function fetchJson(url) {
+    return fetch(url, { credentials: 'same-origin' }).then(function (response) {
+      if (!response.ok) throw new Error('Unable to load ' + url);
+      return response.json();
+    });
+  }
+
+  function renderResearchCards(items) {
+    return (items || []).map(function (item) {
+      return '<a class="home-link-card research-card" href="' + safeHref(item.href) + '">' +
+        '<span class="home-card-icon"><i class="' + escapeHtml(item.icon || 'fas fa-book') + '"></i></span>' +
+        '<h3>' + escapeHtml(item.title) + '</h3>' +
+        '<p>' + escapeHtml(item.description) + '</p>' +
+        '</a>';
+    }).join('');
+  }
+
+  function renderFeatured(items) {
+    return (items || []).map(function (item) {
+      return '<div class="featured-item"><a href="' + safeHref(item.href) + '">' + escapeHtml(item.title) + '</a><span class="featured-note">' + escapeHtml(item.note) + '</span></div>';
+    }).join('');
+  }
+
+  function renderProjectLogos(item) {
+    var logos = item.logos || [];
+    var labels = item.logo_alts || [];
+    if (!logos.length) return '';
+
+    return '<div class="project-card-logos" aria-label="项目标识">' + logos.map(function (logo, index) {
+      var href = safeHref(logo);
+      if (href === '#') return '';
+      return '<img src="' + escapeHtml(href) + '" alt="' + escapeHtml(labels[index] || '项目标识') + '" loading="lazy">';
+    }).join('') + '</div>';
+  }
+
+  function renderProjectMedia(item) {
+    var images = (item.images || []).map(function (image) {
+      return safeHref(image);
+    }).filter(function (image) {
+      return image !== '#';
+    });
+
+    if (!images.length) {
+      return '<div class="project-media project-media-empty"><i class="fas fa-images"></i><span>图片待补充</span></div>';
     }
-}
 
-/**
- * 2. 初始化导航栏按钮事件监听 (日夜模式 & 布局切换)
- * 保留了你之前的稳健逻辑，包含 btf 缺失时的保底方案
- */
-function initNavButtons() {
-    console.log("Custom Nav: 初始化按钮事件监听...");
+    return '<div class="project-media" data-images="' + escapeHtml(JSON.stringify(images)) + '">' +
+      '<img data-project-image src="' + escapeHtml(images[0]) + '" alt="' + escapeHtml(item.name) + ' 项目图片" loading="lazy">' +
+      (images.length > 1 ? '<span class="project-media-count">1 / ' + images.length + '</span>' : '') +
+      '</div>';
+  }
 
-    // ---------------------------------------------------------
-    // 处理“模式切换”按钮 (日夜模式)
-    // ---------------------------------------------------------
-    const modeBtns = document.querySelectorAll('a[href$="#switch-mode"]');
-    if (modeBtns.length > 0) {
-        modeBtns.forEach(btn => {
-            // 先解绑旧事件（防止 PJAX 重复绑定），虽然 addEventListener 通常不怕重复，但保险起见
-            // 这里为了简单直接绑定，依靠外部的 mainInit 控制频次
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // 方案 A: 尝试调用主题自带方法
-                if (typeof btf !== 'undefined' && typeof btf.switchDarkMode === 'function') {
-                    console.log("调用 btf.switchDarkMode()");
-                    btf.switchDarkMode();
-                } 
-                // 方案 B: 手动切换 (保底方案)
-                else {
-                    console.warn("btf 未定义，启用手动切换模式");
-                    const html = document.documentElement;
-                    const nowMode = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-                    const newMode = nowMode === 'dark' ? 'light' : 'dark';
-                    
-                    html.setAttribute('data-theme', newMode);
-                    localStorage.setItem('theme', newMode);
-                    const event = new CustomEvent('themeChange', { detail: { theme: newMode } });
-                    document.dispatchEvent(event);
-                }
-            });
-        });
-    }
+  function renderProjectCards(items, limit, wide) {
+    return (items || []).slice(0, limit || items.length).map(function (item) {
+      var links = [];
+      if (item.github) links.push('<a href="' + safeHref(item.github) + '">GitHub</a>');
+      if (item.article) links.push('<a href="' + safeHref(item.article) + '">相关文章</a>');
+      var cardClass = wide ? ' project-card-wide' : '';
+      var content = '<h3>' + escapeHtml(item.name) + '</h3><p>' + escapeHtml(item.summary) + '</p>' +
+        '<p class="project-meta">' + escapeHtml(item.stack) + '</p>' +
+        (links.length ? '<div class="project-links">' + links.join(' · ') + '</div>' : '');
 
-    // ---------------------------------------------------------
-    // 处理“布局切换”按钮 (显示/隐藏侧边栏)
-    // ---------------------------------------------------------
-    const layoutBtns = document.querySelectorAll('a[href$="#switch-layout"]');
-    if (layoutBtns.length > 0) {
-        layoutBtns.forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
+      return '<article class="project-card' + cardClass + '">' +
+        (wide ? renderProjectMedia(item) + '<div class="project-card-content">' + renderProjectLogos(item) + content + '</div>' : content) +
+        '</article>';
+    }).join('');
+  }
 
-                // 方案 A: 尝试调用主题自带方法
-                if (typeof btf !== 'undefined' && typeof btf.hideAsideBtn === 'function') {
-                    console.log("调用 btf.hideAsideBtn()");
-                    btf.hideAsideBtn();
-                } 
-                // 方案 B: 手动切换 (保底方案)
-                else {
-                    console.warn("btf 未定义，启用手动布局切换");
-                    const html = document.documentElement;
-                    if (html.classList.contains('hide-aside')) {
-                        html.classList.remove('hide-aside');
-                    } else {
-                        html.classList.add('hide-aside');
-                    }
-                }
-            });
-        });
-    }
-}
+  function initProjectSlides() {
+    document.querySelectorAll('.project-media[data-images]').forEach(function (media) {
+      if (media.dataset.slideReady) return;
+      media.dataset.slideReady = 'true';
 
-/**
- * 3. 统一入口函数
- * 将所有需要初始化的功能集中在这里调用
- */
-function mainInit() {
-    initNavButtons();   // 初始化按钮逻辑
-    customizeAuthor();  // 初始化作者名修改逻辑
-}
+      var image = media.querySelector('[data-project-image]');
+      var count = media.querySelector('.project-media-count');
+      var images;
+      try {
+        images = JSON.parse(media.dataset.images || '[]');
+      } catch (error) {
+        images = [];
+      }
+      if (!image || images.length < 2) return;
 
-// ---------------------------------------------------------
-// 4. 事件监听配置
-// ---------------------------------------------------------
+      var index = 0;
+      window.setInterval(function () {
+        image.classList.add('is-fading');
+        window.setTimeout(function () {
+          index = (index + 1) % images.length;
+          image.src = images[index];
+          if (count) count.textContent = (index + 1) + ' / ' + images.length;
+          image.classList.remove('is-fading');
+        }, 260);
+      }, 4200);
+    });
+  }
 
-// 页面首次加载完成时执行
-document.addEventListener('DOMContentLoaded', mainInit);
+  function renderHome(homeData, projectData) {
+    var recent = document.querySelector('#recent-posts');
+    if (!recent || recent.querySelector('.home-upgrade')) return;
 
-// 适配 PJAX (页面内部跳转时执行，防止功能失效)
-document.addEventListener('pjax:complete', mainInit);
+    var intro = homeData.intro || {};
+    var shell = document.createElement('div');
+    shell.className = 'home-upgrade';
+    shell.innerHTML =
+      '<section class="home-section home-intro">' +
+        '<p class="home-kicker">首页结构 · Part 1</p>' +
+        '<div class="home-section-header"><h2>学习档案、研究方向、精选内容、项目与实践</h2></div>' +
+        '<p class="home-structure-note">首页分为两部分：上方是我的学习与科研档案，下方是博客文章列表。你可以先从研究方向和精选内容开始，也可以直接进入文章归档。</p>' +
+        '<p>' + escapeHtml(intro.text) + '</p>' +
+        '<div class="home-intro-actions"><a class="home-inline-action" href="/archives/"><i class="fas fa-book-open"></i><span>查看全部文章</span></a><a class="home-inline-action" href="/about/"><i class="fas fa-user"></i><span>了解关于我</span></a></div>' +
+      '</section>' +
+      '<section class="home-section home-research-section"><div class="home-section-header"><div><p class="home-kicker">Research focus</p><h2>研究方向</h2></div></div>' +
+        '<div class="research-grid">' + renderResearchCards(homeData.directions) + '</div></section>' +
+      '<section class="home-section home-projects-section"><div class="home-section-header"><div><p class="home-kicker">Projects & practice</p><h2>项目与实践</h2></div><a href="/projects/">项目页</a></div>' +
+        '<div class="project-preview-grid">' + renderProjectCards((projectData || {}).projects, 3, false) + '</div></section>' +
+      '<section class="home-section home-posts-guide"><div class="home-section-header"><div><p class="home-kicker">首页结构 · Part 2</p><h2>所有博客文章</h2></div><a href="/archives/">进入文章归档</a></div>' +
+        '<p>下面是博客目前收录的全部文章，按发布时间倒序排列。点击文章标题即可阅读正文。</p></section>';
 
-// // source/js/custom_nav.js
+    var articleList = recent.querySelector('.recent-post-items');
+    recent.insertBefore(shell, articleList || recent.firstChild);
+  }
 
-// function initNavButtons() {
-//     console.log("Custom Nav: 初始化按钮事件监听...");
+  function initHome() {
+    var recent = document.querySelector('#recent-posts');
+    if (!recent) return;
+    ensureHeroActions();
+    if (recent.querySelector('.home-upgrade')) return;
+    Promise.all([fetchJson('/data/homepage.json'), fetchJson('/data/projects.json')])
+      .then(function (data) { renderHome(data[0], data[1]); })
+      .catch(function (error) { console.warn('[TakamiyaBlog] homepage data unavailable', error); });
+  }
 
-//     // =========================================================
-//     // 1. 处理“模式切换”按钮 (日夜模式)
-//     // =========================================================
-//     const modeBtns = document.querySelectorAll('a[href$="#switch-mode"]');
-//     if (modeBtns.length > 0) {
-//         modeBtns.forEach(btn => {
-//             btn.addEventListener('click', function(e) {
-//                 e.preventDefault();
-                
-//                 // 方案 A: 尝试调用主题自带方法
-//                 if (typeof btf !== 'undefined' && typeof btf.switchDarkMode === 'function') {
-//                     console.log("调用 btf.switchDarkMode()");
-//                     btf.switchDarkMode();
-//                 } 
-//                 // 方案 B: 手动切换 (保底方案)
-//                 else {
-//                     console.warn("btf 未定义，启用手动切换模式");
-//                     const html = document.documentElement;
-//                     const nowMode = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-//                     const newMode = nowMode === 'dark' ? 'light' : 'dark';
-                    
-//                     // 1. 修改 HTML 属性
-//                     html.setAttribute('data-theme', newMode);
-//                     // 2. 写入本地缓存
-//                     localStorage.setItem('theme', newMode);
-//                     // 3. 广播事件 (让其他组件感知)
-//                     const event = new CustomEvent('themeChange', { detail: { theme: newMode } });
-//                     document.dispatchEvent(event);
-//                 }
-//             });
-//         });
-//     }
+  function initProjectsPage() {
+    var page = document.querySelector('#projects-page');
+    if (!page || page.dataset.loaded) return;
+    page.dataset.loaded = 'true';
+    fetchJson('/data/projects.json').then(function (data) {
+      var grid = page.querySelector('.project-data-grid');
+      if (grid) {
+        grid.innerHTML = renderProjectCards(data.projects, 0, true) || '<p>项目数据暂未添加。</p>';
+        initProjectSlides();
+      }
+    }).catch(function () {
+      var grid = page.querySelector('.project-data-grid');
+      if (grid) grid.innerHTML = '<p>项目数据暂时无法加载，请检查本地构建结果。</p>';
+    });
+  }
 
-//     // =========================================================
-//     // 2. 处理“布局切换”按钮 (显示/隐藏侧边栏)
-//     // =========================================================
-//     const layoutBtns = document.querySelectorAll('a[href$="#switch-layout"]');
-//     if (layoutBtns.length > 0) {
-//         layoutBtns.forEach(btn => {
-//             btn.addEventListener('click', function(e) {
-//                 e.preventDefault();
+  function init() {
+    initNavButtons();
+    customizeAuthor();
+    ensureVisitorFallback();
+    numberArticleHeadings();
+    initHome();
+    initProjectsPage();
+  }
 
-//                 // 方案 A: 尝试调用主题自带方法
-//                 if (typeof btf !== 'undefined' && typeof btf.hideAsideBtn === 'function') {
-//                     console.log("调用 btf.hideAsideBtn()");
-//                     btf.hideAsideBtn();
-//                 } 
-//                 // 方案 B: 手动切换 (保底方案)
-//                 else {
-//                     console.warn("btf 未定义，启用手动布局切换");
-//                     const html = document.documentElement;
-//                     // Butterfly v4+ 通过给 html 加 hide-aside 类来隐藏侧边栏
-//                     if (html.classList.contains('hide-aside')) {
-//                         html.classList.remove('hide-aside');
-//                     } else {
-//                         html.classList.add('hide-aside');
-//                     }
-//                 }
-//             });
-//         });
-//     }
-// }
-
-// // 确保在页面加载后执行
-// document.addEventListener('DOMContentLoaded', initNavButtons);
-// document.addEventListener('pjax:complete', initNavButtons);
+  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('pjax:complete', init);
+})();

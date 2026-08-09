@@ -1,0 +1,73 @@
+{
+  "projects": [
+    {
+      "name": "2025 电赛：以太网双绞线测试仪——一等奖作品",
+      "summary": "2025 年全国大学生电子设计竞赛作品，围绕以太网双绞线的长度、电阻和线序进行检测，最终获得一等奖。",
+      "status": "已完成",
+      "stack": "C/C++ · 单片机 · 以太网 · 信号检测",
+      "image": "",
+      "images": [
+        "/img/projects/2025-eda/final-work.png",
+        "/img/projects/2025-eda/system-framework.png"
+      ],
+      "logos": [
+        "/img/projects/logos/hust-logo.png",
+        "/img/projects/logos/eda-logo.png"
+      ],
+      "logo_alts": [
+        "华中科技大学",
+        "全国大学生电子设计竞赛"
+      ],
+      "github": "",
+      "article": "",
+      "started": "2025-07",
+      "updated": "2025-09"
+    },
+    {
+      "name": "互联网+：面向无人机自主飞行的视觉空间感知系统",
+      "summary": "面向无人机自主飞行场景，探索利用视觉信息完成环境感知、深度理解与空间定位。项目详情将在后续补充。",
+      "status": "持续完善",
+      "stack": "Computer Vision · Stereo Matching · Depth Estimation · UAV",
+      "image": "",
+      "images": [
+        "/img/projects/internet-plus/innovation-1.png",
+        "/img/projects/internet-plus/innovation-2.png",
+        "/img/projects/internet-plus/system-framework.png"
+      ],
+      "logos": [
+        "/img/projects/logos/hust-logo.png"
+      ],
+      "logo_alts": [
+        "华中科技大学"
+      ],
+      "github": "",
+      "article": "",
+      "started": "2025-10",
+      "updated": "2026-04"
+    },
+    {
+      "name": "Qwen 模型微调与部署：健康大模型（HUSTVL）",
+      "summary": "参与 HUST Vision Lab（HUSTVL）健康大模型项目，进行 Qwen 模型微调、评测与部署实践，具体内容后续补充。",
+      "status": "持续完善",
+      "stack": "Qwen · LLM Fine-tuning · Deployment · Healthcare AI",
+      "image": "",
+      "images": [
+        "/img/projects/qwen/architecture.png",
+        "/img/projects/qwen/training.png",
+        "/img/projects/qwen/evaluation.png"
+      ],
+      "logos": [
+        "/img/projects/logos/hust-logo.png",
+        "/img/projects/logos/qwen-logo.png"
+      ],
+      "logo_alts": [
+        "华中科技大学",
+        "Qwen"
+      ],
+      "github": "",
+      "article": "",
+      "started": "2026-04",
+      "updated": "2026-04"
+    }
+  ]
+}

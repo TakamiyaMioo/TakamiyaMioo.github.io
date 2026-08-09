@@ -1,210 +1,1252 @@
-   /* =======================================================
-   1. 字体与布局排版优化
-   ======================================================= */
-   @import url('https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css');
-    /* 1. 只给大标题、侧边栏卡片、导航栏保留霞鹜文楷，保持文艺感 */
-    h1, h2, h3, h4, h5, h6, .card-info, .navbar-title, .author-info__name {
-        font-family: 'LXGW WenKai Screen', sans-serif !important;
-    }
-
-    /* 2. 正文恢复为系统默认的高清无衬线字体，大幅提升长文阅读体验 */
-    body, p, span, a, article {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Lato, Roboto, "PingFang SC", "Microsoft YaHei", sans-serif !important;
-    }
-
-    /* 3. 扩大全局排版宽度 (默认通常是 1200px，拉宽到 1400px 会宽敞很多) */
-    :root {
-        --layout-width: 1600px; 
-    }
-   
-   /* =======================================================
-      2. 全屏固定背景 (Mika 背景)
-      ======================================================= */
-   body {
-       background-image: url('/img/banner.jpg') !important;
-       background-attachment: fixed !important;
-       background-position: center center !important;
-       background-repeat: no-repeat !important;
-       background-size: cover !important;
-   }
-   
-    /* =======================================================
-            3. 导航栏全局强制固定 (修复非首页不生效问题)
-    ======================================================= */
-    /* 1. 无论在哪个页面，#nav 必须固定在窗口顶部 */
-    #nav {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    z-index: 9999 !important; /* 确保在最顶层 */
-    
-    /* 默认状态：透明 (为了显示背景图) */
-    background-color: transparent !important;
-    box-shadow: none !important;
-    
-    /* 动画过渡 */
-    transition: background-color 0.3s ease-in-out !important;
+/* TakamiyaMioo's Blog - visual system */
+:root {
+  --blog-purple: #7657c8;
+  --blog-purple-dark: #4d347f;
+  --blog-blue: #4389c5;
+  --blog-pink: #d487ae;
+  --blog-text: #292437;
+  --blog-muted: #756f85;
+  --blog-surface: rgba(255, 255, 255, 0.94);
+  --blog-surface-soft: rgba(249, 247, 253, 0.92);
+  --blog-border: rgba(118, 87, 200, 0.18);
+  --blog-shadow: 0 12px 32px rgba(54, 35, 91, 0.12);
+  --blog-radius: 16px;
+  --blog-content-width: 1200px;
 }
-/* 2. 下滑后的变色逻辑 */
-/* Butterfly 的机制：下滑时会给 #page-header 加 .nav-fixed，或给 #nav 加 .fixed */
-/* 我们把所有可能触发变色的情况都写上 */
 
-/* 情况A: 页面下滑时 */
-#page-header.nav-fixed #nav, 
+[data-theme="dark"] {
+  --blog-text: #f2edf9;
+  --blog-muted: #bcb2cd;
+  --blog-surface: rgba(37, 30, 51, 0.94);
+  --blog-surface-soft: rgba(47, 38, 63, 0.92);
+  --blog-border: rgba(190, 161, 239, 0.2);
+  --blog-shadow: 0 14px 36px rgba(12, 7, 24, 0.3);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--blog-text);
+  background-color: #efeaf7 !important;
+  background-image: none !important;
+}
+
+[data-theme="dark"] body {
+  background-color: #211b2b !important;
+  background-image: none !important;
+}
+
+/* Butterfly 的 #web_bg 是全站唯一的固定底层背景。 */
+#web_bg {
+  background-attachment: fixed !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
+
+/* 内容布局：首页恢复默认宽度，文章页保留适度阅读宽度。 */
+.layout {
+  width: 100% !important;
+  max-width: var(--blog-content-width) !important;
+}
+
+.layout > div:first-child {
+  width: 74% !important;
+}
+
+.layout > .aside-content {
+  width: 26% !important;
+}
+
+.layout:has(> #post) {
+  max-width: 1650px !important;
+}
+
+.layout:has(> #post) > div:first-child {
+  width: 78% !important;
+}
+
+.layout:has(> #post) > .aside-content {
+  width: 22% !important;
+}
+
+/* 首页封面占满首屏，标题组在封面正中央。 */
+#page-header.full_page {
+  height: 100vh !important;
+  min-height: 100vh !important;
+  background-image: linear-gradient(135deg, rgba(8, 6, 14, 0.78), rgba(28, 18, 43, 0.58)), url('/img/banner.jpg') !important;
+}
+
+[data-theme="dark"] #page-header.full_page {
+  background-image: linear-gradient(135deg, rgba(4, 3, 8, 0.86), rgba(21, 13, 32, 0.7)), url('/img/banner.jpg') !important;
+}
+
+#page-header.full_page #site-info {
+  top: 50% !important;
+  left: 50% !important;
+  width: min(1000px, calc(100% - 32px));
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+#page-header.full_page #site-title {
+  margin-bottom: 0.65rem;
+  letter-spacing: 0.02em;
+  font-family: Georgia, "Times New Roman", SimSun, "宋体", serif !important;
+  font-size: clamp(2.35rem, 5vw, 4.7rem);
+  text-shadow: 0 4px 24px rgba(18, 8, 31, 0.48);
+}
+
+#page-header.full_page #site-subtitle {
+  min-height: 2rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  letter-spacing: 0.04em;
+}
+
+#page-header.full_page #scroll-down {
+  bottom: 28px;
+  opacity: 0.7;
+}
+
+#page-header:not(.full_page) {
+  /* 普通页面只保留半透明遮罩，背景图统一由 #web_bg 的固定背景提供。 */
+  background-image: none !important;
+  background-color: rgba(25, 16, 42, 0.68) !important;
+}
+
+[data-theme="dark"] #page-header:not(.full_page) {
+  background-image: none !important;
+  background-color: rgba(7, 5, 12, 0.76) !important;
+}
+
+/* 导航栏 */
+#nav {
+  background: transparent !important;
+  box-shadow: none !important;
+  transition: background-color 220ms ease, box-shadow 220ms ease, color 220ms ease !important;
+}
+
 #nav.fixed,
-/* 情况B: 在某些没有头图的页面，强制给个底色 */
+#page-header.nav-fixed #nav,
 .not-top-img #nav {
-    background-color: rgba(0, 0, 0, 0.6) !important; /* 变成深色毛玻璃 */
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    box-shadow: 0 5px 10px rgba(0,0,0,0.1) !important;
+  background: rgba(250, 248, 253, 0.92) !important;
+  box-shadow: 0 8px 24px rgba(49, 30, 80, 0.1) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-/* 3. 修复菜单文字颜色 */
-/* 确保无论背景怎么变，字始终是白色带阴影，看得清 */
-#nav .site-page, #nav .site-name {
-    color: #ffffff !important;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+[data-theme="dark"] #nav.fixed,
+[data-theme="dark"] #page-header.nav-fixed #nav,
+[data-theme="dark"] .not-top-img #nav {
+  background: rgba(30, 24, 43, 0.94) !important;
+  box-shadow: 0 8px 24px rgba(8, 4, 16, 0.32) !important;
 }
-   
-   /* =======================================================
-      4. 文章卡片与侧边栏 (毛玻璃特效)
-      ======================================================= */
-   #aside-content .card-widget, 
-   .layout > .recent-posts .recent-post-item,
-   .layout > #post,
-   .layout > #page,
-   .layout > #archive {
-       /* 白天模式：半透明白 + 磨砂 */
-       background-color: rgba(255, 255, 255, 0.6) !important;
-       backdrop-filter: blur(15px);
-       -webkit-backdrop-filter: blur(15px);
-       border-radius: 15px !important;
-       animation: none !important;
-   }
-   
-   /* 暗黑模式适配 */
-   [data-theme="dark"] #aside-content .card-widget,
-   [data-theme="dark"] .layout > .recent-posts .recent-post-item,
-   [data-theme="dark"] .layout > #post,
-   [data-theme="dark"] .layout > #page {
-       /* 夜间模式：半透明黑 */
-       background-color: rgba(0, 0, 0, 0.6) !important;
-       color: #eee !important;
-   }
-   
-   [data-theme="dark"] body {
-       background-color: transparent !important;
-   }
-   
-   /* =======================================================
-      5. 修复页面头部 (归档、关于页的蓝色块)
-      ======================================================= */
-   /* 这里的逻辑是：只针对非首页的顶部区域进行美化 */
-   #page-header:not(.full_page) {
-       /* 强制去掉默认背景图/蓝色块 */
-       background-image: none !important;
-       
-       /* 极淡的黑色磨砂 (0.15) */
-       background-color: rgba(0, 0, 0, 0.15) !important;
-       
-       backdrop-filter: blur(8px) !important;
-       -webkit-backdrop-filter: blur(8px) !important;
-       box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-   }
-   
-   /* 加强头部文字阴影，防止背景太透看不清 */
-   #page-header h1, 
-   #page-header #site-title,
-   #page-header #site-subtitle {
-       color: #ffffff !important;
-       text-shadow: 0 0 5px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5) !important;
-   }
-   
-   /* =======================================================
-      6. 页脚美化 (Footer)
-      ======================================================= */
-   #footer {
-       background: transparent !important;
-       background-image: none !important;
-       
-       /* 跟顶部保持一致的淡磨砂 */
-       background-color: rgba(0, 0, 0, 0.15) !important;
-       backdrop-filter: blur(8px) !important;
-       -webkit-backdrop-filter: blur(8px) !important;
-       box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
-   }
-   
-   #footer-wrap, #footer-wrap a {
-       color: #ffffff !important;
-       text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-   }
-   
-   #footer-wrap a:hover {
-       color: #ffc0cb !important; 
-       text-decoration: underline;
-   }
 
-   /* source/css/custom.css */
+#nav .site-page,
+#nav .site-name {
+  color: #fff !important;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.42) !important;
+}
 
-/* =======================================================
-   7. 自定义页脚布局 (左中右)
-   ======================================================= */
-/* 容器设为 Flex 布局 */
-.footer-container {
+#nav.fixed .site-page,
+#nav.fixed .site-name,
+.not-top-img #nav .site-page,
+.not-top-img #nav .site-name {
+  color: var(--blog-text) !important;
+  text-shadow: none !important;
+}
+
+[data-theme="dark"] #nav.fixed .site-page,
+[data-theme="dark"] #nav.fixed .site-name,
+[data-theme="dark"] .not-top-img #nav .site-page,
+[data-theme="dark"] .not-top-img #nav .site-name {
+  color: var(--blog-text) !important;
+}
+
+@media screen and (min-width: 901px) {
+  /* 桌面导航：搜索固定在最右侧，菜单顺序由 _config.butterfly.yml 控制。 */
+  #menus {
     display: flex;
-    justify-content: space-between; /* 左右贴边，中间居中 */
-    align-items: center; /* 垂直居中 */
-    width: 100%;
-    max-width: 1200px; /* 限制最大宽度，防止太宽 */
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* 每一个区块 */
-.footer-group {
-    flex: 1; /* 三栏等宽，保证中间绝对居中 */
-    display: flex;
-    gap: 10px; /* 图标文字间距 */
-}
-
-/* 左侧：左对齐 */
-.footer-left {
-    justify-content: flex-start;
-    font-family: 'LXGW WenKai Screen', sans-serif; /* 保持你的字体风格 */
-    opacity: 0.8;
-}
-
-/* 中间：居中对齐，并且可以垂直排列 */
-.footer-center {
-    justify-content: center;
-    flex-direction: column; /* 上下排列 Copyright 和 运行时间 */
     align-items: center;
-    text-align: center;
+  }
+
+  #menus .menus_items {
+    order: 1;
+  }
+
+  #menus #search-button {
+    order: 2;
+  }
+
+  #menus .menus_items {
+    white-space: nowrap;
+  }
+
+  #menus .menus_item {
+    margin: 0 0.1rem;
+  }
+
+  #nav #menus .menus_item > .site-page,
+  #nav #search-button .site-page,
+  #nav #menus .menus_item_child .site-page {
+    font-size: 0.86rem !important;
+    line-height: 1.4;
+  }
 }
 
-/* 右侧：右对齐 */
-.footer-right {
-    justify-content: flex-end;
-    opacity: 0.8;
+/* 导航菜单使用统一字号，避免下拉菜单和普通菜单视觉大小不一致。 */
+#nav #menus .menus_item > .site-page,
+#nav #search-button .site-page,
+#nav #menus .menus_item_child .site-page,
+#nav #menus .menus_item > .site-page > span {
+  font-size: 0.86rem !important;
 }
 
-/* 手机端适配：屏幕变窄时变成上下堆叠，不然会挤爆 */
-@media screen and (max-width: 768px) {
-    .footer-container {
-        flex-direction: column; /* 改为垂直排列 */
-        gap: 15px; /* 增加行间距 */
-    }
-    
-    .footer-group {
-        justify-content: center !important; /* 手机上全部居中 */
-        flex: auto;
-    }
+/* 通用内容卡片：提高不透明度，降低背景图干扰。 */
+#aside-content .card-widget,
+.layout > .recent-posts .recent-post-item,
+.layout > #post,
+.layout > #page,
+.layout > #archive {
+  background: var(--blog-surface) !important;
+  border: 1px solid var(--blog-border);
+  border-radius: var(--blog-radius) !important;
+  box-shadow: var(--blog-shadow);
+  color: var(--blog-text);
 }
 
-/* 修正页脚背景颜色（你之前配置了透明磨砂，这里微调文字颜色以防看不清） */
-#footer-wrap {
-    color: #fff !important; /* 强制白色 */
-    padding: 20px 0 !important;
+.layout > .recent-posts .recent-post-item {
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.layout > .recent-posts .recent-post-item:hover,
+.home-link-card:hover,
+.project-card:hover,
+.research-card:hover {
+  border-color: rgba(118, 87, 200, 0.42);
+  box-shadow: 0 16px 34px rgba(54, 35, 91, 0.16);
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] #aside-content .card-widget,
+[data-theme="dark"] .layout > .recent-posts .recent-post-item,
+[data-theme="dark"] .layout > #post,
+[data-theme="dark"] .layout > #page,
+[data-theme="dark"] .layout > #archive {
+  border-color: var(--blog-border);
+}
+
+/* 首页数据模块 */
+.home-upgrade {
+  margin-bottom: 1.35rem;
+}
+
+.home-section {
+  margin-bottom: 1rem;
+  padding: clamp(1rem, 2vw, 1.45rem);
+  background: var(--blog-surface-soft);
+  border: 1px solid var(--blog-border);
+  border-radius: var(--blog-radius);
+  box-shadow: 0 8px 24px rgba(54, 35, 91, 0.08);
+}
+
+.home-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.home-section h2,
+.home-section h3 {
+  margin: 0;
+  color: var(--blog-text);
+}
+
+.home-section h2 {
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+}
+
+/* 首页模块标题与英文标签统一使用 Times New Roman，并保持重点模块标题居中。 */
+.home-kicker,
+.research-card h3,
+.project-card .project-meta {
+  font-family: "Times New Roman", SimSun, "宋体", serif !important;
+}
+
+.home-research-section .home-section-header,
+.home-projects-section .home-section-header {
+  justify-content: center;
+  text-align: center;
+}
+
+.home-research-section .home-section-header > div,
+.home-projects-section .home-section-header > div {
+  text-align: center;
+}
+
+.home-projects-section .home-section-header {
+  position: relative;
+}
+
+.home-projects-section .home-section-header > a {
+  position: absolute;
+  top: 0.1rem;
+  right: 0;
+}
+
+.home-kicker {
+  margin: 0 0 0.45rem;
+  color: var(--blog-purple);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.home-intro p {
+  margin: 0;
+  line-height: 1.9;
+}
+
+/* 首页第一部分的总览框，作为学习档案与科研内容的视觉入口。 */
+.home-intro {
+  padding: clamp(1.45rem, 3vw, 2.25rem);
+  background: linear-gradient(135deg, rgba(255, 238, 250, 0.97), rgba(224, 240, 255, 0.95)) !important;
+  border: 2px solid rgba(193, 112, 205, 0.42);
+  box-shadow: 0 14px 34px rgba(119, 72, 151, 0.16);
+}
+
+.home-intro .home-section-header {
+  justify-content: center;
+  text-align: center;
+}
+
+.home-intro .home-kicker,
+.home-intro .home-structure-note,
+.home-intro > p:not(.home-kicker) {
+  text-align: center;
+}
+
+.home-intro .home-kicker {
+  color: #9b4ba5;
+  font-size: 0.9rem;
+}
+
+.home-intro h2 {
+  color: #432657;
+  font-size: clamp(1.55rem, 3.2vw, 2.15rem);
+  letter-spacing: 0.04em;
+}
+
+.home-intro h2,
+.home-posts-guide h2 {
+  font-family: "KaiTi", "STKaiti", "楷体", serif !important;
+}
+
+.home-intro .home-structure-note,
+.home-intro > p:not(.home-kicker) {
+  max-width: 920px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.home-intro .home-structure-note,
+.home-intro > p:not(.home-kicker) {
+  text-align: left;
+}
+
+.home-intro-actions {
+  justify-content: center;
+}
+
+[data-theme="dark"] .home-intro {
+  background: linear-gradient(135deg, rgba(68, 39, 76, 0.97), rgba(35, 58, 82, 0.97)) !important;
+  border-color: rgba(218, 160, 229, 0.5);
+  box-shadow: 0 14px 34px rgba(9, 5, 19, 0.35);
+}
+
+[data-theme="dark"] .home-intro h2 {
+  color: #f2e4ff;
+}
+
+[data-theme="dark"] .home-intro .home-kicker {
+  color: #edc8f3;
+}
+
+.home-structure-note {
+  margin: 0 0 0.75rem !important;
+  color: var(--blog-purple-dark);
+  font-weight: 600;
+}
+
+[data-theme="dark"] .home-structure-note {
+  color: #d6c5ff;
+}
+
+.home-intro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.home-inline-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.48rem 0.78rem;
+  border: 1px solid var(--blog-border);
+  border-radius: 999px;
+  background: var(--blog-surface);
+  color: var(--blog-purple-dark) !important;
+  font-size: 0.9rem;
+}
+
+.home-inline-action:hover {
+  border-color: var(--blog-purple);
+  color: var(--blog-purple-dark) !important;
+}
+
+.home-posts-guide {
+  position: relative;
+  margin-top: 1.45rem;
+  margin-bottom: 1.15rem;
+  padding: clamp(1.45rem, 3vw, 2.25rem);
+  background: linear-gradient(135deg, rgba(239, 229, 255, 0.96), rgba(220, 238, 255, 0.94)) !important;
+  border: 2px solid rgba(118, 87, 200, 0.42);
+  box-shadow: 0 14px 34px rgba(83, 55, 132, 0.16);
+}
+
+.home-posts-guide .home-section-header {
+  display: block;
+  margin-bottom: 0.95rem;
+  text-align: center;
+}
+
+.home-posts-guide .home-kicker {
+  margin-bottom: 0.55rem;
+  color: var(--blog-purple-dark);
+  font-size: 0.9rem;
+}
+
+.home-posts-guide h2 {
+  color: #3b275b;
+  font-size: clamp(1.8rem, 4vw, 2.45rem);
+  letter-spacing: 0.04em;
+}
+
+.home-posts-guide .home-section-header > a {
+  position: absolute;
+  top: 1.35rem;
+  right: 1.6rem;
+  color: #58759b;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.home-posts-guide .home-section-header > a:hover {
+  color: var(--blog-purple-dark);
+}
+
+[data-theme="dark"] .home-posts-guide {
+  background: linear-gradient(135deg, rgba(58, 39, 83, 0.96), rgba(31, 54, 76, 0.96)) !important;
+  border-color: rgba(192, 161, 255, 0.5);
+  box-shadow: 0 14px 34px rgba(9, 5, 19, 0.35);
+}
+
+[data-theme="dark"] .home-posts-guide h2 {
+  color: #f0e8ff;
+}
+
+[data-theme="dark"] .home-posts-guide .home-kicker {
+  color: #d9c5ff;
+}
+
+[data-theme="dark"] .home-posts-guide .home-section-header > a {
+  color: #c4d8f2;
+}
+
+.home-posts-guide p {
+  max-width: 860px;
+  margin: 0 auto;
+  color: var(--blog-muted);
+  font-size: 1.08rem;
+  line-height: 1.8;
+  text-align: center;
+}
+
+[data-theme="dark"] .home-posts-guide p {
+  color: #d8d0e6;
+}
+
+.research-grid,
+.featured-grid,
+.project-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.home-link-card,
+.project-card {
+  display: block;
+  min-width: 0;
+  padding: 1rem;
+  background: var(--blog-surface);
+  border: 1px solid var(--blog-border);
+  border-radius: 13px;
+  color: inherit;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.home-link-card:hover,
+.project-card:hover {
+  color: inherit;
+}
+
+.home-card-icon {
+  display: inline-grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  margin-bottom: 0.7rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(118, 87, 200, 0.18), rgba(67, 137, 197, 0.18));
+  color: var(--blog-purple-dark);
+}
+
+[data-theme="dark"] .home-card-icon {
+  color: #d7c5ff;
+}
+
+.home-link-card h3,
+.project-card h3 {
+  margin: 0 0 0.45rem;
+  font-size: 1.05rem;
+}
+
+.home-link-card p,
+.project-card p {
+  margin: 0;
+  color: var(--blog-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.project-meta,
+.project-links {
+  margin-top: 0.7rem !important;
+  color: var(--blog-muted);
+  font-size: 0.78rem !important;
+}
+
+.project-links a {
+  color: var(--blog-purple-dark);
+}
+
+.author-real-name {
+  font-size: 0.82em;
+  opacity: 0.78;
+  font-weight: 400;
+}
+
+.featured-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.featured-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.72rem 0.85rem;
+  border-radius: 10px;
+  background: var(--blog-surface);
+  border: 1px solid transparent;
+}
+
+.featured-item:hover {
+  border-color: var(--blog-border);
+}
+
+.featured-item a {
+  color: var(--blog-purple-dark);
+  font-weight: 650;
+}
+
+[data-theme="dark"] .featured-item a {
+  color: #d6c5ff;
+}
+
+.featured-note,
+.project-status {
+  color: var(--blog-muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.home-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-top: 1.15rem;
+}
+
+.home-hero-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.62rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 999px;
+  background: rgba(28, 18, 47, 0.34);
+  color: #fff !important;
+  font-size: 0.9rem;
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.home-hero-action:hover {
+  background: rgba(118, 87, 200, 0.65);
+  border-color: rgba(255, 255, 255, 0.7);
+  transform: translateY(-1px);
+}
+
+/* 文章阅读体验 */
+.post-content {
+  color: var(--blog-text);
+  font-family: "Times New Roman", SimSun, "宋体", serif;
+  font-size: 1.12rem;
+  line-height: 1.95;
+}
+
+/* 正文和标题整体放大，保持清晰的层级关系。 */
+#article-container.post-content {
+  font-size: 1.12rem !important;
+}
+
+#article-container.post-content p,
+#article-container.post-content li,
+#article-container.post-content blockquote,
+#article-container.post-content table,
+#article-container.post-content a {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+#article-container.post-content h1,
+#article-container.post-content h2,
+#article-container.post-content h3,
+#article-container.post-content h4,
+#article-container.post-content h5,
+#article-container.post-content h6 {
+  font-family: "Times New Roman", SimSun, "宋体", serif !important;
+  line-height: 1.35;
+}
+
+.article-heading-number {
+  color: var(--blog-purple-dark);
+  font-weight: 700;
+}
+
+[data-theme="dark"] .article-heading-number {
+  color: #d6c5ff;
+}
+
+#article-container.post-content h1 {
+  font-size: clamp(1.85rem, 4vw, 2.25rem) !important;
+}
+
+#article-container.post-content h2 {
+  font-size: clamp(1.6rem, 3.4vw, 1.9rem) !important;
+}
+
+#article-container.post-content h3 {
+  font-size: clamp(1.38rem, 3vw, 1.6rem) !important;
+}
+
+#article-container.post-content h4 {
+  font-size: clamp(1.2rem, 2.6vw, 1.35rem) !important;
+}
+
+#article-container.post-content h5 {
+  font-size: 1.16rem !important;
+}
+
+#article-container.post-content h6 {
+  font-size: 1.08rem !important;
+}
+
+.post-content p,
+.post-content li,
+.post-content blockquote,
+.post-content table,
+.post-content a {
+  font-family: "Times New Roman", SimSun, "宋体", serif !important;
+}
+
+.post-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.8rem auto;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 14px;
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.78) inset,
+    0 -1px 0 rgba(48, 31, 74, 0.08) inset,
+    0 10px 0 -4px rgba(116, 88, 151, 0.12),
+    0 20px 34px rgba(47, 29, 74, 0.2),
+    0 4px 9px rgba(47, 29, 74, 0.14);
+  transform: perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0);
+  transition: transform 260ms ease, box-shadow 260ms ease, filter 260ms ease;
+}
+
+.post-content img:hover {
+  filter: saturate(1.04) contrast(1.01);
+  transform: perspective(1200px) rotateX(1.5deg) rotateY(-1deg) translateY(-6px);
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.86) inset,
+    0 -1px 0 rgba(48, 31, 74, 0.08) inset,
+    0 12px 0 -4px rgba(116, 88, 151, 0.17),
+    0 26px 42px rgba(47, 29, 74, 0.28),
+    0 8px 13px rgba(47, 29, 74, 0.18);
+}
+
+[data-theme="dark"] .post-content img {
+  background: rgba(35, 27, 48, 0.96);
+  border-color: rgba(225, 213, 255, 0.18);
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.12) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.28) inset,
+    0 10px 0 -4px rgba(169, 137, 221, 0.16),
+    0 20px 34px rgba(5, 3, 10, 0.46),
+    0 4px 9px rgba(5, 3, 10, 0.32);
+}
+
+[data-theme="dark"] .post-content img:hover {
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.16) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.34) inset,
+    0 12px 0 -4px rgba(169, 137, 221, 0.22),
+    0 26px 42px rgba(5, 3, 10, 0.56),
+    0 8px 13px rgba(5, 3, 10, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-content img {
+    transition: none;
+  }
+
+  .post-content img:hover {
+    transform: none;
+  }
+}
+
+.post-content pre,
+.post-content code,
+.post-content kbd,
+.post-content samp {
+  font-family: Consolas, "Courier New", monospace !important;
+}
+
+.post-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.post-content a {
+  overflow-wrap: anywhere;
+}
+
+/* 学习路线、项目、实验、工具箱等独立页面 */
+.data-page {
+  color: var(--blog-text);
+}
+
+/* 关于页面：使用正常的 Markdown 页面结构，避免原始标记和内容挤在一起 */
+.layout > #page #article-container {
+  color: var(--blog-text);
+  font-family: "Times New Roman", SimSun, "宋体", serif;
+  font-size: 1.04rem;
+  line-height: 1.9;
+}
+
+.layout > #page #article-container h2 {
+  margin-top: 2rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--blog-border);
+  color: var(--blog-purple-dark);
+}
+
+.layout > #page #article-container h2:first-of-type {
+  margin-top: 0;
+}
+
+.layout > #page #article-container blockquote {
+  margin: 0 0 1.5rem;
+  padding: 0.9rem 1.2rem;
+  background: var(--blog-surface-soft);
+  border-left: 4px solid var(--blog-purple);
+  border-radius: 10px;
+}
+
+.layout > #page #article-container ul {
+  padding-left: 1.35rem;
+}
+
+.layout > #page #article-container li {
+  margin: 0.45rem 0;
+}
+
+.layout > #page #article-container p,
+.layout > #page #article-container li,
+.layout > #page #article-container blockquote,
+.layout > #page #article-container a {
+  font-family: "Times New Roman", SimSun, "宋体", serif !important;
+}
+
+[data-theme="dark"] .layout > #page #article-container h2 {
+  color: #d6c5ff;
+}
+
+.data-page > h1:first-child {
+  margin-top: 0;
+}
+
+.page-lead {
+  color: var(--blog-muted);
+  line-height: 1.85;
+}
+
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+
+.roadmap-track {
+  padding: 1.1rem;
+  background: var(--blog-surface-soft);
+  border: 1px solid var(--blog-border);
+  border-radius: 14px;
+}
+
+.roadmap-track h2 {
+  margin-top: 0;
+  color: var(--blog-purple-dark);
+}
+
+[data-theme="dark"] .roadmap-track h2 {
+  color: #d6c5ff;
+}
+
+.roadmap-list {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0;
+  list-style: none;
+}
+
+.roadmap-list li {
+  position: relative;
+  padding: 0.7rem 0.8rem 0.7rem 2.35rem;
+  background: var(--blog-surface);
+  border: 1px solid var(--blog-border);
+  border-radius: 10px;
+}
+
+.roadmap-list li::before {
+  position: absolute;
+  top: 0.88rem;
+  left: 0.9rem;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  background: var(--blog-purple);
+  content: "";
+}
+
+.roadmap-list li:not(:last-child)::after {
+  position: absolute;
+  top: 1.55rem;
+  bottom: -0.65rem;
+  left: 1.18rem;
+  width: 1px;
+  background: var(--blog-border);
+  content: "";
+}
+
+.roadmap-list a {
+  color: var(--blog-purple-dark);
+}
+
+.roadmap-pending {
+  color: var(--blog-muted);
+  font-size: 0.82rem;
+}
+
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+
+/* 项目页：每个项目占一整行，左侧为图片轮播，右侧为项目介绍。 */
+.project-data-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.project-card-wide {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(250px, 31%) minmax(0, 1fr);
+  gap: 1.35rem;
+  align-items: stretch;
+  min-height: 245px;
+  padding: 1rem;
+}
+
+.project-card-logos {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 0 0.45rem auto;
+  align-self: flex-end;
+  pointer-events: none;
+}
+
+.project-card-logos img {
+  display: block;
+  width: auto;
+  height: 42px;
+  max-width: 92px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 5px rgba(38, 25, 65, 0.16));
+}
+
+.project-card-wide .project-card-content {
+  position: relative;
+}
+
+.project-card-wide .project-media {
+  position: relative;
+  min-height: 215px;
+  overflow: hidden;
+  border: 1px solid var(--blog-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 20px rgba(54, 35, 91, 0.1);
+}
+
+.project-card-wide .project-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 215px;
+  object-fit: contain;
+  background: #fff;
+  transition: opacity 260ms ease, transform 260ms ease;
+}
+
+.project-card-wide .project-media img.is-fading {
+  opacity: 0;
+  transform: scale(1.035);
+}
+
+.project-media-count {
+  position: absolute;
+  right: 0.65rem;
+  bottom: 0.6rem;
+  padding: 0.18rem 0.48rem;
+  border-radius: 999px;
+  background: rgba(31, 22, 47, 0.68);
+  color: #fff;
+  font-family: "Times New Roman", SimSun, "宋体", serif;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+.project-media-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  color: var(--blog-muted);
+  font-size: 0.95rem;
+}
+
+.project-media-empty i {
+  color: var(--blog-purple);
+  font-size: 2rem;
+}
+
+.project-card-wide .project-card-content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.55rem 0.7rem 0.55rem 0;
+}
+
+.project-card-wide .project-card-content h3 {
+  margin-bottom: 0.7rem;
+  color: var(--blog-purple-dark);
+  font-size: clamp(1.25rem, 2vw, 1.72rem);
+  line-height: 1.3;
+}
+
+.project-card-wide .project-card-content p {
+  max-width: 850px;
+  font-size: 1rem;
+  line-height: 1.85;
+}
+
+.project-card-wide .project-card-content .project-meta {
+  color: var(--blog-purple-dark);
+  font-weight: 600;
+}
+
+[data-theme="dark"] .project-card-wide .project-media {
+  background: rgba(35, 27, 48, 0.96);
+  box-shadow: 0 10px 24px rgba(5, 3, 10, 0.32);
+}
+
+[data-theme="dark"] .project-card-wide .project-media img {
+  background: #fff;
+}
+
+[data-theme="dark"] .project-card-wide .project-card-content h3,
+[data-theme="dark"] .project-card-wide .project-card-content .project-meta {
+  color: #d9c7ff;
+}
+
+.data-card {
+  padding: 1.1rem;
+  background: var(--blog-surface-soft);
+  border: 1px solid var(--blog-border);
+  border-radius: 14px;
+}
+
+.data-card h2,
+.data-card h3 {
+  margin-top: 0;
+}
+
+.data-card ul {
+  padding-left: 1.2rem;
+}
+
+.data-card li {
+  margin: 0.35rem 0;
+}
+
+.experiment-template {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1.2rem;
+  margin-top: 1.2rem;
+}
+
+.experiment-template dt {
+  color: var(--blog-purple-dark);
+  font-weight: 700;
+}
+
+.experiment-template dd {
+  margin: 0;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px dashed var(--blog-border);
+  color: var(--blog-muted);
+}
+
+/* 侧边栏与页脚 */
+#aside-content .item-headline span,
+#aside-content .author-info-name,
+#aside-content .author-info-description {
+  color: var(--blog-text);
+}
+
+/* 访客统计固定在右侧栏底部，避免被其他侧栏卡片插到中间。 */
+#aside-content .card-webinfo {
+  order: 999 !important;
+}
+
+#aside-content .card-info #card-info-btn {
+  background: rgba(118, 87, 200, 0.12);
+  color: var(--blog-purple-dark);
+  border: 1px solid var(--blog-border);
+}
+
+[data-theme="dark"] #aside-content .card-info #card-info-btn {
+  color: #e1d5f4;
+}
+
+#footer {
+  background: rgba(26, 17, 43, 0.74) !important;
+}
+
+#footer-wrap,
+#footer-wrap a {
+  color: rgba(255, 255, 255, 0.88) !important;
+  text-shadow: none !important;
+}
+
+.footer-signature {
+  letter-spacing: 0.03em;
+}
+
+@media screen and (max-width: 900px) {
+  .layout > div:first-child,
+  .layout > .aside-content,
+  .layout:has(> #post) > div:first-child,
+  .layout:has(> #post) > .aside-content {
+    width: 100% !important;
+  }
+
+  .layout:has(> #post) {
+    max-width: 100% !important;
+  }
+
+  .research-grid,
+  .featured-grid,
+  .project-preview-grid,
+  .roadmap-grid,
+  .data-grid,
+  .experiment-template {
+    grid-template-columns: 1fr;
+  }
+
+  .featured-item {
+    display: block;
+  }
+
+  .home-posts-guide .home-section-header > a {
+    position: static;
+    display: inline-block;
+    margin-top: 0.7rem;
+  }
+
+  .featured-note,
+  .project-status {
+    display: block;
+    margin-top: 0.25rem;
+    white-space: normal;
+  }
+
+  #page-header.full_page {
+    height: 100vh !important;
+    min-height: 100vh !important;
+  }
+
+  #page-header.full_page #site-info {
+    top: 50% !important;
+  }
+
+  .home-hero-actions {
+    gap: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .project-card-logos {
+    margin-bottom: 0.35rem;
+  }
+
+  .project-card-logos img {
+    height: 34px;
+    max-width: 72px;
+  }
+
+  .project-card-wide {
+    grid-template-columns: 1fr;
+  }
+
+  .project-card-wide .project-media,
+  .project-card-wide .project-media img {
+    min-height: 205px;
+  }
+
+  .project-card-wide .project-card-content {
+    padding: 0.25rem 0.2rem 0.35rem;
+  }
+
+}
+
+/* 学习路线页在平板和窄窗口下仍保持主内容 + 右侧栏布局。真正手机宽度再上下排列。 */
+@media screen and (min-width: 600px) and (max-width: 900px) {
+  .type-roadmap .layout {
+    flex-direction: row !important;
+    align-items: flex-start;
+  }
+
+  .type-roadmap .layout > div:first-child {
+    width: 70% !important;
+    padding: 36px 20px !important;
+  }
+
+  .type-roadmap .layout > .aside-content {
+    width: 30% !important;
+    margin-top: 0 !important;
+    padding-left: 10px;
+  }
+
+  .type-roadmap .layout > .aside-content .card-widget {
+    padding: 18px 14px;
+  }
+
+  .type-roadmap #aside-content .author-info-name {
+    font-size: 1.1rem;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #page-header.full_page {
+    height: 100vh !important;
+    min-height: 100vh !important;
+  }
+
+  .post-content {
+    font-size: 1.06rem;
+  }
+
+  #article-container.post-content {
+    font-size: 1.06rem !important;
+  }
+
+  .home-hero-action {
+    padding: 0.55rem 0.8rem;
+    font-size: 0.82rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
